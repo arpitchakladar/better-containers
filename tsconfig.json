@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true, // For importing JSON files
+		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"types": [
+			"firefox-webext-browser"
+		],
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
+}

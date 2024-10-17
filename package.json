@@ -1,0 +1,27 @@
+{
+	"devDependencies": {
+		"@types/firefox-webext-browser": "^120.0.4",
+		"@types/fs-extra": "^11.0.4",
+		"fs-extra": "^11.2.0",
+		"vite-plugin-web-extension": "^4.2.0"
+	},
+	"name": "better-containers",
+	"version": "1.0.0",
+	"description": ",",
+	"main": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/arpitchakladar/better-containers.git"
+	},
+	"author": "Arpit Chakladar",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/arpitchakladar/better-containers/issues"
+	},
+	"homepage": "https://github.com/arpitchakladar/better-containers#readme"
+}

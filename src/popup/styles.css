@@ -1,0 +1,55 @@
+body {
+	--bg-color: #333;
+	--color: #eee;
+	font-family: Arial, sans-serif;
+	background-color: var(--bg-color); /* Background color for the menu */
+}
+
+h1 {
+	text-align: center;
+	text-transform: uppercase;
+	color: var(--color);
+}
+
+#containers {
+	list-style-type: none;  /* Remove default list styles */
+	padding: 0;
+	margin: 0;
+	width: 20rem;
+	background-color: var(--bg-color); /* Background color for the menu */
+}
+
+#containers li {
+	position: relative;
+	display: block;
+	color: var(--container-color);
+	background-color: var(--bg-color);
+	padding: 15px 20px;
+	cursor: pointer;
+	display: grid;
+	grid-template-columns: 2rem 1fr;
+	grid-gap: 1rem;
+}
+
+#containers li div {
+	text-align: left;
+}
+
+#containers li img {
+	width: 2rem;
+}
+
+#containers li span {
+	text-decoration: none;  /* Remove underline from links */
+	transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#containers li:hover {
+	color: var(--bg-color);
+	background-color: var(--container-color); /* Change background color on hover */
+}
+
+#containers li:active {
+	color: var(--bg-color);
+	background-color: var(--container-color); /* Active link background */
+}
