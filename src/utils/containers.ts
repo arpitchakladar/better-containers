@@ -7,17 +7,19 @@ export async function getContainers() {
 }
 
 export async function getContainer(name: string) {
-	return await browser.contextualIdentities.query({ name });
+	return (await browser.contextualIdentities.query({ name }))[0];
 }
 
 // Open a new tab in a specific container
 export async function openTabInContainer(
 	url: string,
-	container: browser.contextualIdentities.ContextualIdentity
+	container: browser.contextualIdentities.ContextualIdentity,
+	index?: number
 ) {
 	// Open a new tab in the chosen container
 	await browser.tabs.create({
 		url: url,
-		cookieStoreId: container.cookieStoreId
+		cookieStoreId: container.cookieStoreId,
+		index
 	});
 }

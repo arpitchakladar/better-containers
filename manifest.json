@@ -1,18 +1,21 @@
 {
 	"manifest_version": 2,
 	"name": "Better Containers",
-	"version": "1.0",
-	"description": "A Firefox extension to assign tabs to specific containers.",
+	"version": "0.1.0",
+	"description": "A Firefox extension to better manage containers.",
 	"permissions": [
 		"cookies",
 		"tabs",
 		"storage",
 		"webRequest",
-		"*://*/*",
-		"contextualIdentities"
+		"contextualIdentities",
+		"webNavigation",
+		"<all_urls>"
 	],
 	"background": {
-		"scripts": ["index.js"],
+		"scripts": [
+			"index.js"
+		],
 		"persistent": false
 	},
 	"browser_action": {

@@ -1,36 +1,17 @@
-// Get all available containers (contextual identities)
-async function getContainers() {
-	const containers = await browser.contextualIdentities.query({});
-	console.log("Available containers:", containers);
-	return containers;
-}
+import { getContainer, openTabInContainer } from "@/utils/containers";
 
-// Open a new tab in a specific container
-async function openTabInContainer(url: string, containerName: string) {
-	const containers = await getContainers();
-	const targetContainer = containers.find(container => container.name === containerName);
-
-	if (!targetContainer) {
-		console.error(`Container "${containerName}" not found.`);
-		return;
+browser.webNavigation.onBeforeNavigate.addListener(async function (details) {
+	console.log(details);
+	if (/^https?:\/\/(?:www\.)?google\.com/.test(details.url)) {
+		const currentTab = await browser.tabs.get(details.tabId);
+		const container = await getContainer("Social");
+		if (currentTab.cookieStoreId !== container.cookieStoreId) {
+			if (currentTab.active) {
+				browser.tabs.update(details.tabId, { url: currentTab.url });
+			} else {
+				browser.tabs.remove(details.tabId);
+			}
+			await openTabInContainer(details.url, container);
+		}
 	}
-
-	// Open a new tab in the chosen container
-	await browser.tabs.create({
-		url: url,
-		cookieStoreId: targetContainer.cookieStoreId
-	});
-}
-
-// Example: assign a container to new tabs
-browser.tabs.onCreated.addListener(async (tab) => {
-	// Decide on the container based on tab information (URL, etc.)
-	const url = tab.url!;
-	
-	// Example logic: Assign Google search pages to a "Work" container
-	if (url.includes("google.com")) {
-		await openTabInContainer(url, "Social");
-	}
-});
-
-// Optionally, you can set up a popup or UI to allow users to manually assign containers to tabs
+}, { url: [{ hostContains: "google.com" }] });
