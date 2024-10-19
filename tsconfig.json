@@ -14,7 +14,8 @@
 			"@/*": ["src/*"]
 		},
 		"types": [
-			"firefox-webext-browser"
+			"firefox-webext-browser",
+			"vite/client"
 		],
 	},
 	"include": ["src/**/*.ts"],

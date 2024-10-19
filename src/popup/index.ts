@@ -21,19 +21,12 @@ function createContainerListItem(
 
 async function listContainers() {
 	const containersListElement = document.getElementById("containers")!;
-	const containers = await getContainers();
+	const containers = await browser.contextualIdentities.query({});
+
 	for (const container of containers) {
-		containersListElement.appendChild(createContainerListItem(container));
+		containersListElement
+			.appendChild(createContainerListItem(container));
 	}
 }
 
 listContainers();
-
-// document.getElementById("workContainer").addEventListener("click", async () => {
-// 	const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-// 	const activeTab = tabs[0];
-//
-// 	if (activeTab) {
-// 		openTabInContainer(activeTab.url, "Social");
-// 	}
-// });
