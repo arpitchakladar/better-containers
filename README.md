@@ -1,2 +1,2 @@
 # Better Containers
-A Firefox extension to assign tabs to specific containers.
+A Firefox extension to better manage containers.

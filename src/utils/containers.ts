@@ -13,13 +13,19 @@ export async function getContainer(name: string) {
 // Open a new tab in a specific container
 export async function openTabInContainer(
 	url: string,
-	container: browser.contextualIdentities.ContextualIdentity,
-	index?: number
+	tab: browser.tabs.Tab,
+	container: browser.contextualIdentities.ContextualIdentity
 ) {
 	// Open a new tab in the chosen container
 	await browser.tabs.create({
 		url: url,
 		cookieStoreId: container.cookieStoreId,
-		index
+		openerTabId: tab.id,
 	});
+
+
+	// Close dangling tabs that remain when the new tab is created
+	if (tab.url && /^(about:)|(moz-extension:)/.test(tab.url)) {
+		browser.tabs.remove(tab.id!);
+	}
 }
