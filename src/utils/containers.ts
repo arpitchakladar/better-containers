@@ -15,7 +15,5 @@ export async function openTabInContainer(
 	if (
 		tab.url && /^(about:)|(moz-extension:)/.test(tab.url) &&
 		tab.id
-	) {
-		await browser.tabs.remove(tab.id);
-	}
+	) await browser.tabs.remove(tab.id);
 }

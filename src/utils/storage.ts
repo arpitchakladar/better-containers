@@ -8,7 +8,7 @@ type ContainerConfigurations = {
 export let containerConfigurations: ContainerConfigurations = {}
 
 async function loadContainerConfigurations() {
-	containerConfigurations = await browser.storage.local.get();
+	const containerConfigurations = await browser.storage.local.get();
 }
 
 export async function addContainerConfiguration(
@@ -30,17 +30,19 @@ export async function addContainerConfiguration(
 // Load the container configurations on startup
 loadContainerConfigurations();
 
-// Only for development purposes
-(async function() {
-	addContainerConfiguration(
-		"firefox-container-8",
-		[ "yahoo.com", "duckduckgo.com" ],
-		false
-	);
+if (import.meta.env.MODE === "development") {
+	// Only for development purposes
+	(async function() {
+		addContainerConfiguration(
+			"firefox-container-8",
+			[ "yahoo.com", "duckduckgo.com" ],
+			false
+		);
 
-	addContainerConfiguration(
-		"firefox-container-7",
-		[ "google.com" ],
-		true
-	);
-})();
+		addContainerConfiguration(
+			"firefox-container-7",
+			[ "google.com" ],
+			true
+		);
+	})();
+}

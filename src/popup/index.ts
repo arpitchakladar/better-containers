@@ -1,5 +1,3 @@
-import { getContainers } from "@/utils/containers";
-
 function createContainerListItem(
 	container: browser.contextualIdentities.ContextualIdentity
 ) {
@@ -23,10 +21,9 @@ async function listContainers() {
 	const containersListElement = document.getElementById("containers")!;
 	const containers = await browser.contextualIdentities.query({});
 
-	for (const container of containers) {
+	for (const container of containers)
 		containersListElement
 			.appendChild(createContainerListItem(container));
-	}
 }
 
 listContainers();

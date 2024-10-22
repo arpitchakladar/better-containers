@@ -8,16 +8,12 @@ browser.webRequest.onBeforeRequest.addListener(
 		if (
 			requestDetails.frameId !== 0 ||
 			requestDetails.tabId === -1
-		) {
-			return {};
-		}
+		) return {};
 
 		return (async function() {
 			const tab = await browser.tabs.get(requestDetails.tabId);
 
-			if (
-				requestDetails.url
-			) {
+			if (requestDetails.url) {
 				// If no containers are specified we default to using the default container
 				let containerCookieStoreId = "firefox-default";
 				outer: for (const [containerId, configuration] of Object.entries(containerConfigurations)) {
@@ -29,9 +25,8 @@ browser.webRequest.onBeforeRequest.addListener(
 					}
 				}
 
-				if (tab.cookieStoreId === containerCookieStoreId) {
+				if (tab.cookieStoreId === containerCookieStoreId)
 					return;
-				}
 
 				// Open the URL in a new tab in the specified container
 				await openTabInContainer(
