@@ -14,16 +14,6 @@
 				nodejs_22
 				nodePackages.typescript-language-server
 			];
-
-			shellHook = ''
-				if [ -f package.json ] && [ ! -d node_modules ]; then
-					npm install
-				fi
-
-				if [ -d ./node_modules/.bin ]; then
-					export PATH=$PATH:./node_modules/.bin
-				fi
-			'';
 		};
 	};
 }

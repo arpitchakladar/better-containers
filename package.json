@@ -1,6 +1,12 @@
 {
 	"devDependencies": {
 		"@types/firefox-webext-browser": "^120.0.4",
+		"@typescript-eslint/eslint-plugin": "^8.11.0",
+		"@typescript-eslint/parser": "^8.11.0",
+		"eslint": "^9.13.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"prettier": "^3.3.3",
 		"vite-plugin-web-extension": "^4.2.0"
 	},
 	"name": "better-containers",
@@ -21,8 +27,5 @@
 	"bugs": {
 		"url": "https://github.com/arpitchakladar/better-containers/issues"
 	},
-	"homepage": "https://github.com/arpitchakladar/better-containers#readme",
-	"dependencies": {
-		"prettier": "^3.3.3"
-	}
+	"homepage": "https://github.com/arpitchakladar/better-containers#readme"
 }

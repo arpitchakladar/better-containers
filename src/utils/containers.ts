@@ -4,8 +4,8 @@ export const defaultContainer = "firefox-default";
 export async function openTabInContainer(
 	url: string,
 	tab: browser.tabs.Tab,
-	containerCookieStoreId: string,
-) {
+	containerCookieStoreId: string
+): Promise<void> {
 	// Open a new tab in the chosen container
 	await browser.tabs.create({
 		url: url,
@@ -14,8 +14,6 @@ export async function openTabInContainer(
 	});
 
 	// Close dangling tabs that remain when the new tab is created
-	if (
-		tab.url && /^(about:)|(moz-extension:)/.test(tab.url) &&
-		tab.id
-	) await browser.tabs.remove(tab.id);
+	if (tab.url && /^(about:)|(moz-extension:)/.test(tab.url) && tab.id)
+		await browser.tabs.remove(tab.id);
 }

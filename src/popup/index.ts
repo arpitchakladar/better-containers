@@ -1,6 +1,6 @@
 function createContainerListItem(
-	container: browser.contextualIdentities.ContextualIdentity,
-) {
+	container: browser.contextualIdentities.ContextualIdentity
+): HTMLLIElement {
 	const li = document.createElement("li");
 	li.style.setProperty("--container-color", container.colorCode);
 
@@ -17,13 +17,12 @@ function createContainerListItem(
 	return li;
 }
 
-async function listContainers() {
+async function listContainers(): Promise<void> {
 	const containersListElement = document.getElementById("containers")!;
 	const containers = await browser.contextualIdentities.query({});
 
 	for (const container of containers)
-		containersListElement
-			.appendChild(createContainerListItem(container));
+		containersListElement.appendChild(createContainerListItem(container));
 }
 
 listContainers();
