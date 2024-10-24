@@ -15,7 +15,7 @@
 	],
 	"background": {
 		"scripts": [
-			"background/container.js"
+			"src/background/container.ts"
 		],
 		"persistent": false
 	},

@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import webExtension from "vite-plugin-web-extension";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 import fs from "fs";
 import path from "path";
 
@@ -29,6 +30,7 @@ async function copyDirectory(src: string, dest: string) {
 
 export default defineConfig({
 	plugins: [
+		svelte(),
 		webExtension({
 			disableAutoLaunch: true
 		}),
@@ -46,13 +48,6 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "src"), // Set "@" as an alias for "src"
-		},
-	},
-	build: {
-		rollupOptions: {
-			input: {
-				index: "src/index.ts",
-			},
 		},
 	},
 	server: {
