@@ -15,7 +15,7 @@
 	],
 	"background": {
 		"scripts": [
-			"index.js"
+			"background/container.js"
 		],
 		"persistent": false
 	},

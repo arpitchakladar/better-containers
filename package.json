@@ -21,5 +21,8 @@
 	"bugs": {
 		"url": "https://github.com/arpitchakladar/better-containers/issues"
 	},
-	"homepage": "https://github.com/arpitchakladar/better-containers#readme"
+	"homepage": "https://github.com/arpitchakladar/better-containers#readme",
+	"dependencies": {
+		"prettier": "^3.3.3"
+	}
 }

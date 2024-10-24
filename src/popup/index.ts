@@ -1,5 +1,5 @@
 function createContainerListItem(
-	container: browser.contextualIdentities.ContextualIdentity
+	container: browser.contextualIdentities.ContextualIdentity,
 ) {
 	const li = document.createElement("li");
 	li.style.setProperty("--container-color", container.colorCode);

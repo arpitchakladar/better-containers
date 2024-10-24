@@ -4,7 +4,7 @@ export const defaultContainer = "firefox-default";
 export async function openTabInContainer(
 	url: string,
 	tab: browser.tabs.Tab,
-	containerCookieStoreId: string
+	containerCookieStoreId: string,
 ) {
 	// Open a new tab in the chosen container
 	await browser.tabs.create({
