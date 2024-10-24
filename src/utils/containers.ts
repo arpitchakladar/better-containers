@@ -1,3 +1,5 @@
+export const defaultContainer = "firefox-default";
+
 // Open a new tab in a specific container
 export async function openTabInContainer(
 	url: string,

@@ -1,4 +1,4 @@
-import { openTabInContainer } from "@/utils/containers";
+import { defaultContainer, openTabInContainer } from "@/utils/containers";
 import { containerConfigurations } from "@/utils/storage";
 
 browser.runtime.onStartup.addListener(() => {console.log("Here")});
@@ -15,7 +15,7 @@ browser.webRequest.onBeforeRequest.addListener(
 
 			if (requestDetails.url) {
 				// If no containers are specified we default to using the default container
-				let containerCookieStoreId = "firefox-default";
+				let containerCookieStoreId = defaultContainer;
 				outer: for (const [containerId, configuration] of Object.entries(containerConfigurations)) {
 					for (const domain of configuration.domains) {
 						if (requestDetails.url.includes(domain)) {

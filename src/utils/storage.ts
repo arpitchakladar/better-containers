@@ -14,12 +14,12 @@ async function loadContainerConfigurations() {
 export async function addContainerConfiguration(
 	container: string,
 	domains: string[],
-	cookie: boolean
+	cookie: boolean,
 ) {
 	await browser.storage.local.set({
 		[container]: {
 			domains,
-			cookie
+			cookie,
 		}
 	});
 
@@ -36,13 +36,13 @@ if (import.meta.env.MODE === "development") {
 		addContainerConfiguration(
 			"firefox-container-8",
 			[ "yahoo.com", "duckduckgo.com" ],
-			false
+			false,
 		);
 
 		addContainerConfiguration(
 			"firefox-container-7",
 			[ "google.com" ],
-			true
+			true,
 		);
 	})();
 }
