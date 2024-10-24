@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import webExtension from "vite-plugin-web-extension";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import { createHtmlPlugin } from "vite-plugin-html";
 import fs from "fs";
 import path from "path";
 
@@ -28,11 +29,20 @@ async function copyDirectory(src: string, dest: string) {
 	}
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	plugins: [
-		svelte(),
+		svelte({
+			compilerOptions: mode === "production"
+				? {
+					cssHash: ({ hash, css }) => `better-containers-${hash(css)}`
+				}
+				: {}
+		}),
 		webExtension({
 			disableAutoLaunch: true
+		}),
+		createHtmlPlugin({
+			minify:  mode === "production",
 		}),
 		{
 			name: "copy-to-vmshare",
@@ -57,4 +67,4 @@ export default defineConfig({
 		},
 		open: false
 	},
-});
+}));

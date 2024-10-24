@@ -1,10 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<link href="styles.css" />
+		<style>
+			body {
+				--bg-color: #333;
+				--color: #eee;
+				font-family: Arial, sans-serif;
+				background-color: var(--bg-color); /* Background color for the menu */
+			}
+		</style>
 	</head>
 	<body>
 		<main id="better-containers"></main>
-		<script src="index.ts" type="module"></script>
+		<script type="module">
+			import { mount } from "svelte";
+			import App from "@/popup/index.svelte";
+
+			mount(App, {
+				target: document.getElementById("better-containers"),
+			});
+		</script>
 	</body>
 </html>

@@ -18,12 +18,20 @@ const commonRules = {
 	],
 
 	// TypeScript-specific rules
-	"@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-	"@typescript-eslint/explicit-function-return-type": ["error", {
-		allowExpressions: true,
-		allowTypedFunctionExpressions: true,
-		allowHigherOrderFunctions: true,
-	}],
+	"@typescript-eslint/no-unused-vars": [
+		"error",
+		{
+			argsIgnorePattern: "^_",
+		},
+	],
+	"@typescript-eslint/explicit-function-return-type": [
+		"error",
+		{
+			allowExpressions: true,
+			allowTypedFunctionExpressions: true,
+			allowHigherOrderFunctions: true,
+		},
+	],
 
 	// Prettier integration
 	"prettier/prettier": "error",
@@ -67,7 +75,7 @@ export default [
 			"@typescript-eslint": typescriptPlugin,
 		},
 		rules: {
-			...commonRules
+			...commonRules,
 		},
 	},
 ];
