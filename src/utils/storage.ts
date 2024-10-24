@@ -7,14 +7,14 @@ type ContainerConfigurations = {
 
 export let containerConfigurations: ContainerConfigurations = {};
 
-async function loadContainerConfigurations(): Promise<void> {
+export async function loadContainerConfigurations(): Promise<void> {
 	containerConfigurations = await browser.storage.local.get();
 }
 
 export async function addContainerConfiguration(
 	container: string,
 	domains: string[],
-	cookie: boolean
+	cookie: boolean,
 ): Promise<void> {
 	await browser.storage.local.set({
 		[container]: {
@@ -36,9 +36,8 @@ if (import.meta.env.MODE === "development") {
 		addContainerConfiguration(
 			"firefox-container-8",
 			["yahoo.com", "duckduckgo.com"],
-			false
+			false,
 		);
-
 		addContainerConfiguration("firefox-container-7", ["google.com"], true);
 	})();
 }
