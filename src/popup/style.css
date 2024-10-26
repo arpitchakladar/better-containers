@@ -1,0 +1,8 @@
+body {
+	--bg-color: #333;
+	--color: #eee;
+	font-family: Arial, sans-serif;
+	background-color: var(--bg-color);
+	margin: 0;
+	padding: 0;
+}

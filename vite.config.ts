@@ -58,13 +58,12 @@ export default defineConfig(({ mode }) => ({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "src"), // Set "@" as an alias for "src"
+			"@assets": path.resolve(__dirname, "assets"), // Set "@" as an alias for "src"
 		},
 	},
 	server: {
 		port: 3000,
-		hmr: {
-			host: "localhost"
-		},
+		hmr: false,
 		open: false
 	},
 }));
