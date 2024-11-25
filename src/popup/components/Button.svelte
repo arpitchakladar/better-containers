@@ -16,6 +16,7 @@
 		background: var(--bg-color);
 		text-transform: uppercase;
 		cursor: pointer;
+		font-weight: bold;
 
 		&:hover {
 			background-color: #007bff;

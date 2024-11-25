@@ -1,46 +1,72 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { navigate } from "@/popup/stores/page";
+	import { setContainerConfiguration } from "@/utils/storage";
 	import { currentParams } from "@/popup/stores/page";
-	import { containerConfigurations } from "@/utils/storage";
+	import { getContainerConfiguration } from "@/utils/storage";
+	import Button from "@/popup/components/Button.svelte";
 	import ToggleButton from "@/popup/components/ToggleButton.svelte";
 	import VerticalList from "@/popup/components/VerticalList.svelte";
 
 	let cookie = $state(false);
-	let urls = $state([]);
-	$effect(() => {
-		console.log(cookie);
-		console.log($state.snapshot(urls));
+	let domains = $state([]);
+
+	onMount(async () => {
+		const cookieStoreId = $currentParams.cookieStoreId;
+		const config = (await getContainerConfiguration(cookieStoreId))[cookieStoreId];
+		if (config) {
+			cookie = !!config.cookie;
+			domains = config.domains || [];
+		}
 	});
-	onMount(() => {
-		const config = containerConfigurations[$currentParams.cookieStoreId];
-		cookie = !!config.cookie;
-		urls = config.domains || [];
+
+	$effect(async () => {
+		await setContainerConfiguration(
+			$currentParams.cookieStoreId,
+			$state.snapshot(domains),
+			cookie,
+		);
 	});
 </script>
 
-<div class="container-configuration">
-	<div class="cookie">
+<main>
+	<h1 style="color: {$currentParams.colorCode}">
+		<Button
+			onclick={() => navigate("containers")}
+		>
+			&lt;
+		</Button>
+		<span>
+			{$currentParams.name}
+		</span>
+	</h1>
+	<div>
 		<ToggleButton
 			label="Save Cookies"
 			bind:isYes={cookie}
 		/>
 	</div>
-	<div class="url-list">
+	<div>
 		<VerticalList
 			label="Urls"
-			placeholder="Add new url..."
-			bind:items={urls}
+			placeholder="Add new domain..."
+			bind:items={domains}
 		/>
 	</div>
-</div>
+</main>
 
 <style>
-	.container-configuration {
+	main {
 		text-align: center;
 		position: relative;
 		padding: 1rem;
 		width: 20rem;
 		margin: 0 auto;
 		color: var(--color);
+
+		h1 {
+			display: grid;
+			grid-template-columns: auto 1fr;
+		}
 	}
 </style>

@@ -1,17 +1,17 @@
-type ContainerConfigurations = {
-	[key: string]: {
-		domains: string[];
-		cookie: boolean;
-	};
+export type ContainerConfiguration = {
+	domains: string[];
+	cookie: boolean;
 };
 
-export let containerConfigurations: ContainerConfigurations = {};
+export type ContainerConfigurations = {
+	[key: string]: ContainerConfiguration;
+};
 
 export async function loadContainerConfigurations(): Promise<void> {
-	containerConfigurations = await browser.storage.local.get();
+	await browser.runtime.sendMessage({ type: "loadContainerConfiguration" });
 }
 
-export async function addContainerConfiguration(
+export async function setContainerConfiguration(
 	container: string,
 	domains: string[],
 	cookie: boolean,
@@ -24,7 +24,13 @@ export async function addContainerConfiguration(
 	});
 
 	// TODO: Don't have to reload everytime.
-	loadContainerConfigurations();
+	await loadContainerConfigurations();
+}
+
+export async function getContainerConfiguration(
+	container: string
+): Promise<ContainerConfiguration> {
+	return browser.storage.local.get(container);
 }
 
 // Load the container configurations on startup
@@ -33,11 +39,11 @@ loadContainerConfigurations();
 if (import.meta.env.MODE === "development") {
 	// Only for development purposes
 	(async function () {
-		addContainerConfiguration(
+		setContainerConfiguration(
 			"firefox-container-2",
 			["yahoo.com", "duckduckgo.com"],
 			false,
 		);
-		addContainerConfiguration("firefox-container-1", ["google.com"], true);
+		setContainerConfiguration("firefox-container-1", ["google.com"], true);
 	})();
 }

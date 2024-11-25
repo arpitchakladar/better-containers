@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import {} from "@/utils/storage";
 	import Button from "@/popup/components/Button.svelte";
 
 	let { items = $bindable(), label, placeholder } = $props();
@@ -7,7 +8,7 @@
 	let newItem = $state("");
 
 	// Function to add a new item
-	function addItem(e) {
+	function addItem(e): void {
 		e.preventDefault();
 		const newItemTrimmed = newItem.trim();
 		if (newItemTrimmed) {
@@ -17,7 +18,7 @@
 	}
 
 	// Function to remove an item
-	function removeItem(index: number) {
+	function removeItem(index: number): void {
 		items = items.filter((_, i) => i !== index);
 	}
 </script>
