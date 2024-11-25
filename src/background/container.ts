@@ -1,9 +1,6 @@
 import { defaultContainer, openTabInContainer } from "@/utils/containers";
 import { containerConfigurations } from "@/utils/storage";
 
-browser.runtime.onStartup.addListener(() => {
-	console.log("Here");
-});
 browser.webRequest.onBeforeRequest.addListener(
 	(requestDetails) => {
 		if (requestDetails.frameId !== 0 || requestDetails.tabId === -1) return {};

@@ -34,10 +34,10 @@ if (import.meta.env.MODE === "development") {
 	// Only for development purposes
 	(async function () {
 		addContainerConfiguration(
-			"firefox-container-8",
+			"firefox-container-2",
 			["yahoo.com", "duckduckgo.com"],
 			false,
 		);
-		addContainerConfiguration("firefox-container-7", ["google.com"], true);
+		addContainerConfiguration("firefox-container-1", ["google.com"], true);
 	})();
 }
