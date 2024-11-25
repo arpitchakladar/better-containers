@@ -1,32 +1,70 @@
 <script lang="ts">
-	let { isYes = $bindable() } = $props();
+	let { isYes = $bindable(), label } = $props();
 </script>
 
-<button onclick={() => isYes = !isYes}>
-	<span class:active={isYes}>Yes</span>
-	<span class:active={!isYes}>No</span>
-</button>
+<div class="toggle-button">
+	<h1>{label}:</h1>
+	<label class="switch">
+		<input type="checkbox" bind:checked={isYes} />
+		<span class="slider"></span>
+	</label>
+</div>
 
-<style>
-	button {
-		display: inline-flex;
+<style lang="scss">
+	.toggle-button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: row;
 		gap: 1rem;
-		padding: 0.5rem 1rem;
-		border: 2px solid #ccc;
-		border-radius: 8px;
-		cursor: pointer;
-		user-select: none;
-		background: bar(--bg-color);
 
-		span {
-			padding: 0.5rem 1rem;
-			border-radius: 4px;
-			transition: background-color 300ms;
-			border: 1px solid #007bff;
-			color: var(--color);
+		h1 {
+			text-transform: uppercase;
+			font-size: 1.2rem;
+		}
 
-			&.active {
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 60px;
+			height: 34px;
+
+			input {
+				opacity: 0;
+				width: 0;
+				height: 0;
+			}
+
+			.slider {
+				position: absolute;
+				cursor: pointer;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: #ccc;
+				transition: background-color 0.4s;
+				border-radius: 34px;
+
+				&::before {
+					position: absolute;
+					content: "";
+					height: 26px;
+					width: 26px;
+					left: 4px;
+					bottom: 4px;
+					background-color: white;
+					transition: transform 0.4s;
+					border-radius: 50%;
+				}
+			}
+
+			input:checked + .slider {
 				background-color: #007bff;
+
+				&::before {
+					transform: translateX(26px);
+				}
 			}
 		}
 	}
