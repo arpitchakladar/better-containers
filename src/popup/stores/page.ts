@@ -1,9 +1,13 @@
 import { writable } from "svelte/store";
 
-export let currentPage = writable("containers");
-export let currentParams = writable({});
+export let currentPage = writable({
+	path: "containers",
+	props: {},
+});
 
-export function navigate(page: string, params: object = {}) {
-	currentParams.set(params);
-	currentPage.set(page);
+export function navigate(path: string, props: object = {}) {
+	currentPage.set({
+		path,
+		props,
+	});
 }

@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/popup/stores/page";
 	import { setContainerConfiguration } from "@/utils/storage";
-	import { currentParams } from "@/popup/stores/page";
 	import { getContainerConfiguration } from "@/utils/storage";
 	import Button from "@/popup/components/Button.svelte";
 	import ToggleButton from "@/popup/components/ToggleButton.svelte";
 	import VerticalList from "@/popup/components/VerticalList.svelte";
 
+	let { cookieStoreId, name, colorCode, iconUrl } = $props();
+
+	const containerColorFilter = hexToCSSFilter(colorCode).filter;
+
 	let cookie = $state(false);
 	let domains = $state([]);
 
 	onMount(async () => {
-		const cookieStoreId = $currentParams.cookieStoreId;
 		const config = (await getContainerConfiguration(cookieStoreId))[cookieStoreId];
 		if (config) {
 			cookie = !!config.cookie;
@@ -22,7 +25,7 @@
 
 	$effect(async () => {
 		await setContainerConfiguration(
-			$currentParams.cookieStoreId,
+			cookieStoreId,
 			$state.snapshot(domains),
 			cookie,
 		);
@@ -30,15 +33,22 @@
 </script>
 
 <main>
-	<h1 style="color: {$currentParams.colorCode}">
+	<h1 style="color: {colorCode}">
 		<Button
 			onclick={() => navigate("containers")}
 		>
 			&lt;
 		</Button>
-		<span>
-			{$currentParams.name}
-		</span>
+		<div>
+			<img
+				alt={name}
+				style="--container-color-filter: {containerColorFilter}"
+				src={iconUrl}
+			/>
+			<span>
+				{name}
+			</span>
+		</div>
 	</h1>
 	<div>
 		<ToggleButton
@@ -55,7 +65,7 @@
 	</div>
 </main>
 
-<style>
+<style land="scss">
 	main {
 		text-align: center;
 		position: relative;
@@ -67,6 +77,18 @@
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;
+
+			div {
+				display: flex;
+				flex-direction: row;
+				gap: 1rem;
+				justify-content: center;
+				align-items: center;
+
+				img {
+					filter: var(--container-color-filter);
+				}
+			}
 		}
 	}
 </style>

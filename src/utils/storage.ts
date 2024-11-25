@@ -8,7 +8,7 @@ export type ContainerConfigurations = {
 };
 
 export async function loadContainerConfigurations(): Promise<void> {
-	await browser.runtime.sendMessage({ type: "loadContainerConfiguration" });
+	await browser.runtime.sendMessage({ type: "loadContainerConfigurations" });
 }
 
 export async function setContainerConfiguration(
@@ -23,7 +23,6 @@ export async function setContainerConfiguration(
 		},
 	});
 
-	// TODO: Don't have to reload everytime.
 	await loadContainerConfigurations();
 }
 
@@ -31,19 +30,4 @@ export async function getContainerConfiguration(
 	container: string
 ): Promise<ContainerConfiguration> {
 	return browser.storage.local.get(container);
-}
-
-// Load the container configurations on startup
-loadContainerConfigurations();
-
-if (import.meta.env.MODE === "development") {
-	// Only for development purposes
-	(async function () {
-		setContainerConfiguration(
-			"firefox-container-2",
-			["yahoo.com", "duckduckgo.com"],
-			false,
-		);
-		setContainerConfiguration("firefox-container-1", ["google.com"], true);
-	})();
 }

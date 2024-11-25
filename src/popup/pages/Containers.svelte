@@ -58,7 +58,6 @@
 
 		img {
 			width: 5rem;
-			filter: var(--container-color-filter);
 		}
 
 		.containers {
@@ -80,6 +79,7 @@
 					transition: background-color 0.1s;
 					width: 100%;
 					border: none;
+
 					&:hover {
 						color: var(--bg-color);
 						background-color: var(--container-color);
@@ -87,6 +87,7 @@
 							filter: var(--bg-color-filter);
 						}
 					}
+
 					&:active {
 						color: var(--bg-color);
 						background-color: var(--container-color);
@@ -94,7 +95,9 @@
 
 					img {
 						width: 2rem;
+						filter: var(--container-color-filter);
 					}
+
 					span {
 						text-decoration: none;
 						display: flex;

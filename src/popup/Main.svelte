@@ -3,14 +3,16 @@
 	import ContainersPage from "@/popup/pages/Containers.svelte";
 	import ContainerConfigurationPage from "@/popup/pages/ContainerConfiguration.svelte";
 
-	const pages = {
+	const paths = {
 		containers: ContainersPage,
 		containerConfiguration: ContainerConfigurationPage,
 	};
+
+	let CurrentPageComponent = $derived(paths[$currentPage.path]);
 </script>
 
 <div>
-	{#if pages[$currentPage]}
-		<svelte:component this={pages[$currentPage]} />
+	{#if CurrentPageComponent}
+		<CurrentPageComponent {...$currentPage.props} />
 	{/if}
 </div>

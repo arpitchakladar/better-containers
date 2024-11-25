@@ -1,10 +1,10 @@
 import { defaultContainer, openTabInContainer } from "@/utils/containers";
-import { ContainerConfigurations } from "@/utils/storage";
+import { ContainerConfigurations, loadContainerConfigurations } from "@/utils/storage";
 
 let containerConfigurations: ContainerConfigurations = {};
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-	if (message.type === "loadContainerConfiguration") {
+	if (message.type === "loadContainerConfigurations") {
 		containerConfigurations = await browser.storage.local.get();
 		console.log(containerConfigurations);
 		sendResponse({ success: true });
@@ -49,3 +49,5 @@ browser.webRequest.onBeforeRequest.addListener(
 	},
 	["blocking"],
 );
+
+loadContainerConfigurations();

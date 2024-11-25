@@ -14,6 +14,5 @@ export async function openTabInContainer(
 	});
 
 	// Close dangling tabs that remain when the new tab is created
-	if (tab.url && /^(about:)|(moz-extension:)/.test(tab.url) && tab.id)
-		await browser.tabs.remove(tab.id);
+	await browser.tabs.remove(tab.id);
 }

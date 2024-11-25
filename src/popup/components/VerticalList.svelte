@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import {} from "@/utils/storage";
 	import Button from "@/popup/components/Button.svelte";
 
 	let { items = $bindable(), label, placeholder } = $props();
@@ -44,7 +43,7 @@
 	</form>
 </div>
 
-<style>
+<style lang="scss">
 	.vertical-list {
 		width: 100%;
 		max-width: 400px;
@@ -59,6 +58,11 @@
 			list-style: none;
 			padding: 0;
 			margin: 0;
+			height: 14rem;
+			overflow: auto;
+			border-radius: 5px;
+			border: 1px solid var(--color);
+			padding: 0 0.25rem;
 
 			li {
 				display: flex;
@@ -66,9 +70,10 @@
 				align-items: center;
 				padding: 0.5rem;
 				margin: 0.25rem 0;
-				background: #f4f4f4;
+				background: var(--bg-color);
 				border-radius: 4px;
-				color: var(--bg-color);
+				border: 1px solid var(--color);
+				color: var(--color);
 
 				button {
 					border: none;
