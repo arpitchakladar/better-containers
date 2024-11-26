@@ -15,7 +15,8 @@
 	],
 	"background": {
 		"scripts": [
-			"src/background/container.ts"
+			"src/background/container.ts",
+			"src/background/cookies.ts"
 		],
 		"persistent": true
 	},
