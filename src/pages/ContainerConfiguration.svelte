@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
-	import { navigate } from "@/popup/stores/page";
+	import { navigate } from "@/stores/page";
 	import { setContainerConfiguration } from "@/utils/storage";
 	import { getContainerConfiguration } from "@/utils/storage";
-	import Button from "@/popup/components/Button.svelte";
-	import ToggleButton from "@/popup/components/ToggleButton.svelte";
-	import VerticalList from "@/popup/components/VerticalList.svelte";
+	import Button from "@/components/Button.svelte";
+	import ToggleButton from "@/components/ToggleButton.svelte";
+	import VerticalList from "@/components/VerticalList.svelte";
 
 	let { cookieStoreId, name, colorCode, iconUrl } = $props();
 

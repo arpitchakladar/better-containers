@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import Button from "@/popup/components/Button.svelte";
+	import Button from "@/components/Button.svelte";
 
 	let { items = $bindable(), label, placeholder } = $props();
 

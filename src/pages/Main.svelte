@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { currentPage } from "@/popup/stores/page";
-	import ContainersPage from "@/popup/pages/Containers.svelte";
-	import ContainerConfigurationPage from "@/popup/pages/ContainerConfiguration.svelte";
+	import { currentPage } from "@/stores/page";
+	import ContainersPage from "@/pages/Containers.svelte";
+	import ContainerConfigurationPage from "@/pages/ContainerConfiguration.svelte";
 
 	const paths = {
 		containers: ContainersPage,

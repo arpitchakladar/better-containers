@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { navigate } from "@/popup/stores/page";
+	import { navigate } from "@/stores/page";
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
 

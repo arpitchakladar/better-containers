@@ -18,11 +18,11 @@ function mergeObjects(obj1: Record<string, any>, obj2: Record<string, any>): Rec
 			// Handle arrays separately
 			if (Array.isArray(val1) && Array.isArray(val2)) {
 				result[key] = [...val1, ...val2]; // Merge arrays instead of deep merging
-			} 
+			}
 			// If both are objects, merge them recursively
 			else if (typeof val2 === "object" && val2 !== null && typeof val1 === "object" && val1 !== null) {
 				result[key] = mergeObjects(val1, val2);
-			} 
+			}
 			// Otherwise, overwrite the value
 			else {
 				result[key] = val2;
@@ -59,10 +59,9 @@ export default defineConfig(({ mode }) => {
 		build: {
 			rollupOptions: {
 				input: {
-					"choose-container-page": "src/pages/choose-container/index.html",
+					"pages": "src/pages/index.html",
 				},
 			},
 		},
 	};
 });
-
