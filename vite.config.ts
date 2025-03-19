@@ -5,66 +5,64 @@ import { createHtmlPlugin } from "vite-plugin-html";
 import fs from "fs";
 import path from "path";
 
-async function copyDirectory(src: string, dest: string) {
-	// Ensure destination directory exists
-	if (!fs.existsSync(dest)) {
-		fs.mkdirSync(dest, { recursive: true });
-	}
+function mergeObjects(obj1: Record<string, any>, obj2: Record<string, any>): Record<string, any> {
+	// Create a new object to hold the merged result
+	const result = { ...obj1 };
 
-	// Read all files and directories in the source
-	const entries = await fs.promises.readdir(src, { withFileTypes: true });
+	// Iterate over all keys of obj2
+	for (const key in obj2) {
+		if (obj2.hasOwnProperty(key)) {
+			const val1 = result[key];
+			const val2 = obj2[key];
 
-	// Iterate over each entry
-	for (const entry of entries) {
-		const srcPath = path.join(src, entry.name);
-		const destPath = path.join(dest, entry.name.replace(/:/g, "_")); // Replace colons with underscores
-
-		if (entry.isDirectory()) {
-			// Recursively copy directories
-			await copyDirectory(srcPath, destPath);
-		} else {
-			// Copy files
-			await fs.promises.copyFile(srcPath, destPath);
+			// Handle arrays separately
+			if (Array.isArray(val1) && Array.isArray(val2)) {
+				result[key] = [...val1, ...val2]; // Merge arrays instead of deep merging
+			} 
+			// If both are objects, merge them recursively
+			else if (typeof val2 === "object" && val2 !== null && typeof val1 === "object" && val1 !== null) {
+				result[key] = mergeObjects(val1, val2);
+			} 
+			// Otherwise, overwrite the value
+			else {
+				result[key] = val2;
+			}
 		}
 	}
+
+	return result;
 }
 
-export default defineConfig(({ mode }) => ({
-	plugins: [
-		svelte({
-			compilerOptions: mode === "production"
-				? {
-					cssHash: ({ hash, css }) => `better-containers-${hash(css)}`
-				}
-				: {}
-		}),
-		webExtension({
-			disableAutoLaunch: true
-		}),
-		createHtmlPlugin({
-			minify:  mode === "production",
-		}),
-		{
-			name: "copy-to-vmshare",
-			closeBundle() {
-				const destPath = "/vmshare/better-containers";
-				const srcPath = path.resolve(__dirname, "dist");
-				fs.rmSync(destPath, { recursive: true });
-				copyDirectory(srcPath, destPath);
-				console.log(`Copied file: ${srcPath} to ${destPath}`);
+export default defineConfig(({ mode }) => {
+	return {
+		plugins: [
+			svelte({
+				compilerOptions: mode === "production"
+					? {
+						cssHash: ({ hash, css }) => `better-containers-${hash(css)}`
+					}
+					: {}
+			}),
+			createHtmlPlugin({
+				minify: mode === "production",
+			}),
+			webExtension({
+				disableAutoLaunch: true,
+			}),
+		],
+		resolve: {
+			alias: {
+				"@": path.resolve(__dirname, "src"),
+				"@assets": path.resolve(__dirname, "assets"),
 			},
 		},
-	],
-	resolve: {
-		alias: {
-			"@": path.resolve(__dirname, "src"), // Set "@" as an alias for "src"
-			"@assets": path.resolve(__dirname, "assets"), // Set "@" as an alias for "src"
+		build: {
+			rollupOptions: {
+				input: {
+					"choose-container-page": "src/pages/choose-container/index.html",
+				},
+			},
 		},
-	},
-	server: {
-		open: false,
-		host: "0.0.0.0",
-		port: 3000,
-		hmr: false,
-	},
-}));
+	};
+});
+

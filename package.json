@@ -1,6 +1,6 @@
 {
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "^4.0.0",
+		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"@types/firefox-webext-browser": "^120.0.4",
 		"@typescript-eslint/eslint-plugin": "^8.11.0",
 		"@typescript-eslint/parser": "^8.11.0",
@@ -12,7 +12,7 @@
 		"prettier-plugin-svelte": "^3.2.7",
 		"svelte-eslint-parser": "^0.43.0",
 		"vite-plugin-html": "^3.2.2",
-		"vite-plugin-web-extension": "^4.2.0"
+		"vite-plugin-web-extension": "^4.4.3"
 	},
 	"name": "better-containers",
 	"version": "1.0.0",
@@ -20,8 +20,8 @@
 	"main": "src/index.ts",
 	"type": "module",
 	"scripts": {
-		"build": "vite build",
-		"dev": "vite"
+		"build": "vite build --mode production",
+		"dev": "vite --port 8080"
 	},
 	"repository": {
 		"type": "git",
