@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import webExtension from "vite-plugin-web-extension";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import { createHtmlPlugin } from "vite-plugin-html";
 import fs from "fs";
 import path from "path";
 
@@ -34,22 +33,7 @@ function mergeObjects(obj1: Record<string, any>, obj2: Record<string, any>): Rec
 }
 
 export default defineConfig(({ mode }) => {
-	return {
-		plugins: [
-			svelte({
-				compilerOptions: mode === "production"
-					? {
-						cssHash: ({ hash, css }) => `better-containers-${hash(css)}`
-					}
-					: {}
-			}),
-			createHtmlPlugin({
-				minify: mode === "production",
-			}),
-			webExtension({
-				disableAutoLaunch: true,
-			}),
-		],
+	const common = {
 		resolve: {
 			alias: {
 				"@": path.resolve(__dirname, "src"),
@@ -57,11 +41,55 @@ export default defineConfig(({ mode }) => {
 			},
 		},
 		build: {
-			rollupOptions: {
-				input: {
-					"pages": "src/pages/index.html",
-				},
-			},
-		},
+			outDir: process.env.OUT_DIR || "dist",
+			emptyOutDir: false,
+		}
 	};
+
+	if (mode === "pages") {
+		return mergeObjects(
+			common,
+			{
+				plugins: [
+					svelte()
+				],
+				build: {
+					rollupOptions: {
+						input: {
+							pages: "src/pages/index.html"
+						},
+						output: {
+							dir: "dist",
+						}
+					}
+				}
+			}
+		);
+	} else if (mode === "extension") {
+		let default_popup = "";
+		return mergeObjects(
+			common,
+			{
+				plugins: [
+					webExtension({
+						disableAutoLaunch: true,
+						manifest: () => {
+							const manifestPath = "./manifest.json";
+							const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+							// Get the default_popup path and store it
+							default_popup = manifest.browser_action.default_popup;
+							// Remove it from manifest to prevent it from getting resolved as input
+							delete manifest.browser_action.default_popup;
+							return manifest;
+						},
+						transformManifest: (manifest) => {
+							// Ensure Vite does NOT resolve `default_popup`
+							manifest.browser_action.default_popup = default_popup;
+							return manifest;
+						}
+					})
+				]
+			}
+		);
+	}
 });

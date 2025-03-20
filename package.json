@@ -11,7 +11,6 @@
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.7",
 		"svelte-eslint-parser": "^0.43.0",
-		"vite-plugin-html": "^3.2.2",
 		"vite-plugin-web-extension": "^4.4.3"
 	},
 	"name": "better-containers",
@@ -20,7 +19,7 @@
 	"main": "src/index.ts",
 	"type": "module",
 	"scripts": {
-		"build": "vite build --mode production",
+		"build": "vite build --mode pages",
 		"dev": "vite --port 8080"
 	},
 	"repository": {
