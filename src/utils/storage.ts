@@ -8,7 +8,8 @@ export type ContainerConfigurations = {
 };
 
 export async function loadContainerConfigurations(): Promise<void> {
-	await browser.runtime.sendMessage({ type: "loadContainerConfigurations" });
+	await browser.runtime
+		.sendMessage({ type: "loadContainerConfigurations" });
 }
 
 export async function setContainerConfiguration(

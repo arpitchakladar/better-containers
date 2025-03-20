@@ -4,7 +4,6 @@
 		"@types/firefox-webext-browser": "^120.0.4",
 		"@typescript-eslint/eslint-plugin": "^8.11.0",
 		"@typescript-eslint/parser": "^8.11.0",
-		"concurrently": "^9.1.2",
 		"eslint": "^9.13.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
@@ -20,8 +19,8 @@
 	"main": "src/index.ts",
 	"type": "module",
 	"scripts": {
-		"build": "rm -r dist && vite build --mode pages && vite build --mode extension",
-		"dev": "concurrently \"vite --port 8080 --mode pages\" \"vite --port 8081 --mode extension\""
+		"build": "rm -r dist && vite build",
+		"dev": "vite"
 	},
 	"repository": {
 		"type": "git",
@@ -32,8 +31,5 @@
 	"bugs": {
 		"url": "https://github.com/arpitchakladar/better-containers/issues"
 	},
-	"homepage": "https://github.com/arpitchakladar/better-containers#readme",
-	"dependencies": {
-		"hex-to-css-filter": "^5.4.0"
-	}
+	"homepage": "https://github.com/arpitchakladar/better-containers#readme"
 }

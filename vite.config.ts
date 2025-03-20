@@ -4,36 +4,39 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import fs from "fs";
 import path from "path";
 
-function mergeObjects(obj1: Record<string, any>, obj2: Record<string, any>): Record<string, any> {
-	// Create a new object to hold the merged result
-	const result = { ...obj1 };
+import os from "os";
 
-	// Iterate over all keys of obj2
-	for (const key in obj2) {
-		if (obj2.hasOwnProperty(key)) {
-			const val1 = result[key];
-			const val2 = obj2[key];
+function getLocalIps(): string[] {
+	const interfaces = os.networkInterfaces();
+	const ips: string[] = ["127.0.0.1"];
 
-			// Handle arrays separately
-			if (Array.isArray(val1) && Array.isArray(val2)) {
-				result[key] = [...val1, ...val2]; // Merge arrays instead of deep merging
-			}
-			// If both are objects, merge them recursively
-			else if (typeof val2 === "object" && val2 !== null && typeof val1 === "object" && val1 !== null) {
-				result[key] = mergeObjects(val1, val2);
-			}
-			// Otherwise, overwrite the value
-			else {
-				result[key] = val2;
+	for (const key in interfaces) {
+		for (const net of interfaces[key] || []) {
+			if (net.family === "IPv4" && !net.internal) {
+				ips.push(net.address);
 			}
 		}
 	}
-
-	return result;
+	return ips;
 }
 
-export default defineConfig(({ mode }) => {
-	const common = {
+const localIps = getLocalIps();
+const hmrPort = 8081;
+
+export default defineConfig(({ command }) => {
+	const DEV = process.env.NODE_ENV === "development";
+	return {
+		plugins: [
+			svelte(DEV
+				? undefined
+				: {
+					cssHash: ({ hash, css }) => `bc-${hash(css)}`
+				}
+			),
+			webExtension({
+				disableAutoLaunch: true,
+			}),
+		],
 		resolve: {
 			alias: {
 				"@": path.resolve(__dirname, "src"),
@@ -42,54 +45,16 @@ export default defineConfig(({ mode }) => {
 		},
 		build: {
 			outDir: process.env.OUT_DIR || "dist",
-			emptyOutDir: false,
-		}
+		},
+		server: {
+			host: "0.0.0.0",
+			port: 8080,
+			strictPort: true,
+			hmr: {
+				protocol: "ws",
+				host: "0.0.0.0",
+				port: hmrPort,
+			},
+		},
 	};
-
-	if (mode === "pages") {
-		return mergeObjects(
-			common,
-			{
-				plugins: [
-					svelte()
-				],
-				build: {
-					rollupOptions: {
-						input: {
-							pages: "src/pages/index.html"
-						},
-						output: {
-							dir: "dist",
-						}
-					}
-				}
-			}
-		);
-	} else if (mode === "extension") {
-		let default_popup = "";
-		return mergeObjects(
-			common,
-			{
-				plugins: [
-					webExtension({
-						disableAutoLaunch: true,
-						manifest: () => {
-							const manifestPath = "./manifest.json";
-							const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
-							// Get the default_popup path and store it
-							default_popup = manifest.browser_action.default_popup;
-							// Remove it from manifest to prevent it from getting resolved as input
-							delete manifest.browser_action.default_popup;
-							return manifest;
-						},
-						transformManifest: (manifest) => {
-							// Ensure Vite does NOT resolve `default_popup`
-							manifest.browser_action.default_popup = default_popup;
-							return manifest;
-						}
-					})
-				]
-			}
-		);
-	}
 });
