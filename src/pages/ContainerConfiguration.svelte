@@ -8,6 +8,8 @@
 	import ToggleButton from "@/components/ToggleButton.svelte";
 	import VerticalList from "@/components/VerticalList.svelte";
 
+	import ArrowLeftSolidSvg from "@assets/arrow-left-solid.svelte";
+
 	let { cookieStoreId, name, colorCode, iconUrl } = $props();
 
 	const containerColorFilter = hexToCSSFilter(colorCode).filter;
@@ -37,7 +39,7 @@
 		<Button
 			onclick={() => navigate("containers")}
 		>
-			&lt;
+			<ArrowLeftSolidSvg />
 		</Button>
 		<div>
 			<img
@@ -73,7 +75,6 @@
 		width: 20rem;
 		margin: 0 auto;
 		color: var(--color);
-
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;

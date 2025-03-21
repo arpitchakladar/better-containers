@@ -11,8 +11,6 @@
 	let CurrentPageComponent = $derived(paths[$currentPage.path]);
 </script>
 
-<div>
-	{#if CurrentPageComponent}
-		<CurrentPageComponent {...$currentPage.props} />
-	{/if}
-</div>
+{#if CurrentPageComponent}
+	<CurrentPageComponent {...$currentPage.props} />
+{/if}
