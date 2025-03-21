@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
-	import { navigate } from "@/popup/stores/page";
+	import { navigate } from "@/stores/page";
 	import { setContainerConfiguration } from "@/utils/storage";
 	import { getContainerConfiguration } from "@/utils/storage";
-	import Button from "@/popup/components/Button.svelte";
-	import ToggleButton from "@/popup/components/ToggleButton.svelte";
-	import VerticalList from "@/popup/components/VerticalList.svelte";
+	import Button from "@/components/Button.svelte";
+	import ToggleButton from "@/components/ToggleButton.svelte";
+	import VerticalList from "@/components/VerticalList.svelte";
+
+	import ArrowLeftSolidSvg from "@assets/arrow-left-solid.svelte";
 
 	let { cookieStoreId, name, colorCode, iconUrl } = $props();
 
@@ -37,7 +39,7 @@
 		<Button
 			onclick={() => navigate("containers")}
 		>
-			&lt;
+			<ArrowLeftSolidSvg />
 		</Button>
 		<div>
 			<img
@@ -73,7 +75,6 @@
 		width: 20rem;
 		margin: 0 auto;
 		color: var(--color);
-
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;

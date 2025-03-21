@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { navigate } from "@/popup/stores/page";
+	import { navigate } from "@/stores/page";
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
 
@@ -10,7 +10,7 @@
 	}
 </script>
 
-<div>
+<main>
 	<h1>Containers</h1>
 	{#await browser.contextualIdentities.query({})}
 		<img src={TailSpinLoaderIcon} alt="" />
@@ -39,10 +39,10 @@
 			{/each}
 		</ul>
 	{/await}
-</div>
+</main>
 
 <style lang="scss">
-	div {
+	main {
 		text-align: center;
 		position: relative;
 		padding: 1rem;

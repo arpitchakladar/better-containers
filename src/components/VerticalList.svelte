@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import Button from "@/popup/components/Button.svelte";
+	import Button from "@/components/Button.svelte";
+
+	import XMarkSolidSvg from "@assets/xmark-solid.svelte";
 
 	let { items = $bindable(), label, placeholder } = $props();
 
@@ -27,7 +29,10 @@
 	<ul>
 		{#each items as item, index}
 			<li>
-				{item} <button onclick={() => removeItem(index)}>&times;</button>
+				{item}
+				<button onclick={() => removeItem(index)}>
+					<XMarkSolidSvg />
+				</button>
 			</li>
 		{/each}
 	</ul>
@@ -82,6 +87,7 @@
 					border-radius: 4px;
 					cursor: pointer;
 					padding: 0.25rem 0.5rem;
+					display: flex;
 
 					&:hover {
 						background: #ff1a1a;
