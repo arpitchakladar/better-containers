@@ -2,8 +2,7 @@
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/stores/page";
-	import { setContainerConfiguration } from "@/utils/storage";
-	import { getContainerConfiguration } from "@/utils/storage";
+	import { getContainerConfiguration, toggleSiteForContainer } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import ToggleButton from "@/components/ToggleButton.svelte";
 	import VerticalCheckList from "@/components/VerticalCheckList.svelte";
@@ -16,18 +15,17 @@
 
 	onMount(async () => {
 		const allContainers = await browser.contextualIdentities.query({});
-		for (const { name, iconUrl, colorCode, cookieStoreId } of allContainers) {
+		for (const { name: containerName, iconUrl, colorCode, cookieStoreId } of allContainers) {
 			containers.push({
-				label: name,
+				label: containerName,
 				icon: iconUrl,
 				colorCode,
-				checked: site.containers.find(({container}) => container.cookieStoreId === cookieStoreId),
+				checked: !!site.containers.find(({container}) => container.cookieStoreId === cookieStoreId),
+				toggleCheck() {
+					return toggleSiteForContainer(name, cookieStoreId);
+				}
 			});
 		}
-	});
-
-	$effect(async () => {
-		console.log($state.snapshot(containers));
 	});
 </script>
 
@@ -71,10 +69,6 @@
 				gap: 1rem;
 				justify-content: center;
 				align-items: center;
-
-				img {
-					filter: var(--container-color-filter);
-				}
 			}
 		}
 

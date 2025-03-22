@@ -2,8 +2,7 @@
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/stores/page";
-	import { setContainerConfiguration } from "@/utils/storage";
-	import { getContainerConfiguration } from "@/utils/storage";
+	import { setContainerConfiguration, getContainerConfiguration } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import ToggleButton from "@/components/ToggleButton.svelte";
 	import VerticalList from "@/components/VerticalList.svelte";

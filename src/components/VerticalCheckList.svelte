@@ -7,8 +7,8 @@
 
 	let { items = $bindable() } = $props();
 
-	function toggleItem(item) {
-		item.checked = !item.checked;
+	async function toggleItem(item) {
+		item.checked = await item.toggleCheck();
 	}
 </script>
 
