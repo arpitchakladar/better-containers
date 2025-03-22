@@ -22,7 +22,7 @@
 				<li>
 					<button
 						on:click|preventDefault={() => navigate("siteConfiguration", { site, name: siteName })}
-						style="grid-template-columns: {"2rem ".repeat(site.containers.length)}1fr;"
+						style="grid-template-columns: {"1rem ".repeat(site.containers.length)}1fr;"
 					>
 						{#each site.containers as { container, ...rest }}
 							<img
@@ -39,7 +39,7 @@
 			{/each}
 		</ul>
 	{/await}
-	<Button onclick={() => navigate("containers", {})}>
+	<Button  style="margin: 1rem auto;" onclick={() => navigate("containers", {})}>
 		CONTAINERS
 	</Button>
 </main>
@@ -76,7 +76,7 @@
 					padding: 15px 20px;
 					cursor: pointer;
 					display: grid;
-					grid-gap: 2rem;
+					grid-gap: 0.5rem;
 					border-radius: 5px;
 					transition: background-color 100ms, border-color 100ms;
 					width: 100%;
@@ -92,7 +92,8 @@
 					}
 
 					img {
-						width: 2rem;
+						width: 1rem;
+						margin: auto 0;
 						filter: var(--container-color-filter);
 					}
 

@@ -35,7 +35,7 @@
 			{/each}
 		</ul>
 	{/await}
-	<Button onclick={() => navigate("sites", {})}>
+	<Button style="margin: 1rem auto;" onclick={() => navigate("sites", {})}>
 		SITES
 	</Button>
 </main>

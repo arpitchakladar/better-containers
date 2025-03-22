@@ -98,20 +98,21 @@ export async function getSiteConfigurations(
 
 export async function toggleSiteForContainer(
 	site: string,
-	// true is the site is on this current container
 	cookieStoreId: string,
 ): Promise<boolean> {
-	const containerConfiguration = Object.values(await getContainerConfiguration(cookieStoreId))[0];
-	const sites = containerConfiguration.domains.filter(domain => domain !== site);
-	const notExisted = sites.length === containerConfiguration.domains.length;
-	await setContainerConfiguration(
-		cookieStoreId,
-		notExisted
-			? [ ...sites, site ]
-			: sites,
-		containerConfiguration.cookie,
-	);
-	await loadContainerConfigurations();
+	const containerConfigurations = Object.values(await getContainerConfiguration(cookieStoreId));
+	if (containerConfigurations.length > 0) {
+		const containerConfiguration = containerConfigurations[0];
+		const sites = containerConfiguration.domains.filter(domain => domain !== site);
+		const notExisted = sites.length === containerConfiguration.domains.length;
+		await setContainerConfiguration(
+			cookieStoreId,
+			notExisted
+				? [ ...sites, site ]
+				: sites,
+			containerConfiguration.cookie,
+		);
 
-	return notExisted;
+		return notExisted;
+	}
 }

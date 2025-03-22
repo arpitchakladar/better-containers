@@ -106,9 +106,14 @@
 				padding: 0.5rem;
 				border: 1px solid #ccc;
 				border-radius: 4px;
+				background: var(--bg-color);
+				color: var(--color);
 				&:focus {
 					outline: none;
 					border-color: #007bff;
+				}
+				&:active {
+					outline: none;
 				}
 			}
 		}
