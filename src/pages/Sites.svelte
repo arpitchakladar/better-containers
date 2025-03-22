@@ -1,46 +1,49 @@
 <script lang="ts">
-	import { navigate } from "@/stores/page";
+	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
+
+	import { navigate } from "@/stores/page";
+	import { getSiteConfigurations } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 
 	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
 </script>
 
 <main>
-	<h1>Containers</h1>
-	{#await browser.contextualIdentities.query({})}
+	<h1>Sites</h1>
+	{#await getSiteConfigurations()}
 		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
-	{:then containers}
+	{:then sites}
 		<ul
-			class="containers"
+			class="sites"
 			style="--bg-color-filter: {hexToCSSFilter('#000000').filter}"
 		>
-			{#each containers as container}
-				<li
-					style="--container-color: {container.colorCode};"
-				>
+			{#each Object.entries(sites) as [siteName, site]}
+				<li>
 					<button
-						on:click|preventDefault={() => navigate("containerConfiguration", container)}
+						on:click|preventDefault={() => navigate("site", siteName)}
 					>
-						<img
-							src={container.iconUrl}
-							alt=""
-							style="--container-color-filter: {hexToCSSFilter(
-								container.colorCode,
-							).filter}"
-						/>
-						<span>{container.name}</span>
+						{#each site.containers as { container, ...rest }}
+							<img
+								src={container.iconUrl}
+								alt=""
+								style="--container-color-filter: {hexToCSSFilter(
+									container.colorCode,
+								).filter}"
+							/>
+						{/each}
+						<span>{siteName}</span>
 					</button>
 				</li>
 			{/each}
 		</ul>
 	{/await}
-	<Button onclick={() => navigate("sites", {})}>
-		SITES
+	<Button onclick={() => navigate("containers", {})}>
+		CONTAINERS
 	</Button>
 </main>
 
-<style lang="scss">
+<style land="scss">
 	main {
 		text-align: center;
 		position: relative;
@@ -59,7 +62,7 @@
 			width: 5rem;
 		}
 
-		.containers {
+		.sites {
 			list-style-type: none;
 			padding: 0;
 			margin: 0;
@@ -75,16 +78,12 @@
 					grid-template-columns: 2rem 1fr;
 					grid-gap: 2rem;
 					border-radius: 5px;
-					transition: background-color 0.1s;
+					transition: background-color 100ms, border-color 100ms;
 					width: 100%;
-					border: none;
+					border: 3px solid var(--bg-color);
 
 					&:hover {
-						color: var(--bg-color);
-						background-color: var(--container-color);
-						img {
-							filter: var(--bg-color-filter);
-						}
+						border-color: var(--color);
 					}
 
 					&:active {
@@ -102,6 +101,7 @@
 						display: flex;
 						align-items: center;
 						font-size: 1.2rem;
+						color: var(--color);
 					}
 				}
 			}
