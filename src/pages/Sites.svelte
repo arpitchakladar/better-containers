@@ -21,7 +21,7 @@
 			{#each Object.entries(sites) as [siteName, site]}
 				<li>
 					<button
-						on:click|preventDefault={() => navigate("site", siteName)}
+						on:click|preventDefault={() => navigate("siteConfiguration", { site, name: siteName })}
 						style="grid-template-columns: {"2rem ".repeat(site.containers.length)}1fr;"
 					>
 						{#each site.containers as { container, ...rest }}

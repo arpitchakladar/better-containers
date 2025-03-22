@@ -8,7 +8,7 @@ export type ContainerConfigurations = {
 };
 
 export type SiteConfiguration = {
-	containers: { site: string; container: browser.contextualIdentities.ContextualIdentity; cookie: boolean; }[];
+	containers: { container: browser.contextualIdentities.ContextualIdentity; cookie: boolean; }[];
 };
 
 export type SiteConfigurations = {
