@@ -22,6 +22,7 @@
 				<li>
 					<button
 						on:click|preventDefault={() => navigate("site", siteName)}
+						style="grid-template-columns: {"2rem ".repeat(site.containers.length)}1fr;"
 					>
 						{#each site.containers as { container, ...rest }}
 							<img
@@ -75,7 +76,6 @@
 					padding: 15px 20px;
 					cursor: pointer;
 					display: grid;
-					grid-template-columns: 2rem 1fr;
 					grid-gap: 2rem;
 					border-radius: 5px;
 					transition: background-color 100ms, border-color 100ms;
@@ -102,6 +102,9 @@
 						align-items: center;
 						font-size: 1.2rem;
 						color: var(--color);
+						text-overflow: hidden;
+						text-wrap: nowrap;
+						overflow: hidden;
 					}
 				}
 			}
