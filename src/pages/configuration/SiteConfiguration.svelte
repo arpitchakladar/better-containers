@@ -4,12 +4,19 @@
 	import { toggleContainerForSite } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import VerticalCheckList from "@/components/VerticalCheckList.svelte";
+	import type { VerticalCheckListItem } from "@/components/VerticalCheckList.svelte";
+	import type { SiteConfiguration } from "@/utils/storage";
 
-	import TailSpinLoader from "@assets/tail-spin.svelte";
-	import ArrowLeftSolidSvg from "@assets/arrow-left-solid.svelte";
+	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
+	import BackIcon from "@/components/BackIcon.svelte";
 
-	let { site, name } = $props();
-	let containers = $state([]);
+	interface SiteConfigurationProps {
+		site: SiteConfiguration;
+		name: string;
+	};
+
+	let { site, name }: SiteConfigurationProps = $props();
+	let containers: VerticalCheckListItem[] = $state([]);
 
 	onMount(async () => {
 		const allContainers = await browser.contextualIdentities.query({});
@@ -37,7 +44,7 @@
 <main>
 	<h1>
 		<Button onclick={() => navigate("sites")}>
-			<ArrowLeftSolidSvg />
+			<BackIcon />
 		</Button>
 		<div>
 			{name}

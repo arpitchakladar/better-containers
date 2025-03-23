@@ -1,3 +1,5 @@
+<script lang="ts"></script>
+
 <!-- By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL -->
 <div>
 	<svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">

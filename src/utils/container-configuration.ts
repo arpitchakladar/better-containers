@@ -1,4 +1,4 @@
-import { ContainerConfigurations } from "@/utils/storage";
+import type { ContainerConfigurations } from "@/utils/storage";
 
 export let containerConfigurations: ContainerConfigurations = {};
 

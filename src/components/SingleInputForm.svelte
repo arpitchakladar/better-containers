@@ -4,10 +4,10 @@
 
 	let { value = $bindable(), placeholder, ...props } = $props();
 
-	let inputRef;
+	let inputRef: HTMLInputElement | null = null;
 	onMount(() => {
 		// autofocus input
-		inputRef.focus();
+		inputRef?.focus();
 	});
 </script>
 

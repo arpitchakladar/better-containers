@@ -4,8 +4,9 @@
 	import ContainerConfiguration from "@/pages/configuration/ContainerConfiguration.svelte";
 	import Sites from "@/pages/configuration/Sites.svelte";
 	import SiteConfiguration from "@/pages/configuration/SiteConfiguration.svelte";
+	import type { Component } from "svelte";
 
-	const paths = {
+	const paths: Record<string, Component<any, any, string>> = {
 		containers: Containers,
 		containerConfiguration: ContainerConfiguration,
 		sites: Sites,

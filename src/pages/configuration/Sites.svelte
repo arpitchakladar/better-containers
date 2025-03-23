@@ -4,7 +4,7 @@
 	import { getSiteConfigurations } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 
-	import TailSpinLoader from "@assets/tail-spin.svelte";
+	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
 </script>
 
 <main>

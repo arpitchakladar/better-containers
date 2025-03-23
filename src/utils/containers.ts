@@ -8,16 +8,17 @@ export async function openTabInContainer(
 	url: string,
 	tab: browser.tabs.Tab,
 	containerCookieStoreId: string,
-): Promise<void> {
+): Promise<browser.tabs.Tab> {
 	// Open a new tab in the chosen container
-	await browser.tabs.create({
+	const newTab = await browser.tabs.create({
 		url: url,
 		cookieStoreId: containerCookieStoreId,
 		openerTabId: tab.id,
 	});
 
 	// Close dangling tabs that remain when the new tab is created
-	await browser.tabs.remove(tab.id);
+	await browser.tabs.remove(tab.id as number);
+	return newTab;
 }
 
 export async function openContainerSelector(
@@ -25,13 +26,12 @@ export async function openContainerSelector(
 	selectTabCode: string,
 	tab: browser.tabs.Tab,
 	containerCookieStoreIds: string[],
-): Promise<void> {
-	const selectTab = await browser.tabs.create({
-		url: `${selectContainerUrl}?selectTabCode=${selectTabCode}&site=${url}&${containerCookieStoreIds.map((cookieStoreId) => "container=" + cookieStoreId).join("&")}`,
-		openerTabId: tab.id,
-	});
+): Promise<browser.tabs.Tab> {
+	const selectContainerUrlFull = `${selectContainerUrl}?selectTabCode=${selectTabCode}&site=${url}&${containerCookieStoreIds.map((cookieStoreId) => "container=" + cookieStoreId).join("&")}`;
 
-	await browser.tabs.remove(tab.id);
-
-	return selectTab;
+	return await openTabInContainer(
+		selectContainerUrlFull,
+		tab,
+		tab.cookieStoreId || defaultContainer,
+	);
 }

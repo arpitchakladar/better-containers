@@ -3,7 +3,7 @@
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import Button from "@/components/Button.svelte";
 
-	import TailSpinLoader from "@assets/tail-spin.svelte";
+	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
 </script>
 
 <main>

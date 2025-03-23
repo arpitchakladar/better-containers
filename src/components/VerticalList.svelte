@@ -2,14 +2,19 @@
 	import Button from "@/components/Button.svelte";
 	import SingleInputForm from "@/components/SingleInputForm.svelte";
 
-	import XMarkSolidSvg from "@assets/xmark-solid.svelte";
+	import XMarkIcon from "@/components/XmarkIcon.svelte";
 
-	let { items = $bindable(), placeholder } = $props();
+	interface VerticalListProps {
+		items: string[];
+		placeholder: string | undefined;
+	};
+
+	let { items = $bindable(), placeholder }: VerticalListProps = $props();
 
 	let newItem = $state("");
 
 	// Function to add a new item
-	function addItem(event): void {
+	function addItem(event: SubmitEvent): void {
 		event.preventDefault();
 		const newItemTrimmed = newItem.trim();
 		if (newItemTrimmed) {
@@ -30,7 +35,7 @@
 			<li>
 				{item}
 				<Button onclick={() => removeItem(index)}>
-					<XMarkSolidSvg />
+					<XMarkIcon />
 				</Button>
 			</li>
 		{/each}

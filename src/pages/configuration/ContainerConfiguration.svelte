@@ -10,25 +10,23 @@
 	import ToggleButton from "@/components/ToggleButton.svelte";
 	import VerticalList from "@/components/VerticalList.svelte";
 
-	import ArrowLeftSolidSvg from "@assets/arrow-left-solid.svelte";
+	import BackIcon from "@/components/BackIcon.svelte";
 
 	let { cookieStoreId, name, colorCode, iconUrl } = $props();
 
 	const containerColorFilter = hexToCSSFilter(colorCode).filter;
 
 	let cookie = $state(false);
-	let sites = $state([]);
+	let sites: string[] = $state([]);
 
 	onMount(async () => {
 		const config = await getContainerConfiguration(cookieStoreId);
-		if (config) {
-			cookie = !!config.cookie;
-			sites = config.sites || [];
-		}
+		cookie = !!config?.cookie;
+		sites = config?.sites || [];
 	});
 
-	$effect(async () => {
-		await setContainerConfiguration(
+	$effect(() => {
+		setContainerConfiguration(
 			cookieStoreId,
 			$state.snapshot(sites),
 			cookie,
@@ -39,7 +37,7 @@
 <main>
 	<h1 style="color: {colorCode}">
 		<Button onclick={() => navigate("containers")}>
-			<ArrowLeftSolidSvg />
+			<BackIcon />
 		</Button>
 		<div>
 			<img
@@ -62,7 +60,7 @@
 
 <style land="scss">
 	main {
-		--vertical-list-height: calc(600px - 14rem);
+		--vertical-list-height: calc(600px - 15rem);
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;

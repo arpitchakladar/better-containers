@@ -1,11 +1,23 @@
 <script lang="ts">
 	import { hexToCSSFilter } from "hex-to-css-filter";
 
-	import Checked from "@assets/checked.svelte";
+	import CheckedIcon from "@/components/CheckedIcon.svelte";
 
-	let { items = $bindable() } = $props();
+	export interface VerticalCheckListItem {
+		label: string;
+		icon: string;
+		colorCode: string;
+		checked: boolean,
+		toggleCheck: () => Promise<boolean>,
+	};
 
-	async function toggleItem(item): Promise<void> {
+	interface VerticalCheckListItemProps {
+		items: VerticalCheckListItem[];
+	}
+
+	let { items = $bindable() }: VerticalCheckListItemProps = $props();
+
+	async function toggleItem(item: VerticalCheckListItem): Promise<void> {
 		item.checked = await item.toggleCheck();
 	}
 </script>
@@ -23,7 +35,7 @@
 				<span>{item.label}</span>
 				<button onclick={() => toggleItem(item)}>
 					{#if item.checked}
-						<Checked />
+						<CheckedIcon />
 					{/if}
 				</button>
 			</li>

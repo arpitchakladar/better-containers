@@ -17,7 +17,7 @@ export type SiteConfiguration = {
 };
 
 export type SiteConfigurations = {
-	[key: string]: ContainerConfiguration;
+	[key: string]: SiteConfiguration;
 };
 
 export async function setContainerConfiguration(
@@ -50,36 +50,7 @@ export async function getContainerConfiguration(
 	return null;
 }
 
-export async function getSiteConfiguration(
-	site: string,
-): Promise<SiteConfiguration> {
-	const containers = await browser.contextualIdentities.query({});
-	let siteConfiguration: SiteConfiguration = {
-		containers: [],
-	};
-
-	for (const container of containers) {
-		if (container) {
-			const containerInfo = await getContainerConfiguration(
-				container.cookieStoreId,
-			);
-			if (containerInto) {
-				for (const currentSite in containerInfo.sites) {
-					if (site === currentSite) {
-						siteConfiguration.containers.append({
-							container,
-							cookie: containerInfo.cookie,
-						});
-					}
-				}
-			}
-		}
-	}
-
-	return siteConfiguration;
-}
-
-export async function getSiteConfigurations(): Promise<SiteConfiguration> {
+export async function getSiteConfigurations(): Promise<SiteConfigurations> {
 	const containers = await browser.contextualIdentities.query({});
 	let siteConfigurations: SiteConfigurations = {};
 
@@ -111,7 +82,7 @@ export async function toggleContainerForSite(
 	site: string,
 	cookieStoreId: string,
 ): Promise<boolean> {
-	let oldSites = [];
+	let oldSites: string[] = [];
 	let notExisted = true;
 	let cookie = false;
 	const containerConfiguration = await getContainerConfiguration(cookieStoreId);
