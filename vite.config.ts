@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import webExtension from "vite-plugin-web-extension";
-import prettierPlugin from "vite-plugin-prettier";
 import checker from "vite-plugin-checker";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import path from "path";
@@ -13,9 +12,6 @@ export default defineConfig(({}) => {
 				svelte: true,
 			}),
 			svelte(),
-			prettierPlugin({
-				include: "src/**/*.{ts,js,svelte}", // Specify which files to format
-			}),
 			webExtension({
 				disableAutoLaunch: true,
 				additionalInputs: [

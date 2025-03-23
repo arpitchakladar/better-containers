@@ -5,17 +5,16 @@
 	import Button from "@/components/Button.svelte";
 	import VerticalCheckList from "@/components/VerticalCheckList.svelte";
 	import type { VerticalCheckListItem } from "@/components/VerticalCheckList.svelte";
-	import type { SiteConfiguration } from "@/utils/storage";
 
 	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
 	import BackIcon from "@/components/BackIcon.svelte";
 
 	interface SiteConfigurationProps {
-		site: SiteConfiguration;
+		containers: browser.contextualIdentities.ContextualIdentity[];
 		name: string;
 	}
 
-	let { site, name }: SiteConfigurationProps = $props();
+	let { containers: siteContainers, name }: SiteConfigurationProps = $props();
 	let containers: VerticalCheckListItem[] = $state([]);
 
 	onMount(async () => {
@@ -30,7 +29,7 @@
 				label: containerName,
 				icon: iconUrl,
 				colorCode,
-				checked: !!site.containers.find(
+				checked: !!siteContainers.find(
 					({ container }) => container.cookieStoreId === cookieStoreId,
 				),
 				toggleCheck() {

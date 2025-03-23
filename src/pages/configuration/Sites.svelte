@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/pages/configuration/pageStore";
-	import { getSiteConfigurations } from "@/utils/storage";
+	import { getSiteContainers } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 
 	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
@@ -9,23 +9,23 @@
 
 <main>
 	<h1>Sites</h1>
-	{#await getSiteConfigurations()}
+	{#await getSiteContainers()}
 		<TailSpinLoader />
 	{:then sites}
 		<ul style="--bg-color-filter: {hexToCSSFilter('#000000').filter}">
-			{#each Object.entries(sites) as [siteName, site]}
+			{#each Object.entries(sites) as [siteName, containers]}
 				<li>
 					<button
 						on:click|preventDefault={() =>
 							navigate("siteConfiguration", {
-								site,
+								containers,
 								name: siteName,
 							})}
 						style="grid-template-columns: {'1rem '.repeat(
-							site.containers.length,
+							containers.length,
 						)}1fr;"
 					>
-						{#each site.containers as { container }}
+						{#each containers as { container }}
 							<img
 								src={container.iconUrl}
 								alt=""

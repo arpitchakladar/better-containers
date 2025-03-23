@@ -3,20 +3,9 @@ import { makeLoadContainerConfigurations } from "@/utils/container-configuration
 export interface ContainerConfiguration {
 	sites: string[];
 	cookie: boolean;
-};
+}
 
 export type ContainerConfigurations = Record<string, ContainerConfiguration>;
-
-export interface SiteContainerConfiguration {
-	container: browser.contextualIdentities.ContextualIdentity;
-	cookie: boolean;
-};
-
-export interface SiteConfiguration {
-	containers: SiteContainerConfiguration[];
-};
-
-export type SiteConfigurations = Record<string, SiteConfiguration>;
 
 export async function setContainerConfiguration(
 	container: string,
@@ -48,9 +37,14 @@ export async function getContainerConfiguration(
 	return null;
 }
 
-export async function getSiteConfigurations(): Promise<SiteConfigurations> {
+export async function getSiteContainers(): Promise<
+	Record<string, browser.contextualIdentities.ContextualIdentity[]>
+> {
 	const containers = await browser.contextualIdentities.query({});
-	let siteConfigurations: SiteConfigurations = {};
+	let siteConfigurations: Record<
+		string,
+		browser.contextualIdentities.ContextualIdentity[]
+	> = {};
 
 	for (const container of containers) {
 		if (container) {
@@ -59,15 +53,12 @@ export async function getSiteConfigurations(): Promise<SiteConfigurations> {
 			);
 			if (containerInfo) {
 				for (const currentSite of containerInfo.sites) {
-					let siteConfig = siteConfigurations[currentSite];
-					if (!siteConfig) {
-						siteConfig = { containers: [] };
+					let siteContainers = siteConfigurations[currentSite];
+					if (!siteContainers) {
+						siteContainers = [];
 					}
-					siteConfig.containers.push({
-						container,
-						cookie: containerInfo.cookie,
-					});
-					siteConfigurations[currentSite] = siteConfig;
+					siteContainers.push(container);
+					siteConfigurations[currentSite] = siteContainers;
 				}
 			}
 		}
