@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
-	import { navigate } from "@/stores/page";
+	import { navigate } from "@/pages/configuration/pageStore";
 	import { getContainerConfiguration, toggleSiteForContainer } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import ToggleButton from "@/components/ToggleButton.svelte";

@@ -21,13 +21,13 @@
 		"persistent": true
 	},
 	"browser_action": {
-		"default_popup": "src/pages/index.html",
+		"default_popup": "src/pages/configuration/index.html",
 		"default_icon": "icons/icon-48.png"
 	},
 	"icons": {
 		"48": "icons/icon-48.png"
 	},
 	"web_accessible_resources": [
-		"src/pages/index.html"
+		"src/pages/configuration/index.html"
 	]
 }

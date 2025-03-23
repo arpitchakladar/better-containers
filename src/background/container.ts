@@ -13,11 +13,12 @@ browser.webRequest.onBeforeRequest.addListener(
 			if (requestDetails.url) {
 				// If no containers are specified we default to using the default container
 				let containerCookieStoreId = defaultContainer;
-				outer: for (const [containerId, configuration] of Object.entries(
+				const containerConfigurationEntries = Object.entries(
 					containerConfigurations,
-				)) {
-					for (const domain of configuration.domains) {
-						if (requestDetails.url.includes(domain)) {
+				);
+				outer: for (const [containerId, configuration] of containerConfigurationList) {
+					for (const site of configuration.sites) {
+						if (requestDetails.url.includes(site)) {
 							containerCookieStoreId = containerId;
 							break outer;
 						}

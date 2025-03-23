@@ -1,5 +1,5 @@
 export type ContainerConfiguration = {
-	domains: string[];
+	sites: string[];
 	cookie: boolean;
 };
 
@@ -22,12 +22,12 @@ export async function loadContainerConfigurations(): Promise<void> {
 
 export async function setContainerConfiguration(
 	container: string,
-	domains: string[],
+	sites: string[],
 	cookie: boolean,
 ): Promise<void> {
 	await browser.storage.local.set({
 		[container]: {
-			domains,
+			sites,
 			cookie,
 		},
 	});
@@ -53,7 +53,7 @@ export async function getSiteConfiguration(
 		if (container) {
 			const containerInfo = await getContainerConfiguration(container.cookieStoreId);
 			if (containerInto) {
-				for (const currentSite in containerInfo.domains) {
+				for (const currentSite in containerInfo.sites) {
 					if (site === currentSite) {
 						siteConfiguration.containers.append({
 							container,
@@ -78,7 +78,7 @@ export async function getSiteConfigurations(
 		if (container) {
 			const containerInfo = Object.values(await getContainerConfiguration(container.cookieStoreId))[0];
 			if (containerInfo) {
-				for (const currentSite of containerInfo.domains) {
+				for (const currentSite of containerInfo.sites) {
 					let siteConfig = siteConfigurations[currentSite];
 					if (!siteConfig) {
 						siteConfig = { containers: [] };
@@ -103,8 +103,8 @@ export async function toggleSiteForContainer(
 	const containerConfigurations = Object.values(await getContainerConfiguration(cookieStoreId));
 	if (containerConfigurations.length > 0) {
 		const containerConfiguration = containerConfigurations[0];
-		const sites = containerConfiguration.domains.filter(domain => domain !== site);
-		const notExisted = sites.length === containerConfiguration.domains.length;
+		const sites = containerConfiguration.sites.filter(currentSite => currentSite !== site);
+		const notExisted = sites.length === containerConfiguration.sites.length;
 		await setContainerConfiguration(
 			cookieStoreId,
 			notExisted

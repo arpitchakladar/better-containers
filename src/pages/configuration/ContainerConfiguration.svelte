@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
-	import { navigate } from "@/stores/page";
+	import { navigate } from "@/pages/configuration/pageStore";
 	import { setContainerConfiguration, getContainerConfiguration } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import ToggleButton from "@/components/ToggleButton.svelte";
@@ -14,20 +14,20 @@
 	const containerColorFilter = hexToCSSFilter(colorCode).filter;
 
 	let cookie = $state(false);
-	let domains = $state([]);
+	let sites = $state([]);
 
 	onMount(async () => {
 		const config = (await getContainerConfiguration(cookieStoreId))[cookieStoreId];
 		if (config) {
 			cookie = !!config.cookie;
-			domains = config.domains || [];
+			sites = config.sites || [];
 		}
 	});
 
 	$effect(async () => {
 		await setContainerConfiguration(
 			cookieStoreId,
-			$state.snapshot(domains),
+			$state.snapshot(sites),
 			cookie,
 		);
 	});
@@ -60,8 +60,8 @@
 	<div>
 		<VerticalList
 			label="Urls"
-			placeholder="Add new domain..."
-			bind:items={domains}
+			placeholder="Add new site..."
+			bind:items={sites}
 		/>
 	</div>
 </main>
