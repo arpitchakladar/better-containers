@@ -4,18 +4,15 @@
 	import { getSiteConfigurations } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 
-	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
+	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
 </script>
 
 <main>
 	<h1>Sites</h1>
 	{#await getSiteConfigurations()}
-		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
+		<TailSpinLoader />
 	{:then sites}
-		<ul
-			class="sites"
-			style="--bg-color-filter: {hexToCSSFilter('#000000').filter}"
-		>
+		<ul style="--bg-color-filter: {hexToCSSFilter('#000000').filter}">
 			{#each Object.entries(sites) as [siteName, site]}
 				<li>
 					<button
@@ -47,11 +44,8 @@
 
 <style land="scss">
 	main {
-		text-align: center;
-		position: relative;
-		padding: 1rem;
-		width: 20rem;
-		margin: 0 auto;
+		--sites-list-height: calc(600px - 10rem);
+		--tail-spin-loader-height: var(--sites-list-height);
 
 		h1 {
 			text-align: center;
@@ -60,15 +54,13 @@
 			margin: 0 0 1rem 0;
 		}
 
-		img.loading-spinner {
-			width: 5rem;
-		}
-
-		.sites {
+		ul {
 			list-style-type: none;
 			padding: 0;
 			margin: 0;
 			background-color: var(--bg-color);
+			height: var(--sites-list-height);
+			overflow: auto;
 			li {
 				button {
 					position: relative;

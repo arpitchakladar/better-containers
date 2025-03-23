@@ -1,11 +1,23 @@
 <script lang="ts">
 	import { hexToCSSFilter } from "hex-to-css-filter";
 
-	import Checked from "@assets/checked.svelte";
+	import CheckedIcon from "@/components/CheckedIcon.svelte";
 
-	let { items = $bindable() } = $props();
+	export interface VerticalCheckListItem {
+		label: string;
+		icon: string;
+		colorCode: string;
+		checked: boolean,
+		toggleCheck: () => Promise<boolean>,
+	};
 
-	async function toggleItem(item): Promise<void> {
+	interface VerticalCheckListItemProps {
+		items: VerticalCheckListItem[];
+	}
+
+	let { items = $bindable() }: VerticalCheckListItemProps = $props();
+
+	async function toggleItem(item: VerticalCheckListItem): Promise<void> {
 		item.checked = await item.toggleCheck();
 	}
 </script>
@@ -23,7 +35,7 @@
 				<span>{item.label}</span>
 				<button onclick={() => toggleItem(item)}>
 					{#if item.checked}
-						<Checked />
+						<CheckedIcon />
 					{/if}
 				</button>
 			</li>
@@ -41,6 +53,8 @@
 		ul {
 			list-style: none;
 			padding: 0;
+			height: var(--vertical-check-list-height);
+			overflow: auto;
 
 			li {
 				display: flex;
@@ -50,7 +64,7 @@
 				margin: 0.25rem 0;
 				background: var(--bg-color);
 				border-radius: 4px;
-				border: 1px solid var(--color);
+				border: 2px solid var(--color);
 				color: var(--color);
 
 				img {
@@ -62,7 +76,7 @@
 				}
 
 				button {
-					border: 1px solid var(--color);
+					border: 2px solid var(--color);
 					background: var(--bg-color);
 					color: var(--color);
 					border-radius: 4px;

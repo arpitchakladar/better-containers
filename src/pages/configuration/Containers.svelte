@@ -3,18 +3,15 @@
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import Button from "@/components/Button.svelte";
 
-	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
+	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
 </script>
 
 <main>
 	<h1>Containers</h1>
 	{#await browser.contextualIdentities.query({})}
-		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
+		<TailSpinLoader />
 	{:then containers}
-		<ul
-			class="containers"
-			style="--bg-color-filter: {hexToCSSFilter('#000000').filter}"
-		>
+		<ul style="--bg-color-filter: {hexToCSSFilter('#000000').filter}">
 			{#each containers as container}
 				<li style="--container-color: {container.colorCode};">
 					<button
@@ -41,12 +38,6 @@
 
 <style lang="scss">
 	main {
-		text-align: center;
-		position: relative;
-		padding: 1rem;
-		width: 20rem;
-		margin: 0 auto;
-
 		h1 {
 			text-align: center;
 			text-transform: uppercase;
@@ -54,15 +45,16 @@
 			margin: 0 0 1rem 0;
 		}
 
-		img.loading-spinner {
-			width: 5rem;
-		}
+		--containers-list-height: calc(600px - 10rem);
+		--tail-spin-loader-height: var(--containers-list-height);
 
-		.containers {
+		ul {
 			list-style-type: none;
 			padding: 0;
 			margin: 0;
 			background-color: var(--bg-color);
+			height: var(--containers-list-height);
+			overflow: auto;
 			li {
 				button {
 					position: relative;

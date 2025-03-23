@@ -42,28 +42,31 @@
 				left: 0;
 				right: 0;
 				bottom: 0;
-				background-color: #ccc;
-				transition: background-color 0.4s;
+				background-color: var(--bg-color);
+				transition: background-color 400ms;
 				border-radius: 34px;
+				border: 2px solid var(--color);
 
 				&::before {
 					position: absolute;
 					content: "";
-					height: 26px;
-					width: 26px;
+					height: 20px;
+					width: 20px;
 					left: 4px;
 					bottom: 4px;
-					background-color: white;
-					transition: transform 0.4s;
+					background-color: var(--bg-color);
+					border: 2px solid var(--color);
+					transition:
+						transform 400ms,
+						background-color 400ms;
 					border-radius: 50%;
 				}
 			}
 
 			input:checked + .slider {
-				background-color: #007bff;
-
 				&::before {
 					transform: translateX(26px);
+					background-color: var(--color);
 				}
 			}
 		}

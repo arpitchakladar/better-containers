@@ -1,13 +1,13 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
 
 const params = new URLSearchParams(window.location.search);
-const header = document.querySelector("h1");
-const list = document.querySelector("ul");
-header.innerHTML = params.get("site");
+const header = document.querySelector("h1") as HTMLHeadingElement;
+const list = document.querySelector("ul") as HTMLUListElement;
+header.textContent = params.get("site") as string;
 
 list.style.cssText = `--bg-color-filter: ${hexToCSSFilter("#000000").filter};`;
 
-const selectTabCode = params.get("selectTabCode");
+const selectTabCode = params.get("selectTabCode") as string;
 
 async function selectContainer(cookieStoreId: string): Promise<void> {
 	await browser.runtime.sendMessage({
@@ -50,10 +50,11 @@ async function getContainerByCookieStoreId(
 
 (async () => {
 	const containers = await Promise.all(
-		params.getAll("container").map(async (cookieStoreId) => {
-			return getContainerByCookieStoreId(cookieStoreId);
-		}),
+		params
+			.getAll("container")
+			.map((cookieStoreId) => getContainerByCookieStoreId(cookieStoreId)),
 	);
+
 	for (const container of containers) {
 		if (container) {
 			createListItem(container);

@@ -1,15 +1,22 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { navigate } from "@/pages/configuration/pageStore";
-	import { toggleSiteForContainer } from "@/utils/storage";
+	import { toggleContainerForSite } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import VerticalCheckList from "@/components/VerticalCheckList.svelte";
+	import type { VerticalCheckListItem } from "@/components/VerticalCheckList.svelte";
+	import type { SiteConfiguration } from "@/utils/storage";
 
-	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
-	import ArrowLeftSolidSvg from "@assets/arrow-left-solid.svelte";
+	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
+	import BackIcon from "@/components/BackIcon.svelte";
 
-	let { site, name } = $props();
-	let containers = $state([]);
+	interface SiteConfigurationProps {
+		site: SiteConfiguration;
+		name: string;
+	};
+
+	let { site, name }: SiteConfigurationProps = $props();
+	let containers: VerticalCheckListItem[] = $state([]);
 
 	onMount(async () => {
 		const allContainers = await browser.contextualIdentities.query({});
@@ -27,7 +34,7 @@
 					({ container }) => container.cookieStoreId === cookieStoreId,
 				),
 				toggleCheck() {
-					return toggleSiteForContainer(name, cookieStoreId);
+					return toggleContainerForSite(name, cookieStoreId);
 				},
 			});
 		}
@@ -37,14 +44,14 @@
 <main>
 	<h1>
 		<Button onclick={() => navigate("sites")}>
-			<ArrowLeftSolidSvg />
+			<BackIcon />
 		</Button>
 		<div>
 			{name}
 		</div>
 	</h1>
 	{#if containers.length === 0}
-		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
+		<TailSpinLoader />
 	{:else}
 		<div>
 			<VerticalCheckList bind:items={containers} />
@@ -54,12 +61,8 @@
 
 <style land="scss">
 	main {
-		text-align: center;
-		position: relative;
-		padding: 1rem;
-		width: 20rem;
-		margin: 0 auto;
-		color: var(--color);
+		--vertical-check-list-height: calc(600px - 9rem);
+		--tail-spin-loader-height: var(--vertical-check-list-height);
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;
@@ -71,10 +74,6 @@
 				justify-content: center;
 				align-items: center;
 			}
-		}
-
-		img.loading-spinner {
-			width: 5rem;
 		}
 	}
 </style>

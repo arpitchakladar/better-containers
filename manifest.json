@@ -29,6 +29,6 @@
 	},
 	"web_accessible_resources": [
 		"src/pages/configuration/index.html",
-		"src/pages/select/index.html"
+		"src/pages/select-container/index.html"
 	]
 }

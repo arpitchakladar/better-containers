@@ -1,4 +1,4 @@
-import { containerConfigurations } from "@/utils/cache-container-configuration";
+import { containerConfigurations } from "@/utils/container-configuration";
 
 browser.windows.onRemoved.addListener(async () => {
 	const openWindows = (await browser.windows.getAll({})).length;
@@ -12,7 +12,7 @@ browser.windows.onRemoved.addListener(async () => {
 				containerConfigurations,
 			)) {
 				for (const site of configuration.sites) {
-					if (configuration.cookie && cookie.site.includes(site)) {
+					if (configuration.cookie && cookie.domain.includes(site)) {
 						saveCookie = true;
 						break;
 					}

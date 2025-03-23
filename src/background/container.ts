@@ -6,7 +6,7 @@ import {
 import {
 	containerConfigurations,
 	loadContainerConfigurations,
-} from "@/utils/cache-container-configuration";
+} from "@/utils/container-configuration";
 
 browser.webRequest.onBeforeRequest.addListener(
 	(requestDetails) => {
@@ -17,6 +17,7 @@ browser.webRequest.onBeforeRequest.addListener(
 			if (requestDetails.url) {
 				// If no containers are specified we default to using the default container
 				let containerCookieStoreIds = [];
+				console.log(containerConfigurations);
 				const containerConfigurationEntries = Object.entries(
 					containerConfigurations,
 				);
