@@ -28,6 +28,7 @@
 		"48": "icons/icon-48.png"
 	},
 	"web_accessible_resources": [
-		"src/pages/configuration/index.html"
+		"src/pages/configuration/index.html",
+		"src/pages/select/index.html"
 	]
 }
