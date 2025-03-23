@@ -7,9 +7,11 @@ header.innerHTML = params.get("site");
 
 list.style.cssText = `--bg-color-filter: ${hexToCSSFilter("#000000").filter};`;
 
+const selectTabCode = params.get("selectTabCode");
+
 async function selectContainer(cookieStoreId: string): Promise<void> {
 	await browser.runtime.sendMessage({
-		type: `select-container-${params.selectTabCode}`,
+		type: `select-container-${selectTabCode}`,
 		cookieStoreId,
 	});
 }
@@ -38,7 +40,7 @@ function createListItem(
 
 async function getContainerByCookieStoreId(
 	cookieStoreId: string,
-): Promise<void> {
+): Promise<browser.contextualIdentities.ContextualIdentity | null> {
 	const containers = await browser.contextualIdentities.query({});
 	return (
 		containers.find((container) => container.cookieStoreId === cookieStoreId) ||

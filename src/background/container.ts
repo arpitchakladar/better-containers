@@ -32,31 +32,37 @@ browser.webRequest.onBeforeRequest.addListener(
 					}
 				}
 
+				if (
+					containerCookieStoreIds.length === 0 &&
+					tab.cookieStoreId === defaultContainer
+				) {
+					return {};
+				}
+
 				// Open the URL in a new tab in the specified container
 				if (containerCookieStoreIds.length > 1) {
 					const selectTabCode = crypto.randomUUID().replace(/-/g, "");
 
-					openContainerSelector(
+					const selectTab = await openContainerSelector(
 						requestDetails.url,
 						selectTabCode,
 						tab,
 						containerCookieStoreIds,
-					).then((selectTab) => {
-						browser.runtime.onMessage.addListener(
-							async (message, sender, sendResponse) => {
-								if (message.type === `select-container-${selectTabCode}`) {
-									await openTabInContainer(
-										requestDetails.url,
-										selectTab,
-										message.cookieStoreId,
-									);
-									sendResponse({ success: true });
-								}
-							},
-						);
-					});
+					);
+					browser.runtime.onMessage.addListener(
+						async (message, sender, sendResponse) => {
+							if (message.type === `select-container-${selectTabCode}`) {
+								await openTabInContainer(
+									requestDetails.url,
+									selectTab,
+									message.cookieStoreId,
+								);
+								sendResponse({ success: true });
+							}
+						},
+					);
 				} else {
-					openTabInContainer(
+					await openTabInContainer(
 						requestDetails.url,
 						tab,
 						containerCookieStoreIds.length === 0

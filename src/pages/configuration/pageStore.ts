@@ -2,7 +2,6 @@ import { writable } from "svelte/store";
 
 export let currentPage = writable({
 	path: "containers",
-	// path: "sites",
 	props: {},
 });
 

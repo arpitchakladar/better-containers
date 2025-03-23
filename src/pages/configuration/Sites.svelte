@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/pages/configuration/pageStore";
 	import { getSiteConfigurations } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";

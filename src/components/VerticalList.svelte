@@ -8,8 +8,8 @@
 	let newItem = $state("");
 
 	// Function to add a new item
-	function addItem(e): void {
-		e.preventDefault();
+	function addItem(event): void {
+		event.preventDefault();
 		const newItemTrimmed = newItem.trim();
 		if (newItemTrimmed) {
 			items = [...items, newItemTrimmed];

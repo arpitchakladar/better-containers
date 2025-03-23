@@ -55,7 +55,7 @@
 		</div>
 	</h1>
 	<div>
-		<ToggleButton label="Save Cookies" bind:isYes={cookie} />
+		<ToggleButton label="Save Cookies" bind:checked={cookie} />
 	</div>
 	<div>
 		<VerticalList

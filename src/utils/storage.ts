@@ -107,18 +107,23 @@ export async function toggleSiteForContainer(
 	const containerConfigurations = Object.values(
 		await getContainerConfiguration(cookieStoreId),
 	);
+	let oldSites = [];
+	let notExisted = true;
+	let cookie = false;
 	if (containerConfigurations.length > 0) {
 		const containerConfiguration = containerConfigurations[0];
-		const sites = containerConfiguration.sites.filter(
+		oldSites = containerConfiguration.sites.filter(
 			(currentSite) => currentSite !== site,
 		);
-		const notExisted = sites.length === containerConfiguration.sites.length;
-		await setContainerConfiguration(
-			cookieStoreId,
-			notExisted ? [...sites, site] : sites,
-			containerConfiguration.cookie,
-		);
-
-		return notExisted;
+		notExisted = sites.length === containerConfiguration.sites.length;
+		cookie = containerConfiguration.cookie;
 	}
+
+	await setContainerConfiguration(
+		cookieStoreId,
+		notExisted ? [...oldSites, site] : oldSites,
+		cookie,
+	);
+
+	return notExisted;
 }

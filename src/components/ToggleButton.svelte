@@ -1,11 +1,11 @@
 <script lang="ts">
-	let { isYes = $bindable(), label } = $props();
+	let { checked = $bindable(), label } = $props();
 </script>
 
 <div class="toggle-button">
 	<h1>{label}:</h1>
 	<label class="switch">
-		<input type="checkbox" bind:checked={isYes} />
+		<input type="checkbox" bind:checked />
 		<span class="slider"></span>
 	</label>
 </div>
