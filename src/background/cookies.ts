@@ -8,11 +8,11 @@ browser.windows.onRemoved.addListener(async () => {
 		const cookies = await browser.cookies.getAll({});
 		cookies.forEach((cookie) => {
 			let saveCookie = false;
-			for (const [containerId, configuration] of Object.entries(
+			for (const [_cookieStoreId, configuration] of Object.entries(
 				containerConfigurations,
 			)) {
-				for (const domain of configuration.domains) {
-					if (configuration.cookie && cookie.domain.includes(domain)) {
+				for (const site of configuration.sites) {
+					if (configuration.cookie && cookie.site.includes(site)) {
 						saveCookie = true;
 						break;
 					}

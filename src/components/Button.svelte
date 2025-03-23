@@ -10,7 +10,9 @@
 	button {
 		padding: 0.5rem 1rem;
 		border-radius: 5px;
-		transition: background-color 300ms, border-color 300ms;
+		transition:
+			background-color 300ms,
+			border-color 300ms;
 		border: 2px solid var(--color);
 		color: var(--color);
 		background: var(--bg-color);

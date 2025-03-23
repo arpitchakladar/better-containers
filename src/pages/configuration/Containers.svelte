@@ -1,30 +1,25 @@
 <script lang="ts">
-	import { navigate } from "@/stores/page";
+	import { navigate } from "@/pages/configuration/pageStore";
 	import { hexToCSSFilter } from "hex-to-css-filter";
-	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
+	import Button from "@/components/Button.svelte";
 
-	function openContainerConfiguration(
-		container: browser.contextualIdentities.ContextualIdentity
-	): void {
-		navigate("containerConfiguration", container);
-	}
+	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
 </script>
 
 <main>
 	<h1>Containers</h1>
 	{#await browser.contextualIdentities.query({})}
-		<img src={TailSpinLoaderIcon} alt="" />
+		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
 	{:then containers}
 		<ul
 			class="containers"
 			style="--bg-color-filter: {hexToCSSFilter('#000000').filter}"
 		>
 			{#each containers as container}
-				<li
-					style="--container-color: {container.colorCode};"
-				>
+				<li style="--container-color: {container.colorCode};">
 					<button
-						on:click|preventDefault={() => openContainerConfiguration(container)}
+						on:click|preventDefault={() =>
+							navigate("containerConfiguration", container)}
 					>
 						<img
 							src={container.iconUrl}
@@ -39,6 +34,9 @@
 			{/each}
 		</ul>
 	{/await}
+	<Button style="margin: 1rem auto;" onclick={() => navigate("sites", {})}>
+		SITES
+	</Button>
 </main>
 
 <style lang="scss">
@@ -56,7 +54,7 @@
 			margin: 0 0 1rem 0;
 		}
 
-		img {
+		img.loading-spinner {
 			width: 5rem;
 		}
 

@@ -21,6 +21,7 @@ const commonRules = {
 	"@typescript-eslint/no-unused-vars": [
 		"error",
 		{
+			varsIgnorePattern: "^_",
 			argsIgnorePattern: "^_",
 		},
 	],
@@ -34,7 +35,7 @@ const commonRules = {
 	],
 
 	// Prettier integration
-	"prettier/prettier": "error",
+	"prettier/prettier": "warn",
 };
 
 export default [
@@ -66,7 +67,8 @@ export default [
 				ecmaVersion: "latest",
 				sourceType: "module",
 				extraFileExtensions: [".svelte"],
-				project: "./tsconfig.json",
+				project: "./tsconfig.svelte.json",
+				parser: typescriptParser,
 			},
 		},
 		plugins: {
