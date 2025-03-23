@@ -10,7 +10,7 @@ list.style.cssText = `--bg-color-filter: ${hexToCSSFilter("#000000").filter};`;
 async function selectContainer(cookieStoreId: string): Promise<void> {
 	await browser.runtime
 		.sendMessage({
-			type: "select-container",
+			type: `select-container-${params.selectTabCode}`,
 			cookieStoreId,
 		});
 }

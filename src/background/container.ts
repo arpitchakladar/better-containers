@@ -27,26 +27,29 @@ browser.webRequest.onBeforeRequest.addListener(
 
 				// Open the URL in a new tab in the specified container
 				if (containerCookieStoreIds.length > 1) {
-					const selectTab = await openContainerSelector(
+					const selectTabCode = crypto.randomUUID().replace(/-/g, "");
+
+					openContainerSelector(
 						requestDetails.url,
+						selectTabCode,
 						tab,
 						containerCookieStoreIds,
-					);
-
-					browser.runtime.onMessage.addListener(
-						async (message, sender, sendResponse) => {
-							if (message.type === "select-container") {
-								await openTabInContainer(
-									requestDetails.url,
-									selectTab,
-									message.cookieStoreId,
-								);
-								sendResponse({ success: true });
+					).then(selectTab => {
+						browser.runtime.onMessage.addListener(
+							async (message, sender, sendResponse) => {
+								if (message.type === `select-container-${selectTabCode}`) {
+									await openTabInContainer(
+										requestDetails.url,
+										selectTab,
+										message.cookieStoreId,
+									);
+									sendResponse({ success: true });
+								}
 							}
-						}
-					);
+						);
+					});
 				} else {
-					await openTabInContainer(
+					openTabInContainer(
 						requestDetails.url,
 						tab,
 						containerCookieStoreIds.length === 0

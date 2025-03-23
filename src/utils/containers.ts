@@ -20,11 +20,12 @@ export async function openTabInContainer(
 
 export async function openContainerSelector(
 	url: string,
+	selectTabCode: string,
 	tab: browser.tabs.Tab,
 	containerCookieStoreIds: string[],
 ): Promise<void> {
 	const selectTab = await browser.tabs.create({
-		url: `${selectContainerUrl}?site=${url}&${containerCookieStoreIds.map(cookieStoreId => "container=" + cookieStoreId).join("&")}`,
+		url: `${selectContainerUrl}?selectTabCode=${selectTabCode}&site=${url}&${containerCookieStoreIds.map(cookieStoreId => "container=" + cookieStoreId).join("&")}`,
 		openerTabId: tab.id,
 	});
 
