@@ -50,7 +50,7 @@
 				margin: 0.25rem 0;
 				background: var(--bg-color);
 				border-radius: 4px;
-				border: 1px solid var(--color);
+				border: 2px solid var(--color);
 				color: var(--color);
 
 				img {
@@ -62,7 +62,7 @@
 				}
 
 				button {
-					border: 1px solid var(--color);
+					border: 2px solid var(--color);
 					background: var(--bg-color);
 					color: var(--color);
 					border-radius: 4px;

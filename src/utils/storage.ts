@@ -119,7 +119,7 @@ export async function toggleContainerForSite(
 		oldSites = containerConfiguration.sites.filter(
 			(currentSite) => currentSite !== site,
 		);
-		notExisted = sites.length === containerConfiguration.sites.length;
+		notExisted = oldSites.length === containerConfiguration.sites.length;
 		cookie = containerConfiguration.cookie;
 	}
 

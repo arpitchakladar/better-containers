@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import Button from "@/components/Button.svelte";
 
 	import XMarkSolidSvg from "@assets/xmark-solid.svelte";
@@ -6,6 +7,12 @@
 	let { items = $bindable(), label, placeholder } = $props();
 
 	let newItem = $state("");
+	let inputRef;
+
+	onMount(() => {
+		// autofocus input
+		inputRef.focus();
+	});
 
 	// Function to add a new item
 	function addItem(event): void {
@@ -36,7 +43,12 @@
 		{/each}
 	</ul>
 	<form onsubmit={addItem}>
-		<input type="text" bind:value={newItem} {placeholder} />
+		<input
+			type="text"
+			bind:this={inputRef}
+			bind:value={newItem}
+			{placeholder}
+		/>
 		<Button type="submit">Add</Button>
 	</form>
 </div>
@@ -59,7 +71,7 @@
 			height: 14rem;
 			overflow: auto;
 			border-radius: 5px;
-			border: 1px solid var(--color);
+			border: 2px solid var(--color);
 			padding: 0 0.25rem;
 
 			li {
@@ -70,21 +82,20 @@
 				margin: 0.25rem 0;
 				background: var(--bg-color);
 				border-radius: 4px;
-				border: 1px solid var(--color);
+				border: 2px solid var(--color);
 				color: var(--color);
 
 				button {
+					--button-color: #ff4d4d;
+					--svg-color: var(--button-color);
 					border: none;
-					background: #ff4d4d;
-					color: white;
+					color: var(--button-color);
+					border: 2px solid var(--button-color);
+					background: var(--bg-color);
 					border-radius: 4px;
 					cursor: pointer;
 					padding: 0.25rem 0.5rem;
 					display: flex;
-
-					&:hover {
-						background: #ff1a1a;
-					}
 				}
 			}
 		}
@@ -97,7 +108,7 @@
 			input {
 				flex-grow: 1;
 				padding: 0.5rem;
-				border: 1px solid #ccc;
+				border: 2px solid #ccc;
 				border-radius: 4px;
 				background: var(--bg-color);
 				color: var(--color);
