@@ -8,9 +8,11 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
 		"eslint-plugin-svelte": "^2.46.0",
+		"hex-to-css-filter": "^6.0.0",
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.7",
 		"svelte-eslint-parser": "^0.43.0",
+		"vite-plugin-eslint": "^1.8.1",
 		"vite-plugin-web-extension": "^4.4.3"
 	},
 	"name": "better-containers",

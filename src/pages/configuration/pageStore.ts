@@ -6,7 +6,7 @@ export let currentPage = writable({
 	props: {},
 });
 
-export function navigate(path: string, props: object = {}) {
+export function navigate(path: string, props: object = {}): void {
 	currentPage.set({
 		path,
 		props,

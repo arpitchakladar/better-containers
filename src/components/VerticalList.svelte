@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import Button from "@/components/Button.svelte";
 
 	import XMarkSolidSvg from "@assets/xmark-solid.svelte";
@@ -37,14 +36,8 @@
 		{/each}
 	</ul>
 	<form onsubmit={addItem}>
-		<input
-			type="text"
-			bind:value={newItem}
-			placeholder={placeholder}
-		/>
-		<Button type="submit">
-			Add
-		</Button>
+		<input type="text" bind:value={newItem} {placeholder} />
+		<Button type="submit">Add</Button>
 	</form>
 </div>
 

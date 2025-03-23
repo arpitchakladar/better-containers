@@ -8,7 +8,10 @@ export type ContainerConfigurations = {
 };
 
 export type SiteConfiguration = {
-	containers: { container: browser.contextualIdentities.ContextualIdentity; cookie: boolean; }[];
+	containers: {
+		container: browser.contextualIdentities.ContextualIdentity;
+		cookie: boolean;
+	}[];
 };
 
 export type SiteConfigurations = {
@@ -16,8 +19,7 @@ export type SiteConfigurations = {
 };
 
 export async function loadContainerConfigurations(): Promise<void> {
-	await browser.runtime
-		.sendMessage({ type: "loadContainerConfigurations" });
+	await browser.runtime.sendMessage({ type: "loadContainerConfigurations" });
 }
 
 export async function setContainerConfiguration(
@@ -48,10 +50,12 @@ export async function getSiteConfiguration(
 	let siteConfiguration: SiteConfiguration = {
 		containers: [],
 	};
-	
+
 	for (const container of containers) {
 		if (container) {
-			const containerInfo = await getContainerConfiguration(container.cookieStoreId);
+			const containerInfo = await getContainerConfiguration(
+				container.cookieStoreId,
+			);
 			if (containerInto) {
 				for (const currentSite in containerInfo.sites) {
 					if (site === currentSite) {
@@ -68,15 +72,15 @@ export async function getSiteConfiguration(
 	return siteConfiguration;
 }
 
-export async function getSiteConfigurations(
-	site: string,
-): Promise<SiteConfiguration> {
+export async function getSiteConfigurations(): Promise<SiteConfiguration> {
 	const containers = await browser.contextualIdentities.query({});
 	let siteConfigurations: SiteConfigurations = {};
-	
+
 	for (const container of containers) {
 		if (container) {
-			const containerInfo = Object.values(await getContainerConfiguration(container.cookieStoreId))[0];
+			const containerInfo = Object.values(
+				await getContainerConfiguration(container.cookieStoreId),
+			)[0];
 			if (containerInfo) {
 				for (const currentSite of containerInfo.sites) {
 					let siteConfig = siteConfigurations[currentSite];
@@ -100,16 +104,18 @@ export async function toggleSiteForContainer(
 	site: string,
 	cookieStoreId: string,
 ): Promise<boolean> {
-	const containerConfigurations = Object.values(await getContainerConfiguration(cookieStoreId));
+	const containerConfigurations = Object.values(
+		await getContainerConfiguration(cookieStoreId),
+	);
 	if (containerConfigurations.length > 0) {
 		const containerConfiguration = containerConfigurations[0];
-		const sites = containerConfiguration.sites.filter(currentSite => currentSite !== site);
+		const sites = containerConfiguration.sites.filter(
+			(currentSite) => currentSite !== site,
+		);
 		const notExisted = sites.length === containerConfiguration.sites.length;
 		await setContainerConfiguration(
 			cookieStoreId,
-			notExisted
-				? [ ...sites, site ]
-				: sites,
+			notExisted ? [...sites, site] : sites,
 			containerConfiguration.cookie,
 		);
 

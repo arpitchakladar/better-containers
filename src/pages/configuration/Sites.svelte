@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { hexToCSSFilter } from "hex-to-css-filter";
-
 	import { navigate } from "@/pages/configuration/pageStore";
 	import { getSiteConfigurations } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
@@ -21,10 +18,13 @@
 			{#each Object.entries(sites) as [siteName, site]}
 				<li>
 					<button
-						on:click|preventDefault={() => navigate("siteConfiguration", { site, name: siteName })}
-						style="grid-template-columns: {"1rem ".repeat(site.containers.length)}1fr;"
+						on:click|preventDefault={() =>
+							navigate("siteConfiguration", { site, name: siteName })}
+						style="grid-template-columns: {'1rem '.repeat(
+							site.containers.length,
+						)}1fr;"
 					>
-						{#each site.containers as { container, ...rest }}
+						{#each site.containers as { container }}
 							<img
 								src={container.iconUrl}
 								alt=""
@@ -39,7 +39,7 @@
 			{/each}
 		</ul>
 	{/await}
-	<Button  style="margin: 1rem auto;" onclick={() => navigate("containers", {})}>
+	<Button style="margin: 1rem auto;" onclick={() => navigate("containers", {})}>
 		CONTAINERS
 	</Button>
 </main>
@@ -78,7 +78,9 @@
 					display: grid;
 					grid-gap: 0.5rem;
 					border-radius: 5px;
-					transition: background-color 100ms, border-color 100ms;
+					transition:
+						background-color 100ms,
+						border-color 100ms;
 					width: 100%;
 					border: 3px solid var(--bg-color);
 

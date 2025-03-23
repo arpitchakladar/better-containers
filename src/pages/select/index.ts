@@ -8,14 +8,15 @@ header.innerHTML = params.get("site");
 list.style.cssText = `--bg-color-filter: ${hexToCSSFilter("#000000").filter};`;
 
 async function selectContainer(cookieStoreId: string): Promise<void> {
-	await browser.runtime
-		.sendMessage({
-			type: `select-container-${params.selectTabCode}`,
-			cookieStoreId,
-		});
+	await browser.runtime.sendMessage({
+		type: `select-container-${params.selectTabCode}`,
+		cookieStoreId,
+	});
 }
 
-function createListItem(container: browser.contextualIdentities.ContextualIdentity): void {
+function createListItem(
+	container: browser.contextualIdentities.ContextualIdentity,
+): void {
 	const icon = document.createElement("img");
 	icon.alt = "";
 	icon.src = container.iconUrl;
@@ -24,28 +25,33 @@ function createListItem(container: browser.contextualIdentities.ContextualIdenti
 	const button = document.createElement("button");
 	button.appendChild(icon);
 	button.appendChild(span);
-	button.addEventListener("click", function(e) {
-		e.preventDefault();
+	button.addEventListener("click", (event) => {
+		event.preventDefault();
 		selectContainer(container.cookieStoreId);
 	});
 	const li = document.createElement("li");
-	const containerColorFilter = hexToCSSFilter(
-		container.colorCode,
-	).filter;
+	const containerColorFilter = hexToCSSFilter(container.colorCode).filter;
 	li.style.cssText = `--container-color: ${container.colorCode}; --container-color-filter: ${containerColorFilter}`;
 	li.appendChild(button);
 	list.appendChild(li);
 }
 
-async function getContainerByCookieStoreId(cookieStoreId: string): Promise<void> {
+async function getContainerByCookieStoreId(
+	cookieStoreId: string,
+): Promise<void> {
 	const containers = await browser.contextualIdentities.query({});
-	return containers.find(container => container.cookieStoreId === cookieStoreId) || null;
+	return (
+		containers.find((container) => container.cookieStoreId === cookieStoreId) ||
+		null
+	);
 }
 
 (async () => {
-	const containers = await Promise.all(params.getAll("container").map(async cookieStoreId => {
-		return getContainerByCookieStoreId(cookieStoreId);
-	}));
+	const containers = await Promise.all(
+		params.getAll("container").map(async (cookieStoreId) => {
+			return getContainerByCookieStoreId(cookieStoreId);
+		}),
+	);
 	for (const container of containers) {
 		if (container) {
 			createListItem(container);

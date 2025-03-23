@@ -1,5 +1,7 @@
 export const defaultContainer = "firefox-default";
-const selectContainerUrl = browser.runtime.getURL("src/pages/select/index.html");
+const selectContainerUrl = browser.runtime.getURL(
+	"src/pages/select/index.html",
+);
 
 // Open a new tab in a specific container
 export async function openTabInContainer(
@@ -25,7 +27,7 @@ export async function openContainerSelector(
 	containerCookieStoreIds: string[],
 ): Promise<void> {
 	const selectTab = await browser.tabs.create({
-		url: `${selectContainerUrl}?selectTabCode=${selectTabCode}&site=${url}&${containerCookieStoreIds.map(cookieStoreId => "container=" + cookieStoreId).join("&")}`,
+		url: `${selectContainerUrl}?selectTabCode=${selectTabCode}&site=${url}&${containerCookieStoreIds.map((cookieStoreId) => "container=" + cookieStoreId).join("&")}`,
 		openerTabId: tab.id,
 	});
 

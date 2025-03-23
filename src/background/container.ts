@@ -1,4 +1,8 @@
-import { defaultContainer, openTabInContainer, openContainerSelector } from "@/utils/containers";
+import {
+	defaultContainer,
+	openTabInContainer,
+	openContainerSelector,
+} from "@/utils/containers";
 import {
 	containerConfigurations,
 	loadContainerConfigurations,
@@ -16,11 +20,14 @@ browser.webRequest.onBeforeRequest.addListener(
 				const containerConfigurationEntries = Object.entries(
 					containerConfigurations,
 				);
-				outer: for (const [containerId, configuration] of containerConfigurationEntries) {
+				outer: for (const [
+					containerId,
+					configuration,
+				] of containerConfigurationEntries) {
 					for (const site of configuration.sites) {
 						if (requestDetails.url.includes(site)) {
 							containerCookieStoreIds.push(containerId);
-							if (tab.cookieStoreId === containerId) return;
+							if (tab.cookieStoreId === containerId) return {};
 						}
 					}
 				}
@@ -34,7 +41,7 @@ browser.webRequest.onBeforeRequest.addListener(
 						selectTabCode,
 						tab,
 						containerCookieStoreIds,
-					).then(selectTab => {
+					).then((selectTab) => {
 						browser.runtime.onMessage.addListener(
 							async (message, sender, sendResponse) => {
 								if (message.type === `select-container-${selectTabCode}`) {
@@ -45,7 +52,7 @@ browser.webRequest.onBeforeRequest.addListener(
 									);
 									sendResponse({ success: true });
 								}
-							}
+							},
 						);
 					});
 				} else {

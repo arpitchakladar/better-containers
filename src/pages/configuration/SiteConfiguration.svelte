@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/pages/configuration/pageStore";
-	import { getContainerConfiguration, toggleSiteForContainer } from "@/utils/storage";
+	import { toggleSiteForContainer } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
-	import ToggleButton from "@/components/ToggleButton.svelte";
 	import VerticalCheckList from "@/components/VerticalCheckList.svelte";
 
 	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
@@ -15,15 +13,22 @@
 
 	onMount(async () => {
 		const allContainers = await browser.contextualIdentities.query({});
-		for (const { name: containerName, iconUrl, colorCode, cookieStoreId } of allContainers) {
+		for (const {
+			name: containerName,
+			iconUrl,
+			colorCode,
+			cookieStoreId,
+		} of allContainers) {
 			containers.push({
 				label: containerName,
 				icon: iconUrl,
 				colorCode,
-				checked: !!site.containers.find(({container}) => container.cookieStoreId === cookieStoreId),
+				checked: !!site.containers.find(
+					({ container }) => container.cookieStoreId === cookieStoreId,
+				),
 				toggleCheck() {
 					return toggleSiteForContainer(name, cookieStoreId);
-				}
+				},
 			});
 		}
 	});
@@ -31,9 +36,7 @@
 
 <main>
 	<h1>
-		<Button
-			onclick={() => navigate("sites")}
-		>
+		<Button onclick={() => navigate("sites")}>
 			<ArrowLeftSolidSvg />
 		</Button>
 		<div>
@@ -44,9 +47,7 @@
 		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
 	{:else}
 		<div>
-			<VerticalCheckList
-				bind:items={containers}
-			/>
+			<VerticalCheckList bind:items={containers} />
 		</div>
 	{/if}
 </main>

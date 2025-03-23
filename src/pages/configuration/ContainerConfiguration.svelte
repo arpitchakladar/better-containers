@@ -2,7 +2,10 @@
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/pages/configuration/pageStore";
-	import { setContainerConfiguration, getContainerConfiguration } from "@/utils/storage";
+	import {
+		setContainerConfiguration,
+		getContainerConfiguration,
+	} from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import ToggleButton from "@/components/ToggleButton.svelte";
 	import VerticalList from "@/components/VerticalList.svelte";
@@ -17,7 +20,9 @@
 	let sites = $state([]);
 
 	onMount(async () => {
-		const config = (await getContainerConfiguration(cookieStoreId))[cookieStoreId];
+		const config = (await getContainerConfiguration(cookieStoreId))[
+			cookieStoreId
+		];
 		if (config) {
 			cookie = !!config.cookie;
 			sites = config.sites || [];
@@ -35,9 +40,7 @@
 
 <main>
 	<h1 style="color: {colorCode}">
-		<Button
-			onclick={() => navigate("containers")}
-		>
+		<Button onclick={() => navigate("containers")}>
 			<ArrowLeftSolidSvg />
 		</Button>
 		<div>
@@ -52,10 +55,7 @@
 		</div>
 	</h1>
 	<div>
-		<ToggleButton
-			label="Save Cookies"
-			bind:isYes={cookie}
-		/>
+		<ToggleButton label="Save Cookies" bind:isYes={cookie} />
 	</div>
 	<div>
 		<VerticalList

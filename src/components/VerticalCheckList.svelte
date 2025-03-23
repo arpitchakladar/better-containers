@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
-	import Button from "@/components/Button.svelte";
 
 	import Checked from "@assets/checked.svelte";
 
 	let { items = $bindable() } = $props();
 
-	async function toggleItem(item) {
+	async function toggleItem(item): Promise<void> {
 		item.checked = await item.toggleCheck();
 	}
 </script>
@@ -19,9 +17,8 @@
 				<img
 					alt=""
 					src={item.icon}
-					style="--container-color-filter: {hexToCSSFilter(
-						item.colorCode,
-					).filter}"
+					style="--container-color-filter: {hexToCSSFilter(item.colorCode)
+						.filter}"
 				/>
 				<span>{item.label}</span>
 				<button onclick={() => toggleItem(item)}>

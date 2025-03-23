@@ -16,11 +16,10 @@
 			style="--bg-color-filter: {hexToCSSFilter('#000000').filter}"
 		>
 			{#each containers as container}
-				<li
-					style="--container-color: {container.colorCode};"
-				>
+				<li style="--container-color: {container.colorCode};">
 					<button
-						on:click|preventDefault={() => navigate("containerConfiguration", container)}
+						on:click|preventDefault={() =>
+							navigate("containerConfiguration", container)}
 					>
 						<img
 							src={container.iconUrl}
