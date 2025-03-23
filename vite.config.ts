@@ -4,15 +4,9 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import path from "path";
 
 export default defineConfig(({}) => {
-	const DEV = process.env.NODE_ENV === "development";
 	return {
 		plugins: [
-			svelte(DEV
-				? undefined
-				: {
-					cssHash: ({ hash, css }) => `bc-${hash(css)}`
-				} as any
-			),
+			svelte(),
 			webExtension({
 				disableAutoLaunch: true,
 				additionalInputs: [

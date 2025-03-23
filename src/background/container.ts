@@ -1,4 +1,4 @@
-import { defaultContainer, openTabInContainer } from "@/utils/containers";
+import { defaultContainer, openTabInContainer, openContainerSelector } from "@/utils/containers";
 import {
 	containerConfigurations,
 	loadContainerConfigurations,
@@ -12,26 +12,48 @@ browser.webRequest.onBeforeRequest.addListener(
 			const tab = await browser.tabs.get(requestDetails.tabId);
 			if (requestDetails.url) {
 				// If no containers are specified we default to using the default container
-				let containerCookieStoreId = defaultContainer;
+				let containerCookieStoreIds = [];
 				const containerConfigurationEntries = Object.entries(
 					containerConfigurations,
 				);
-				outer: for (const [containerId, configuration] of containerConfigurationList) {
+				outer: for (const [containerId, configuration] of containerConfigurationEntries) {
 					for (const site of configuration.sites) {
 						if (requestDetails.url.includes(site)) {
-							containerCookieStoreId = containerId;
-							break outer;
+							containerCookieStoreIds.push(containerId);
+							if (tab.cookieStoreId === containerId) return;
 						}
 					}
 				}
 
-				if (tab.cookieStoreId === containerCookieStoreId) return;
 				// Open the URL in a new tab in the specified container
-				await openTabInContainer(
-					requestDetails.url,
-					tab,
-					containerCookieStoreId,
-				);
+				if (containerCookieStoreIds.length > 1) {
+					const selectTab = await openContainerSelector(
+						requestDetails.url,
+						tab,
+						containerCookieStoreIds,
+					);
+
+					browser.runtime.onMessage.addListener(
+						async (message, sender, sendResponse) => {
+							if (message.type === "select-container") {
+								await openTabInContainer(
+									requestDetails.url,
+									selectTab,
+									message.cookieStoreId,
+								);
+								sendResponse({ success: true });
+							}
+						}
+					);
+				} else {
+					await openTabInContainer(
+						requestDetails.url,
+						tab,
+						containerCookieStoreIds.length === 0
+							? defaultContainer
+							: containerCookieStoreIds[0],
+					);
+				}
 
 				return { cancel: true };
 			}

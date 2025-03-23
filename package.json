@@ -18,7 +18,7 @@
 	"description": "A Firefox extension to better manage containers.",
 	"type": "module",
 	"scripts": {
-		"build": "rm -r dist && vite build",
+		"build": "rm -rf dist && vite build",
 		"dev": "vite"
 	},
 	"repository": {

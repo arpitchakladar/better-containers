@@ -7,6 +7,14 @@ header.innerHTML = params.get("site");
 
 list.style.cssText = `--bg-color-filter: ${hexToCSSFilter("#000000").filter};`;
 
+async function selectContainer(cookieStoreId: string): Promise<void> {
+	await browser.runtime
+		.sendMessage({
+			type: "select-container",
+			cookieStoreId,
+		});
+}
+
 function createListItem(container: browser.contextualIdentities.ContextualIdentity): void {
 	const icon = document.createElement("img");
 	icon.alt = "";
@@ -16,6 +24,10 @@ function createListItem(container: browser.contextualIdentities.ContextualIdenti
 	const button = document.createElement("button");
 	button.appendChild(icon);
 	button.appendChild(span);
+	button.addEventListener("click", function(e) {
+		e.preventDefault();
+		selectContainer(container.cookieStoreId);
+	});
 	const li = document.createElement("li");
 	const containerColorFilter = hexToCSSFilter(
 		container.colorCode,
