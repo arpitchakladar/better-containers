@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import Button from "@/components/Button.svelte";
 
-	let { value = $bindable(), placeholder, onsubmit } = $props();
+	let { value = $bindable(), placeholder, ...props } = $props();
 
 	let inputRef;
 	onMount(() => {
@@ -11,7 +11,7 @@
 	});
 </script>
 
-<form {onsubmit}>
+<form {...props}>
 	<input type="text" bind:this={inputRef} bind:value {placeholder} />
 	<Button type="submit">Add</Button>
 </form>

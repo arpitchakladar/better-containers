@@ -5,7 +5,7 @@
 	import Button from "@/components/Button.svelte";
 	import VerticalCheckList from "@/components/VerticalCheckList.svelte";
 
-	import TailSpinLoaderIcon from "@assets/tail-spin.svg";
+	import TailSpinLoader from "@assets/tail-spin.svelte";
 	import ArrowLeftSolidSvg from "@assets/arrow-left-solid.svelte";
 
 	let { site, name } = $props();
@@ -44,7 +44,7 @@
 		</div>
 	</h1>
 	{#if containers.length === 0}
-		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
+		<TailSpinLoader />
 	{:else}
 		<div>
 			<VerticalCheckList bind:items={containers} />
@@ -54,7 +54,8 @@
 
 <style land="scss">
 	main {
-		--vertical-check-list-height: calc(600px - 10rem);
+		--vertical-check-list-height: calc(600px - 9rem);
+		--tail-spin-loader-height: var(--vertical-check-list-height);
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;
@@ -66,10 +67,6 @@
 				justify-content: center;
 				align-items: center;
 			}
-		}
-
-		img.loading-spinner {
-			width: 5rem;
 		}
 	}
 </style>
