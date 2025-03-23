@@ -50,9 +50,9 @@ async function getContainerByCookieStoreId(
 
 (async () => {
 	const containers = await Promise.all(
-		params.getAll("container").map(async (cookieStoreId) => {
-			return getContainerByCookieStoreId(cookieStoreId);
-		}),
+		params
+			.getAll("container")
+			.map((cookieStoreId) => getContainerByCookieStoreId(cookieStoreId)),
 	);
 	for (const container of containers) {
 		if (container) {

@@ -11,10 +11,7 @@
 	{#await browser.contextualIdentities.query({})}
 		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
 	{:then containers}
-		<ul
-			class="containers"
-			style="--bg-color-filter: {hexToCSSFilter('#000000').filter}"
-		>
+		<ul style="--bg-color-filter: {hexToCSSFilter('#000000').filter}">
 			{#each containers as container}
 				<li style="--container-color: {container.colorCode};">
 					<button
@@ -41,12 +38,6 @@
 
 <style lang="scss">
 	main {
-		text-align: center;
-		position: relative;
-		padding: 1rem;
-		width: 20rem;
-		margin: 0 auto;
-
 		h1 {
 			text-align: center;
 			text-transform: uppercase;
@@ -58,11 +49,13 @@
 			width: 5rem;
 		}
 
-		.containers {
+		ul {
 			list-style-type: none;
 			padding: 0;
 			margin: 0;
 			background-color: var(--bg-color);
+			height: calc(600px - 10rem);
+			overflow: auto;
 			li {
 				button {
 					position: relative;

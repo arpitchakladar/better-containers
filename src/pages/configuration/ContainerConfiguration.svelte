@@ -56,22 +56,13 @@
 		<ToggleButton label="Save Cookies" bind:checked={cookie} />
 	</div>
 	<div>
-		<VerticalList
-			label="Urls"
-			placeholder="Add new site..."
-			bind:items={sites}
-		/>
+		<VerticalList placeholder="Add new site..." bind:items={sites} />
 	</div>
 </main>
 
 <style land="scss">
 	main {
-		text-align: center;
-		position: relative;
-		padding: 1rem;
-		width: 20rem;
-		margin: 0 auto;
-		color: var(--color);
+		--vertical-list-height: calc(600px - 14rem);
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;

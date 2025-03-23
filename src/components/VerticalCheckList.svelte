@@ -41,6 +41,8 @@
 		ul {
 			list-style: none;
 			padding: 0;
+			height: var(--vertical-check-list-height);
+			overflow: auto;
 
 			li {
 				display: flex;

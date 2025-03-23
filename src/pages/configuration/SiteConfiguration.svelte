@@ -54,12 +54,7 @@
 
 <style land="scss">
 	main {
-		text-align: center;
-		position: relative;
-		padding: 1rem;
-		width: 20rem;
-		margin: 0 auto;
-		color: var(--color);
+		--vertical-check-list-height: calc(600px - 10rem);
 		h1 {
 			display: grid;
 			grid-template-columns: auto 1fr;

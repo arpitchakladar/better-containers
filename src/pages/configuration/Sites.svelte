@@ -12,10 +12,7 @@
 	{#await getSiteConfigurations()}
 		<img class="loading-spinner" src={TailSpinLoaderIcon} alt="" />
 	{:then sites}
-		<ul
-			class="sites"
-			style="--bg-color-filter: {hexToCSSFilter('#000000').filter}"
-		>
+		<ul style="--bg-color-filter: {hexToCSSFilter('#000000').filter}">
 			{#each Object.entries(sites) as [siteName, site]}
 				<li>
 					<button
@@ -47,12 +44,6 @@
 
 <style land="scss">
 	main {
-		text-align: center;
-		position: relative;
-		padding: 1rem;
-		width: 20rem;
-		margin: 0 auto;
-
 		h1 {
 			text-align: center;
 			text-transform: uppercase;
@@ -64,11 +55,13 @@
 			width: 5rem;
 		}
 
-		.sites {
+		ul {
 			list-style-type: none;
 			padding: 0;
 			margin: 0;
 			background-color: var(--bg-color);
+			height: calc(600px - 10rem);
+			overflow: auto;
 			li {
 				button {
 					position: relative;
