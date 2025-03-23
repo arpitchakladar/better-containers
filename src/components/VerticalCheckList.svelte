@@ -7,9 +7,9 @@
 		label: string;
 		icon: string;
 		colorCode: string;
-		checked: boolean,
-		toggleCheck: () => Promise<boolean>,
-	};
+		checked: boolean;
+		toggleCheck: () => Promise<boolean>;
+	}
 
 	interface VerticalCheckListItemProps {
 		items: VerticalCheckListItem[];

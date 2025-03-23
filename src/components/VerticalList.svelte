@@ -7,7 +7,7 @@
 	interface VerticalListProps {
 		items: string[];
 		placeholder: string | undefined;
-	};
+	}
 
 	let { items = $bindable(), placeholder }: VerticalListProps = $props();
 

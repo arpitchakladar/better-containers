@@ -10,6 +10,7 @@
 		"svelte-preprocess": "^6.0.3",
 		"typescript": "^5.8.2",
 		"vite-plugin-checker": "^0.9.1",
+		"vite-plugin-prettier": "^0.0.6",
 		"vite-plugin-web-extension": "^4.4.3"
 	},
 	"name": "better-containers",

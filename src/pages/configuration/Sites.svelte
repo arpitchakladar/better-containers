@@ -17,7 +17,10 @@
 				<li>
 					<button
 						on:click|preventDefault={() =>
-							navigate("siteConfiguration", { site, name: siteName })}
+							navigate("siteConfiguration", {
+								site,
+								name: siteName,
+							})}
 						style="grid-template-columns: {'1rem '.repeat(
 							site.containers.length,
 						)}1fr;"

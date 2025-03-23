@@ -13,7 +13,7 @@
 	interface SiteConfigurationProps {
 		site: SiteConfiguration;
 		name: string;
-	};
+	}
 
 	let { site, name }: SiteConfigurationProps = $props();
 	let containers: VerticalCheckListItem[] = $state([]);

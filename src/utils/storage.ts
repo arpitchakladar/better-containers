@@ -1,24 +1,22 @@
 import { makeLoadContainerConfigurations } from "@/utils/container-configuration";
 
-export type ContainerConfiguration = {
+export interface ContainerConfiguration {
 	sites: string[];
 	cookie: boolean;
 };
 
-export type ContainerConfigurations = {
-	[key: string]: ContainerConfiguration;
+export type ContainerConfigurations = Record<string, ContainerConfiguration>;
+
+export interface SiteContainerConfiguration {
+	container: browser.contextualIdentities.ContextualIdentity;
+	cookie: boolean;
 };
 
-export type SiteConfiguration = {
-	containers: {
-		container: browser.contextualIdentities.ContextualIdentity;
-		cookie: boolean;
-	}[];
+export interface SiteConfiguration {
+	containers: SiteContainerConfiguration[];
 };
 
-export type SiteConfigurations = {
-	[key: string]: SiteConfiguration;
-};
+export type SiteConfigurations = Record<string, SiteConfiguration>;
 
 export async function setContainerConfiguration(
 	container: string,

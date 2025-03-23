@@ -7,7 +7,9 @@ export async function loadContainerConfigurations(): Promise<void> {
 }
 
 export async function makeLoadContainerConfigurations(): Promise<void> {
-	await browser.runtime.sendMessage({ type: "load-container-configurations" });
+	await browser.runtime.sendMessage({
+		type: "load-container-configurations",
+	});
 }
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {

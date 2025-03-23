@@ -26,11 +26,7 @@
 	});
 
 	$effect(() => {
-		setContainerConfiguration(
-			cookieStoreId,
-			$state.snapshot(sites),
-			cookie,
-		);
+		setContainerConfiguration(cookieStoreId, $state.snapshot(sites), cookie);
 	});
 </script>
 
