@@ -20,9 +20,7 @@
 	let sites = $state([]);
 
 	onMount(async () => {
-		const config = (await getContainerConfiguration(cookieStoreId))[
-			cookieStoreId
-		];
+		const config = await getContainerConfiguration(cookieStoreId);
 		if (config) {
 			cookie = !!config.cookie;
 			sites = config.sites || [];

@@ -1,6 +1,6 @@
 export const defaultContainer = "firefox-default";
 const selectContainerUrl = browser.runtime.getURL(
-	"src/pages/select/index.html",
+	"src/pages/select-container/index.html",
 );
 
 // Open a new tab in a specific container

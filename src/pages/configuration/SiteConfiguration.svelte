@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { navigate } from "@/pages/configuration/pageStore";
-	import { toggleSiteForContainer } from "@/utils/storage";
+	import { toggleContainerForSite } from "@/utils/storage";
 	import Button from "@/components/Button.svelte";
 	import VerticalCheckList from "@/components/VerticalCheckList.svelte";
 
@@ -27,7 +27,7 @@
 					({ container }) => container.cookieStoreId === cookieStoreId,
 				),
 				toggleCheck() {
-					return toggleSiteForContainer(name, cookieStoreId);
+					return toggleContainerForSite(name, cookieStoreId);
 				},
 			});
 		}

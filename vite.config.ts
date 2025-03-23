@@ -16,7 +16,10 @@ export default defineConfig(({}) => {
 			webExtension({
 				disableAutoLaunch: true,
 				additionalInputs: [
-					path.relative(process.cwd(), path.join(__dirname, "src", "pages", "select", "index.html")),
+					path.relative(
+						process.cwd(),
+						path.join(__dirname, "src", "pages", "select-container", "index.html"),
+					),
 				],
 			}),
 		],

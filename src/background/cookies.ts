@@ -1,4 +1,4 @@
-import { containerConfigurations } from "@/utils/cache-container-configuration";
+import { containerConfigurations } from "@/utils/container-configuration";
 
 browser.windows.onRemoved.addListener(async () => {
 	const openWindows = (await browser.windows.getAll({})).length;
