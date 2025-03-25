@@ -30,7 +30,7 @@
 				icon: iconUrl,
 				colorCode,
 				checked: !!siteContainers.find(
-					container => container.cookieStoreId === cookieStoreId,
+					(container) => container.cookieStoreId === cookieStoreId,
 				),
 				toggleCheck() {
 					return toggleContainerForSite(name, cookieStoreId);
