@@ -17,7 +17,6 @@ browser.webRequest.onBeforeRequest.addListener(
 			if (requestDetails.url) {
 				// If no containers are specified we default to using the default container
 				let containerCookieStoreIds = [];
-				console.log(containerConfigurations);
 				const containerConfigurationEntries = Object.entries(
 					containerConfigurations,
 				);
