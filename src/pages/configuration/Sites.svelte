@@ -25,7 +25,7 @@
 							containers.length,
 						)}1fr;"
 					>
-						{#each containers as { container }}
+						{#each containers as container}
 							<img
 								src={container.iconUrl}
 								alt=""
