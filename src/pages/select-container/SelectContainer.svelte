@@ -1,6 +1,5 @@
 <script lang="ts">
-	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
-	import ContainerList from "@/components/ContainerList.svelte";
+	import LoadingContainersList from "@/components/LoadingContainersList.svelte";
 
 	const params = new URLSearchParams(window.location.search);
 	const site = params.get("site");
@@ -38,11 +37,10 @@
 </svelte:head>
 <main>
 	<h1>{site}</h1>
-	{#await getContainers()}
-		<TailSpinLoader />
-	{:then containers}
-		<ContainerList {containers} onclick={selectContainer} />
-	{/await}
+	<LoadingContainersList
+		containers={getContainers()}
+		onclick={selectContainer}
+	/>
 </main>
 
 <style lang="scss">
@@ -59,7 +57,5 @@
 			color: var(--color);
 			margin: 0 0 1rem 0;
 		}
-
-		--tail-spin-loader-height: 10rem;
 	}
 </style>

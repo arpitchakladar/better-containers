@@ -4,7 +4,7 @@
 
 	import Button from "@/components/Button.svelte";
 	import TailSpinLoader from "@/components/TailSpinLoader.svelte";
-	import ContainerList from "@/components/ContainerList.svelte";
+	import LoadingContainersList from "@/components/LoadingContainersList.svelte";
 
 	function navigateToContainerConfiguration(
 		container: browser.contextualIdentities.ContextualIdentity,
@@ -15,11 +15,10 @@
 
 <main>
 	<h1>Containers</h1>
-	{#await browser.contextualIdentities.query({})}
-		<TailSpinLoader />
-	{:then containers}
-		<ContainerList {containers} onclick={navigateToContainerConfiguration} />
-	{/await}
+	<LoadingContainersList
+		containers={browser.contextualIdentities.query({})}
+		onclick={navigateToContainerConfiguration}
+	/>
 	<Button style="margin: 1rem auto;" onclick={() => navigate("sites", {})}>
 		SITES
 	</Button>
@@ -35,6 +34,5 @@
 		}
 
 		--containers-list-height: calc(600px - 10rem);
-		--tail-spin-loader-height: var(--containers-list-height);
 	}
 </style>
