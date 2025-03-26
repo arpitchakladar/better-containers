@@ -16,6 +16,7 @@ import {
 	generateHtmlPlugins,
 	moduleMap,
 	production,
+	writeFileRecursive,
 } from "./helpers.js";
 
 // Run Svelte Type Checking
@@ -85,10 +86,12 @@ export default [
 	}),
 	css({
 		output: (styles, styleNodes) => {
-			Object.keys(styleNodes).forEach((file) => {
-				const outputFile = getCssFileOutput(file);
-				fs.mkdirSync(path.dirname(outputFile), { recursive: true });
-				fs.appendFileSync(outputFile, styleNodes[file], "utf8");
+			Object.keys(styleNodes).forEach((entryCssFile) => {
+				Object.keys(moduleMap).forEach(entryModule => {
+					moduleMap[entryModule] = [...new Set(moduleMap[entryModule])];
+				});
+				const outputCssFile = getCssFileOutput(entryCssFile);
+				writeFileRecursive(outputCssFile, styleNodes[entryCssFile]);
 			});
 		},
 	}),

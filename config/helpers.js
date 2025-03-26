@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import html from "@rollup/plugin-html";
 import {
 	dest,
@@ -9,7 +10,12 @@ import {
 } from "./paths.js";
 
 export const production = process.env.NODE_ENV === "production";
-export const moduleMap = {};
+export let moduleMap = {};
+
+export function writeFileRecursive(filePath, data) {
+	fs.mkdirSync(path.dirname(filePath), { recursive: true });
+	fs.appendFileSync(filePath, data, "utf8");
+}
 
 // Generate CSS file output paths
 export function getCssFileOutput(cssPath) {
@@ -22,7 +28,7 @@ export function generateHtmlPlugins() {
 			title: `Better Containers`,
 			fileName: `pages/${page}/index.html`,
 			template: () => {
-				const linkCssTags = [...new Set(moduleMap[pageInputs[page]])]
+				const linkCssTags = moduleMap[pageInputs[page]]
 					.map(
 						(sveltePath) =>
 							`<link rel="stylesheet" href="/${path.relative(dest, getCssFileOutput(sveltePath.replace(/\.svelte$/, ".css")))}" type="text/css"/>`,
