@@ -1,5 +1,10 @@
 <script lang="ts">
-	let { checked = $bindable(), label } = $props();
+	interface ToggleButtonProps {
+		checked: boolean;
+		label: string;
+	}
+
+	let { checked = $bindable(), label }: ToggleButtonProps = $props();
 </script>
 
 <div class="toggle-button">

@@ -88,7 +88,7 @@ function startContainerization() {
 let configurationNotLoaded = true;
 
 const loadingConfigurationUrl = browser.runtime.getURL(
-	"src/pages/loading-configuration/index.html"
+	"src/pages/loading-configuration/index.html",
 );
 // const loadingConfigurationUrl = "https://www.example.com";
 
@@ -96,7 +96,9 @@ const loadingConfigurationUrl = browser.runtime.getURL(
 	await loadContainerConfigurations();
 	await initializeSomething();
 	configurationNotLoaded = false;
-	browser.webRequest.onBeforeRequest.removeListener(redirectUntilConfigurationLoaded);
+	browser.webRequest.onBeforeRequest.removeListener(
+		redirectUntilConfigurationLoaded,
+	);
 	await browser.runtime.sendMessage({
 		type: "configurations-loaded",
 	});
