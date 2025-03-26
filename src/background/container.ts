@@ -87,17 +87,25 @@ function startContainerization() {
 
 let configurationNotLoaded = true;
 
+const loadingConfigurationUrl = browser.runtime.getURL(
+	"src/pages/loading-configuration/index.html"
+);
+// const loadingConfigurationUrl = "https://www.example.com";
+
 (async () => {
 	await loadContainerConfigurations();
 	await initializeSomething();
 	configurationNotLoaded = false;
-	browser.webRequest.onBeforeRequest.removeListener(blockUntilLoad);
+	browser.webRequest.onBeforeRequest.removeListener(redirectUntilConfigurationLoaded);
+	await browser.runtime.sendMessage({
+		type: "configurations-loaded",
+	});
 	console.log("Removed blocking.");
 	startContainerization();
 })();
 
 browser.webRequest.onBeforeRequest.addListener(
-	blockUntilLoad,
+	redirectUntilConfigurationLoaded,
 	{
 		urls: ["<all_urls>"],
 		types: ["main_frame"],
@@ -105,19 +113,23 @@ browser.webRequest.onBeforeRequest.addListener(
 	["blocking"],
 );
 
-function blockUntilLoad(
-	_reqResponse: browser.webRequest._OnBeforeRequestDetails,
-): browser.webRequest.BlockingResponse {
-	if (configurationNotLoaded) {
-		console.log("Blocking request until initialization is complete...");
-		return { cancel: true }; // Block the request
-	}
-
-	return {};
-}
-
 async function initializeSomething(): Promise<void> {
 	console.log("Running initialization...");
 	// Simulate some startup process
-	await new Promise((resolve) => setTimeout(resolve, 10000)); // Delay 3s
+	await new Promise((resolve) => setTimeout(resolve, 20000)); // Delay 3s
+}
+
+async function redirectUntilConfigurationLoaded(
+	req: browser.webRequest._OnBeforeRequestDetails,
+): Promise<browser.webRequest.BlockingResponse> {
+	if (configurationNotLoaded && !req.url.startsWith(loadingConfigurationUrl)) {
+		console.log(`Redirecting ${req.url}.`);
+		const tab = await browser.tabs.get(req.tabId);
+		const encodedUrl = encodeURIComponent(req.url);
+		const redirectUrl = `${loadingConfigurationUrl}?origin=${encodedUrl}`;
+		browser.tabs.update(req.tabId, { url: redirectUrl });
+		return { cancel: true };
+	}
+
+	return {};
 }
