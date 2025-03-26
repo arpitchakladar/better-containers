@@ -19,7 +19,7 @@
 	"scripts": {
 		"build": "rm -rf dist && vite build",
 		"dev": "rm -rf dist && vite build --watch --mode development",
-		"format": "prettier --write 'src/**/*.{ts,js,svelte}'"
+		"format": "prettier --write 'src/**/*.{ts,js,svelte,css}'"
 	},
 	"repository": {
 		"type": "git",
