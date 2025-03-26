@@ -16,6 +16,9 @@
 	let CurrentPageComponent = $derived(paths[$currentPage.path]);
 </script>
 
+<svelte:head>
+	<title>Better Containers Configuration</title>
+</svelte:head>
 {#if CurrentPageComponent}
 	<CurrentPageComponent {...$currentPage.props} />
 {/if}

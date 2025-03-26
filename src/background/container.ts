@@ -88,7 +88,7 @@ function startContainerization() {
 let configurationNotLoaded = true;
 
 const loadingConfigurationUrl = browser.runtime.getURL(
-	"src/pages/loading-configuration/index.html",
+	"pages/loading-configuration/index.html",
 );
 // const loadingConfigurationUrl = "https://www.example.com";
 

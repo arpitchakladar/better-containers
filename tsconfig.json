@@ -15,8 +15,7 @@
 			"@/*": ["src/*"]
 		},
 		"types": [
-			"firefox-webext-browser",
-			"vite/client"
+			"firefox-webext-browser"
 		],
 		"noEmit": true,
 	},
