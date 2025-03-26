@@ -11,7 +11,8 @@ import {
 function startContainerization() {
 	browser.webRequest.onBeforeRequest.addListener(
 		(requestDetails) => {
-			if (requestDetails.frameId !== 0 || requestDetails.tabId === -1) return {};
+			if (requestDetails.frameId !== 0 || requestDetails.tabId === -1)
+				return {};
 
 			return (async () => {
 				const tab = await browser.tabs.get(requestDetails.tabId);
@@ -104,7 +105,9 @@ browser.webRequest.onBeforeRequest.addListener(
 	["blocking"],
 );
 
-function blockUntilLoad(_reqResponse: browser.webRequest._OnBeforeRequestDetails): browser.webRequest.BlockingResponse {
+function blockUntilLoad(
+	_reqResponse: browser.webRequest._OnBeforeRequestDetails,
+): browser.webRequest.BlockingResponse {
 	if (configurationNotLoaded) {
 		console.log("Blocking request until initialization is complete...");
 		return { cancel: true }; // Block the request

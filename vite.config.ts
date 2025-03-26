@@ -4,6 +4,13 @@ import checker from "vite-plugin-checker";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import path from "path";
 
+function getPagePath(pageName: string): string {
+	return path.relative(
+		process.cwd(),
+		path.join(__dirname, "src", "pages", pageName, "index.html"),
+	);
+}
+
 export default defineConfig(({}) => {
 	return {
 		plugins: [
@@ -15,10 +22,8 @@ export default defineConfig(({}) => {
 			webExtension({
 				disableAutoLaunch: true,
 				additionalInputs: [
-					path.relative(
-						process.cwd(),
-						path.join(__dirname, "src", "pages", "select-container", "index.html"),
-					),
+					getPagePath("select-container"),
+					getPagePath("loading-configuration"),
 				],
 			}),
 		],

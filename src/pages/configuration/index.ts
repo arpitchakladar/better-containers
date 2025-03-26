@@ -1,6 +1,6 @@
 import { mount } from "svelte";
-import Main from "@/pages/configuration/Main.svelte";
+import Configuration from "@/pages/configuration/Configuration.svelte";
 
-mount(Main, {
+mount(Configuration, {
 	target: document.getElementById("better-containers")!,
 });
