@@ -9,12 +9,14 @@
 		originUrl = params.get("origin") || "";
 
 		if (originUrl) {
-			browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-				if (message.type === "configurations-loaded") {
-					window.location.href = decodeURIComponent(originUrl);
-					sendResponse({ success: true });
-				}
-			});
+			browser.runtime.onMessage.addListener(
+				async (message, sender, sendResponse) => {
+					if (message.type === "configurations-loaded") {
+						window.location.href = decodeURIComponent(originUrl);
+						sendResponse({ success: true });
+					}
+				},
+			);
 		}
 	});
 </script>
