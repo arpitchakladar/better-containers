@@ -9,12 +9,23 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
 import css from "rollup-plugin-css-only";
-import { dest, pageInputs, stylesDest, getCssFileOutput, pageScriptPaths } from "../paths.js";
-import { dependencyMap, production, writeFileRecursive, resolveDependencies } from "../helpers.js";
+import {
+	dest,
+	pageInputs,
+	stylesDest,
+	getCssFilePath,
+} from "../paths.js";
+import {
+	dependencyMap,
+	cssDependencyMap,
+	production,
+	appendFileRecursive,
+	resolveDependencies,
+	transformDependencies,
+} from "../helpers.js";
 import { collectDependencies } from "./collectDependencies.js";
 import { runSvelteCheck } from "./runSvelteCheck.js";
 import { generateHtml } from "./generateHtml.js";
-
 
 export default [
 	alias({
@@ -40,13 +51,23 @@ export default [
 	}),
 	css({
 		output: (styles, styleNodes) => {
-			console.log(resolveDependencies(pageScriptPaths));
+			resolveDependencies();
+			transformDependencies();
+			const cssDependencyKeys = Object.keys(cssDependencyMap);
+			const cssDependencyEntries = Object.entries(cssDependencyMap);
 			Object.keys(styleNodes).forEach((entryCssFile) => {
 				Object.keys(dependencyMap).forEach((entryModule) => {
 					dependencyMap[entryModule] = [...new Set(dependencyMap[entryModule])];
 				});
-				const outputCssFile = getCssFileOutput(entryCssFile);
-				writeFileRecursive(outputCssFile, styleNodes[entryCssFile]);
+				const moduleOutputCssFile = getCssFilePath(entryCssFile);
+				const targetOutputCssFile = cssDependencyKeys.includes(
+					moduleOutputCssFile,
+				)
+					? moduleOutputCssFile
+					: cssDependencyEntries.find(([_, cssDependencies]) =>
+							cssDependencies.includes(moduleOutputCssFile),
+					)[0];
+				appendFileRecursive(targetOutputCssFile, styleNodes[entryCssFile]);
 			});
 		},
 	}),

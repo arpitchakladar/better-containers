@@ -53,6 +53,16 @@ export function getEntryFileFromName(name) {
 }
 
 // Generate CSS file output paths
-export function getCssFileOutput(cssPath) {
-	return path.resolve(stylesDest, path.basename(cssPath));
+// export function getCssFileOutput(cssPath) {
+// 	return path.resolve(stylesDest, path.basename(cssPath));
+// }
+
+export function getCssFilePath(filePath) {
+	if (filePath.match(/\/pages\/([^/]+)\/index\.ts$/)) {
+		// Convert pages/<page-name>/index.ts → path.resolve(dest, "pages", "<page-name>/style.css")
+		const pageName = filePath.match(/\/pages\/([^/]+)\/index\.ts$/)[1];
+		return path.resolve(dest, "pages", pageName, "style.css");
+	}
+	const moduleName = path.basename(filePath).replace(/\.[^/.]+$/, "") + ".css";
+	return path.resolve(stylesDest, moduleName);
 }

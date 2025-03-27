@@ -1,20 +1,28 @@
 import path from "path";
 import fs from "fs";
+import {
+	pageScriptPaths,
+	stylesDest,
+	dest,
+	getCssFilePath,
+} from "./paths.js";
 
 export const production = process.env.NODE_ENV === "production";
 export let dependencyMap = {};
+export let cssDependencyMap = {};
 
-export function writeFileRecursive(filePath, data) {
+export function appendFileRecursive(filePath, data) {
 	fs.mkdirSync(path.dirname(filePath), { recursive: true });
 	fs.appendFileSync(filePath, data, "utf8");
 }
 
-export function resolveDependencies(pageScriptPaths) {
+export function resolveDependencies() {
 	let resolved = dependencyMap;
 
 	function isDependencyUnique(dependency, importer, dependencies) {
 		return !Object.entries(dependencies).find(
-			([otherImporter, deps]) => otherImporter !== importer && deps.includes(dependency)
+			([otherImporter, deps]) =>
+				otherImporter !== importer && deps.includes(dependency),
 		);
 	}
 
@@ -23,12 +31,12 @@ export function resolveDependencies(pageScriptPaths) {
 
 		const resolvedDeps = new Set();
 
-		(dependencies[importer] || []).forEach(dep => {
+		(dependencies[importer] || []).forEach((dep) => {
 			resolvedDeps.add(dep);
 			const depResolved = resolve(dep, dependencies, resolved);
 
 			if (isDependencyUnique(dep, importer, dependencies)) {
-				depResolved.forEach(d => resolvedDeps.add(d));
+				depResolved.forEach((d) => resolvedDeps.add(d));
 			} else {
 				resolved[dep] = depResolved;
 			}
@@ -40,7 +48,7 @@ export function resolveDependencies(pageScriptPaths) {
 	while (true) {
 		const newResolved = {};
 
-		pageScriptPaths.forEach(path => {
+		pageScriptPaths.forEach((path) => {
 			newResolved[path] = resolve(path, resolved, newResolved);
 		});
 
@@ -50,5 +58,17 @@ export function resolveDependencies(pageScriptPaths) {
 		resolved = newResolved;
 	}
 
-	return resolved;
+	dependencyMap = resolved;
+}
+
+export function transformDependencies() {
+	const transformed = {};
+
+	Object.entries(dependencyMap).forEach(([key, value]) => {
+		let newKey = getCssFilePath(key);
+		let newValue = value.map((dep) => getCssFilePath(dep));
+		transformed[newKey] = newValue;
+	});
+
+	cssDependencyMap = transformed;
 }
