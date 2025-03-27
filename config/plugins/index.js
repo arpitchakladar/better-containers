@@ -9,6 +9,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
 import css from "rollup-plugin-css-only";
+import { minifyHTML } from "rollup-plugin-minify-html";
 import {
 	dest,
 	pageInputs,
@@ -79,6 +80,15 @@ export default [
 			{ src: "src/manifest.json", dest },
 			{ src: "src/pages/global.css", dest: stylesDest },
 		],
+	}),
+	minifyHTML({
+		minifyOutput: production,
+		minifierOptions: {
+			collapseWhitespace: true,
+			minifyCSS: true,
+			minifyJS: true,
+			minifyURLs: true,
+		},
 	}),
 	production && terser(),
 ];
