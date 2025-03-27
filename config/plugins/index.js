@@ -37,7 +37,11 @@ export default [
 	collectDependencies(),
 	svelte({
 		preprocess: sveltePreprocess(),
+		compilerOptions: {
+			cssHash: ({ hash, filename, name }) => `bc-${hash(filename + name)}`,
+		},
 	}),
+	// Take all the css output from svelte files
 	emitCss(),
 	runSvelteCheck(),
 	// Generate separate HTML files per page
