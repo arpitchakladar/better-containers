@@ -5,7 +5,7 @@ import {
 	getEntryFileFromName,
 } from "./config/paths.js";
 import { production } from "./config/helpers.js";
-import plugins from "./config/plugins.js";
+import plugins from "./config/plugins/index.js";
 
 export default {
 	input: {

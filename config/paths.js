@@ -50,3 +50,8 @@ export function getEntryFileFromName(name) {
 	if (backgroundScriptNames.includes(name)) return `background/${name}.js`;
 	return `modules/${name}.js`;
 }
+
+// Generate CSS file output paths
+export function getCssFileOutput(cssPath) {
+	return path.resolve(stylesDest, path.basename(cssPath));
+}
