@@ -17,7 +17,7 @@ export default {
 		format: "esm",
 		sourcemap: !production,
 		entryFileNames: ({ name }) => getEntryFileFromName(name),
-		chunkFileNames: "modules/[name].js",
+		chunkFileNames: production ? "modules/[hash].js" : "modules/[name].js",
 	},
 	plugins,
 	watch: {

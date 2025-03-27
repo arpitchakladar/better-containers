@@ -1,19 +1,14 @@
 import path from "path";
 import fs from "fs";
-import {
-	pageScriptPaths,
-	stylesDest,
-	dest,
-	getCssFilePath,
-} from "./paths.js";
+import { pageScriptPaths, stylesDest, dest, getCssFilePath } from "./paths.js";
 
 export const production = process.env.NODE_ENV === "production";
 export let dependencyMap = {};
 export let cssDependencyMap = {};
 
-export function appendFileRecursive(filePath, data) {
+export function writeFileRecursive(filePath, data) {
 	fs.mkdirSync(path.dirname(filePath), { recursive: true });
-	fs.appendFileSync(filePath, data, "utf8");
+	fs.writeFileSync(filePath, data, "utf8");
 }
 
 export function resolveDependencies() {
@@ -61,7 +56,7 @@ export function resolveDependencies() {
 	dependencyMap = resolved;
 }
 
-export function transformDependencies() {
+export function resolveCssDependencies() {
 	const transformed = {};
 
 	Object.entries(dependencyMap).forEach(([key, value]) => {

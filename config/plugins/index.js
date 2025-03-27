@@ -8,23 +8,11 @@ import copy from "rollup-plugin-copy";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
-import css from "rollup-plugin-css-only";
 import { minifyHTML } from "rollup-plugin-minify-html";
-import {
-	dest,
-	pageInputs,
-	stylesDest,
-	getCssFilePath,
-} from "../paths.js";
-import {
-	dependencyMap,
-	cssDependencyMap,
-	production,
-	appendFileRecursive,
-	resolveDependencies,
-	transformDependencies,
-} from "../helpers.js";
+import { dest, pageInputs, stylesDest, getCssFilePath } from "../paths.js";
+import { dependencyMap, cssDependencyMap, production } from "../helpers.js";
 import { collectDependencies } from "./collectDependencies.js";
+import { emitCss } from "./emitCss.js";
 import { runSvelteCheck } from "./runSvelteCheck.js";
 import { generateHtml } from "./generateHtml.js";
 
@@ -50,28 +38,7 @@ export default [
 	svelte({
 		preprocess: sveltePreprocess(),
 	}),
-	css({
-		output: (styles, styleNodes) => {
-			resolveDependencies();
-			transformDependencies();
-			const cssDependencyKeys = Object.keys(cssDependencyMap);
-			const cssDependencyEntries = Object.entries(cssDependencyMap);
-			Object.keys(styleNodes).forEach((entryCssFile) => {
-				Object.keys(dependencyMap).forEach((entryModule) => {
-					dependencyMap[entryModule] = [...new Set(dependencyMap[entryModule])];
-				});
-				const moduleOutputCssFile = getCssFilePath(entryCssFile);
-				const targetOutputCssFile = cssDependencyKeys.includes(
-					moduleOutputCssFile,
-				)
-					? moduleOutputCssFile
-					: cssDependencyEntries.find(([_, cssDependencies]) =>
-							cssDependencies.includes(moduleOutputCssFile),
-					)[0];
-				appendFileRecursive(targetOutputCssFile, styleNodes[entryCssFile]);
-			});
-		},
-	}),
+	emitCss(),
 	runSvelteCheck(),
 	// Generate separate HTML files per page
 	...generateHtml(),
