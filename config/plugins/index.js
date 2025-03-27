@@ -9,11 +9,12 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
 import css from "rollup-plugin-css-only";
-import { dest, pageInputs, stylesDest, getCssFileOutput } from "../paths.js";
-import { moduleMap, production, writeFileRecursive } from "../helpers.js";
+import { dest, pageInputs, stylesDest, getCssFileOutput, pageScriptPaths } from "../paths.js";
+import { dependencyMap, production, writeFileRecursive, resolveDependencies } from "../helpers.js";
 import { collectDependencies } from "./collectDependencies.js";
 import { runSvelteCheck } from "./runSvelteCheck.js";
 import { generateHtml } from "./generateHtml.js";
+
 
 export default [
 	alias({
@@ -39,9 +40,10 @@ export default [
 	}),
 	css({
 		output: (styles, styleNodes) => {
+			console.log(resolveDependencies(pageScriptPaths));
 			Object.keys(styleNodes).forEach((entryCssFile) => {
-				Object.keys(moduleMap).forEach((entryModule) => {
-					moduleMap[entryModule] = [...new Set(moduleMap[entryModule])];
+				Object.keys(dependencyMap).forEach((entryModule) => {
+					dependencyMap[entryModule] = [...new Set(dependencyMap[entryModule])];
 				});
 				const outputCssFile = getCssFileOutput(entryCssFile);
 				writeFileRecursive(outputCssFile, styleNodes[entryCssFile]);

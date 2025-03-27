@@ -1,6 +1,6 @@
 import path from "path";
 import html from "@rollup/plugin-html";
-import { moduleMap } from "../helpers.js";
+import { dependencyMap } from "../helpers.js";
 import {
 	dest,
 	pageInputs,
@@ -14,7 +14,7 @@ export function generateHtml() {
 			title: `Better Containers`,
 			fileName: `pages/${page}/index.html`,
 			template: () => {
-				const linkCssTags = moduleMap[pageInputs[page]]
+				const linkCssTags = dependencyMap[pageInputs[page]]
 					.map(
 						(sveltePath) =>
 							`<link rel="stylesheet" href="/${path.relative(dest, getCssFileOutput(sveltePath.replace(/\.svelte$/, ".css")))}" type="text/css"/>`,

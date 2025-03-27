@@ -42,8 +42,9 @@ function getBackgroundScripts() {
 export const pageInputs = getPages();
 export const backgroundScriptInputs = getBackgroundScripts();
 
-const pageScriptNames = Object.keys(pageInputs);
-const backgroundScriptNames = Object.keys(backgroundScriptInputs);
+export const pageScriptNames = Object.keys(pageInputs);
+export const backgroundScriptNames = Object.keys(backgroundScriptInputs);
+export const pageScriptPaths = Object.values(pageInputs);
 
 export function getEntryFileFromName(name) {
 	if (pageScriptNames.includes(name)) return `pages/${name}/index.js`;
