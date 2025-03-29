@@ -5,6 +5,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+export const src = path.resolve(__dirname, "../src");
+
 export const dest = process.env.OUT_DIR || path.resolve(__dirname, "../dist");
 export const stylesDest = path.resolve(dest, "styles");
 

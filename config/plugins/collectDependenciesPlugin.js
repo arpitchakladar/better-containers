@@ -2,7 +2,7 @@ import { pageInputs, pageScriptPaths } from "../paths.js";
 import { svelteDependencies } from "../helpers.js";
 
 // Collect dependencies for each dependency
-export function collectDependencies() {
+export function collectDependenciesPlugin() {
 	return {
 		name: "collect-dependencies",
 		resolveId(source, importer) {

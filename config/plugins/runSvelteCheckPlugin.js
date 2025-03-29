@@ -2,7 +2,7 @@ import { production } from "../env.js";
 import { spawn } from "child_process";
 
 // Run Svelte Type Checking
-export function runSvelteCheck() {
+export function runSvelteCheckPlugin() {
 	return {
 		name: "svelte-check",
 		buildStart() {

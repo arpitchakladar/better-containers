@@ -11,10 +11,11 @@ import alias from "@rollup/plugin-alias";
 import { minifyHTML } from "rollup-plugin-minify-html";
 import { dest, pageInputs, stylesDest, getCssFilePath } from "../paths.js";
 import { production } from "../env.js";
-import { collectDependencies } from "./collectDependencies.js";
-import { emitCss } from "./emitCss.js";
-import { runSvelteCheck } from "./runSvelteCheck.js";
-import { generateHtml } from "./generateHtml.js";
+import { collectDependenciesPlugin } from "./collectDependenciesPlugin.js";
+import { loadCssPlugin, emitCssPlugin } from "./emitCssPlugin.js";
+import { runSvelteCheckPlugin } from "./runSvelteCheckPlugin.js";
+import { generateHtmlPlugin } from "./generateHtmlPlugin.js";
+import { manifestPlugin } from "./manifestPlugin.js";
 
 export default [
 	alias({
@@ -34,7 +35,7 @@ export default [
 		check: true,
 		tsconfig: "./tsconfig.json",
 	}),
-	collectDependencies(),
+	collectDependenciesPlugin(),
 	svelte({
 		preprocess: sveltePreprocess(),
 		compilerOptions: {
@@ -42,16 +43,18 @@ export default [
 		},
 	}),
 	// Take all the css output from svelte files
-	emitCss(),
-	runSvelteCheck(),
+	loadCssPlugin(),
+	emitCssPlugin(),
+	runSvelteCheckPlugin(),
 	// Generate separate HTML files per page
-	...generateHtml(),
+	...generateHtmlPlugin(),
 	copy({
 		targets: [
 			{ src: "src/manifest.json", dest },
 			{ src: "src/pages/global.css", dest: stylesDest },
 		],
 	}),
+	manifestPlugin(),
 	minifyHTML({
 		minifyOutput: production,
 		minifierOptions: {

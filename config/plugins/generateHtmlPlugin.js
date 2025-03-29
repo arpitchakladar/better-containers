@@ -8,7 +8,7 @@ import {
 	getCssFilePath,
 } from "../paths.js";
 
-export function generateHtml() {
+export function generateHtmlPlugin() {
 	return Object.entries(pageInputs).map(([page, scriptPath]) =>
 		html({
 			title: `Better Containers`,
