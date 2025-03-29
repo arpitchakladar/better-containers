@@ -1,6 +1,6 @@
 import path from "path";
 import html from "@rollup/plugin-html";
-import { cssDependencyMap } from "../helpers.js";
+import { svelteEmitCssDependencies } from "../helpers.js";
 import {
 	dest,
 	pageInputs,
@@ -13,13 +13,13 @@ export function generateHtml() {
 		html({
 			title: `Better Containers`,
 			fileName: `pages/${page}/index.html`,
-			template: () => {
+			template() {
 				const mainStyle = getCssFilePath(pageInputs[page]);
 				const linkCssTags = [mainStyle]
-					.concat(cssDependencyMap[mainStyle] || [])
+					.concat(svelteEmitCssDependencies.dependencies[mainStyle] || [])
 					.map(
 						(cssPath) =>
-							cssPath in cssDependencyMap &&
+							cssPath in svelteEmitCssDependencies.dependencies &&
 							`<link rel="stylesheet" href="/${path.relative(dest, cssPath)}" type="text/css"/>`,
 					)
 					.filter(Boolean)

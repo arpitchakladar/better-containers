@@ -1,4 +1,4 @@
-import { production } from "../helpers.js";
+import { production } from "../env.js";
 import { spawn } from "child_process";
 
 // Run Svelte Type Checking

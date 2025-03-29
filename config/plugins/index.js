@@ -10,7 +10,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
 import { minifyHTML } from "rollup-plugin-minify-html";
 import { dest, pageInputs, stylesDest, getCssFilePath } from "../paths.js";
-import { dependencyMap, cssDependencyMap, production } from "../helpers.js";
+import { production } from "../env.js";
 import { collectDependencies } from "./collectDependencies.js";
 import { emitCss } from "./emitCss.js";
 import { runSvelteCheck } from "./runSvelteCheck.js";

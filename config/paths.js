@@ -1,6 +1,6 @@
 import path from "path";
-import { fileURLToPath } from "url";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,11 +51,6 @@ export function getEntryFileFromName(name) {
 	if (backgroundScriptNames.includes(name)) return `background/${name}.js`;
 	return `modules/${name}.js`;
 }
-
-// Generate CSS file output paths
-// export function getCssFileOutput(cssPath) {
-// 	return path.resolve(stylesDest, path.basename(cssPath));
-// }
 
 export function getCssFilePath(filePath) {
 	if (filePath.match(/\/pages\/([^/]+)\/index\.ts$/)) {

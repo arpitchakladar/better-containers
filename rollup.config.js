@@ -4,7 +4,7 @@ import {
 	backgroundScriptInputs,
 	getEntryFileFromName,
 } from "./config/paths.js";
-import { production } from "./config/helpers.js";
+import { production } from "./config/env.js";
 import plugins from "./config/plugins/index.js";
 
 export default {

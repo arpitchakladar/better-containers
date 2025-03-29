@@ -1,5 +1,5 @@
 import { pageInputs, pageScriptPaths } from "../paths.js";
-import { dependencyMap } from "../helpers.js";
+import { svelteDependencies } from "../helpers.js";
 
 // Collect dependencies for each dependency
 export function collectDependencies() {
@@ -7,8 +7,9 @@ export function collectDependencies() {
 		name: "collect-dependencies",
 		resolveId(source, importer) {
 			if (importer && source.endsWith(".svelte")) {
-				if (!dependencyMap[importer]) dependencyMap[importer] = [];
-				dependencyMap[importer].push(source);
+				if (!svelteDependencies.dependencies[importer])
+					svelteDependencies.dependencies[importer] = [];
+				svelteDependencies.dependencies[importer].push(source);
 			}
 			return null; // Continue resolving normally
 		},
