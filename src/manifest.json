@@ -1,7 +1,6 @@
 {
 	"manifest_version": 2,
 	"name": "Better Containers",
-	"version": "0.1.0",
 	"description": "A Firefox extension to better manage containers.",
 	"permissions": [
 		"cookies",
@@ -14,10 +13,6 @@
 		"<all_urls>"
 	],
 	"background": {
-		"scripts": [
-			"background/container.js",
-			"background/cookies.js"
-		],
 		"type": "module",
 		"persistent": true
 	},
@@ -27,10 +22,5 @@
 	},
 	"icons": {
 		"48": "icons/icon-48.png"
-	},
-	"web_accessible_resources": [
-		"pages/configuration/index.html",
-		"pages/select-container/index.html",
-		"pages/loading-configuration/index.html"
-	]
+	}
 }

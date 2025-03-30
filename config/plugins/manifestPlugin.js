@@ -2,11 +2,10 @@ import fs from "fs";
 import path from "path";
 import { production } from "../env.js";
 import { writeFileRecursive } from "../helpers.js";
-import { src } from "../paths.js";
+import { src, __dirname } from "../paths.js";
 
 export function manifestPlugin(options = {}) {
 	const { outputPath = "dist/manifest.json" } = options;
-	let outputFiles = [];
 	const baseManifest = JSON.parse(
 		fs.readFileSync(path.resolve(src, "manifest.json")),
 	);
@@ -14,18 +13,40 @@ export function manifestPlugin(options = {}) {
 	return {
 		name: "manifest-plugin",
 		generateBundle(outputOptions, bundle) {
-			outputFiles = Object.keys(bundle).filter(
-				(fileName) =>
-					fileName.endsWith(".js") ||
-					fileName.endsWith(".css") ||
-					fileName.endsWith(".html"),
+			const [webAccessibleResources, backgroundScripts] = Object.keys(
+				bundle,
+			).reduce(
+				([webAccessibleResources, backgroundScripts], fileName) => {
+					if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
+						webAccessibleResources.push(fileName);
+					} else if (fileName.endsWith(".js")) {
+						if (fileName.split("/")[0] === "background") {
+							backgroundScripts.push(fileName);
+						} else {
+							webAccessibleResources.push(fileName);
+						}
+					}
+					return [webAccessibleResources, backgroundScripts];
+				},
+				[[], []],
+			);
+			const packageJson = JSON.parse(
+				fs.readFileSync(path.join(__dirname, "../package.json"), "utf8"),
 			);
 
 			const manifest = {
 				...baseManifest,
+				version: packageJson.version,
+				background: {
+					...(baseManifest.background || {}),
+					scripts: [
+						...(baseManifest.background.scripts || []),
+						...backgroundScripts,
+					],
+				},
 				web_accessible_resources: [
 					...(baseManifest.web_accessible_resources || []),
-					...outputFiles,
+					...webAccessibleResources,
 				],
 			};
 
