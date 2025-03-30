@@ -43,7 +43,7 @@
 	/>
 </main>
 
-<style lang="scss">
+<style>
 	main {
 		text-align: center;
 		position: relative;

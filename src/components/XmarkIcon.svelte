@@ -6,7 +6,7 @@
 	></path></svg
 >
 
-<style lang="scss">
+<style>
 	svg {
 		height: 1rem;
 		path {

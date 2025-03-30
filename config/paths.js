@@ -48,6 +48,10 @@ export const pageScriptNames = Object.keys(pageInputs);
 export const backgroundScriptNames = Object.keys(backgroundScriptInputs);
 export const pageScriptPaths = Object.values(pageInputs);
 
+export function getRelativeDestPath(fullPath) {
+	return path.relative(dest, fullPath);
+}
+
 export function getEntryFileFromName(name) {
 	if (pageScriptNames.includes(name)) return `pages/${name}/index.js`;
 	if (backgroundScriptNames.includes(name)) return `background/${name}.js`;

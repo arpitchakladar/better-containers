@@ -11,7 +11,7 @@ import alias from "@rollup/plugin-alias";
 import { minifyHTML } from "rollup-plugin-minify-html";
 import { dest, pageInputs, stylesDest, getCssFilePath } from "../paths.js";
 import { production } from "../env.js";
-import { collectDependenciesPlugin } from "./collectDependenciesPlugin.js";
+import { collectSvelteDependenciesPlugin } from "./collectSvelteDependenciesPlugin.js";
 import { loadCssPlugin, emitCssPlugin } from "./emitCssPlugin.js";
 import { runSvelteCheckPlugin } from "./runSvelteCheckPlugin.js";
 import { generateHtmlPlugin } from "./generateHtmlPlugin.js";
@@ -35,7 +35,7 @@ export default [
 		check: true,
 		tsconfig: "./tsconfig.json",
 	}),
-	collectDependenciesPlugin(),
+	collectSvelteDependenciesPlugin(),
 	svelte({
 		preprocess: sveltePreprocess(),
 		compilerOptions: {
@@ -49,10 +49,7 @@ export default [
 	// Generate separate HTML files per page
 	...generateHtmlPlugin(),
 	copy({
-		targets: [
-			{ src: "src/manifest.json", dest },
-			{ src: "src/pages/global.css", dest: stylesDest },
-		],
+		targets: [{ src: "src/pages/global.css", dest: stylesDest }],
 	}),
 	manifestPlugin(),
 	minifyHTML({

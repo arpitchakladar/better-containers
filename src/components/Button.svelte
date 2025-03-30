@@ -6,7 +6,7 @@
 	{@render children()}
 </button>
 
-<style land="scss">
+<style>
 	button {
 		padding: 0.5rem 1rem;
 		border-radius: 5px;

@@ -26,7 +26,7 @@
 	{/each}
 </ul>
 
-<style lang="scss">
+<style>
 	ul {
 		list-style-type: none;
 		padding: 0;

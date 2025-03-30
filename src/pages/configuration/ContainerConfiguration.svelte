@@ -54,7 +54,7 @@
 	</div>
 </main>
 
-<style land="scss">
+<style>
 	main {
 		--vertical-list-height: calc(600px - 15rem);
 		h1 {

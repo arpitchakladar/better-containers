@@ -15,7 +15,7 @@
 	</label>
 </div>
 
-<style lang="scss">
+<style>
 	.toggle-button {
 		display: flex;
 		justify-content: center;

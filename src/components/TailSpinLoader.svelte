@@ -42,7 +42,7 @@
 	</svg>
 </div>
 
-<style lang="scss">
+<style>
 	div {
 		height: var(--tail-spin-loader-height);
 		position: relative;

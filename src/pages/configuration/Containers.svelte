@@ -24,7 +24,7 @@
 	</Button>
 </main>
 
-<style lang="scss">
+<style>
 	main {
 		h1 {
 			text-align: center;

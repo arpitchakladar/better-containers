@@ -19,7 +19,7 @@
 	<ContainersList {containers} {onclick} />
 {/await}
 
-<style lang="scss">
+<style>
 	:root {
 		--tail-spin-loader-height: var(--containers-list-height, 10rem);
 	}

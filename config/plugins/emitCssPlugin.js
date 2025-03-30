@@ -1,7 +1,6 @@
-import path from "path";
 import css from "rollup-plugin-css-only";
 import { transformSync } from "esbuild";
-import { getCssFilePath, dest } from "../paths.js";
+import { getCssFilePath, getRelativeDestPath } from "../paths.js";
 import { production } from "../env.js";
 import {
 	svelteDependencies,
@@ -23,7 +22,7 @@ export function emitCssPlugin() {
 
 					this.emitFile({
 						type: "asset",
-						fileName: path.relative(dest, targetOutputCssFile),
+						fileName: getRelativeDestPath(targetOutputCssFile),
 						source: outputData,
 					});
 				},

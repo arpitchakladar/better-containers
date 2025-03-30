@@ -1,4 +1,3 @@
-import path from "path";
 import html from "@rollup/plugin-html";
 import { svelteEmitCssDependencies } from "../helpers.js";
 import {
@@ -6,6 +5,7 @@ import {
 	pageInputs,
 	getEntryFileFromName,
 	getCssFilePath,
+	getRelativeDestPath,
 } from "../paths.js";
 
 export function generateHtmlPlugin() {
@@ -20,7 +20,7 @@ export function generateHtmlPlugin() {
 					.map(
 						(cssPath) =>
 							cssPath in svelteEmitCssDependencies.dependencies &&
-							`<link rel="stylesheet" href="/${path.relative(dest, cssPath)}" type="text/css"/>`,
+							`<link rel="stylesheet" href="/${getRelativeDestPath(cssPath)}" type="text/css"/>`,
 					)
 					.filter(Boolean)
 					.join("\n\t\t");
@@ -29,7 +29,7 @@ export function generateHtmlPlugin() {
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="/${path.relative(dest, getCssFilePath("global.css"))}" type="text/css" />
+		<link rel="stylesheet" href="/${getRelativeDestPath("global.css")}" type="text/css" />
 		${linkCssTags}
 	</head>
 	<body>
