@@ -1,13 +1,12 @@
 import fs from "fs";
 import path from "path";
 import { production } from "../env.js";
-import { writeFileRecursive } from "../helpers.js";
-import { src, __dirname } from "../paths.js";
+import { __dirname, srcPath, getRelativeDestPath } from "../paths.js";
 
 export function manifestPlugin(options = {}) {
 	const { outputPath = "dist/manifest.json" } = options;
 	const baseManifest = JSON.parse(
-		fs.readFileSync(path.resolve(src, "manifest.json")),
+		fs.readFileSync(path.resolve(srcPath, "manifest.json")),
 	);
 
 	return {
@@ -52,7 +51,11 @@ export function manifestPlugin(options = {}) {
 
 			const manifestPath = path.resolve(outputPath);
 			const manifestData = JSON.stringify(manifest, null, production ? 0 : 2);
-			writeFileRecursive(manifestPath, manifestData);
+			this.emitFile({
+				type: "asset",
+				fileName: getRelativeDestPath(manifestPath),
+				source: manifestData,
+			});
 		},
 	};
 }

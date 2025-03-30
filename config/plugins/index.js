@@ -9,7 +9,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
 import { minifyHTML } from "rollup-plugin-minify-html";
-import { dest, pageInputs, stylesDest, getCssFilePath } from "../paths.js";
+import { pageInputs, stylesDestPath } from "../paths.js";
 import { production } from "../env.js";
 import { collectSvelteDependenciesPlugin } from "./collectSvelteDependenciesPlugin.js";
 import { loadCssPlugin, emitCssPlugin } from "./emitCssPlugin.js";
@@ -49,7 +49,7 @@ export default [
 	// Generate separate HTML files per page
 	...generateHtmlPlugin(),
 	copy({
-		targets: [{ src: "src/pages/global.css", dest: stylesDest }],
+		targets: [{ src: "src/pages/global.css", dest: stylesDestPath }],
 	}),
 	manifestPlugin(),
 	minifyHTML({

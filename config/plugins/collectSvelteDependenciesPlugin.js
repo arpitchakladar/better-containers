@@ -1,4 +1,3 @@
-import { pageInputs, pageScriptPaths } from "../paths.js";
 import { svelteDependencies } from "../helpers.js";
 
 // Collect dependencies for each dependency

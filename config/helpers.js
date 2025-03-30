@@ -1,11 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { pageScriptPaths, stylesDest, dest, getCssFilePath } from "./paths.js";
-
-export function writeFileRecursive(filePath, data) {
-	fs.mkdirSync(path.dirname(filePath), { recursive: true });
-	fs.writeFileSync(filePath, data, "utf8");
-}
+import { pageScriptPaths, getCssFilePath } from "./paths.js";
 
 export const svelteDependencies = {
 	dependencies: {},

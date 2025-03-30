@@ -1,5 +1,5 @@
 import {
-	dest,
+	destPath,
 	pageInputs,
 	backgroundScriptInputs,
 	getEntryFileFromName,
@@ -13,7 +13,7 @@ export default {
 		...pageInputs,
 	},
 	output: {
-		dir: dest,
+		dir: destPath,
 		format: "esm",
 		sourcemap: !production,
 		entryFileNames: ({ name }) => getEntryFileFromName(name),

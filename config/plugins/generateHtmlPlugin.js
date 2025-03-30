@@ -1,7 +1,6 @@
 import html from "@rollup/plugin-html";
 import { svelteEmitCssDependencies } from "../helpers.js";
 import {
-	dest,
 	pageInputs,
 	getEntryFileFromName,
 	getCssFilePath,

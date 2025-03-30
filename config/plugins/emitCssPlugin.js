@@ -2,11 +2,7 @@ import css from "rollup-plugin-css-only";
 import { transformSync } from "esbuild";
 import { getCssFilePath, getRelativeDestPath } from "../paths.js";
 import { production } from "../env.js";
-import {
-	svelteDependencies,
-	svelteEmitCssDependencies,
-	writeFileRecursive,
-} from "../helpers.js";
+import { svelteDependencies, svelteEmitCssDependencies } from "../helpers.js";
 
 let outputTargetsData = {};
 

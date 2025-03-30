@@ -5,10 +5,11 @@ import { fileURLToPath } from "url";
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
 
-export const src = path.resolve(__dirname, "../src");
+export const srcPath = path.resolve(__dirname, "../src");
 
-export const dest = process.env.OUT_DIR || path.resolve(__dirname, "../dist");
-export const stylesDest = path.resolve(dest, "styles");
+export const destPath =
+	process.env.OUT_DIR || path.resolve(__dirname, "../dist");
+export const stylesDestPath = path.resolve(destPath, "styles");
 
 // Helper to get all pages
 function getPages() {
@@ -49,7 +50,7 @@ export const backgroundScriptNames = Object.keys(backgroundScriptInputs);
 export const pageScriptPaths = Object.values(pageInputs);
 
 export function getRelativeDestPath(fullPath) {
-	return path.relative(dest, fullPath);
+	return path.relative(destPath, fullPath);
 }
 
 export function getEntryFileFromName(name) {
@@ -60,10 +61,10 @@ export function getEntryFileFromName(name) {
 
 export function getCssFilePath(filePath) {
 	if (filePath.match(/\/pages\/([^/]+)\/index\.ts$/)) {
-		// Convert pages/<page-name>/index.ts → path.resolve(dest, "pages", "<page-name>/style.css")
+		// Convert pages/<page-name>/index.ts → path.resolve(destPath, "pages", "<page-name>/style.css")
 		const pageName = filePath.match(/\/pages\/([^/]+)\/index\.ts$/)[1];
-		return path.resolve(dest, "pages", pageName, "style.css");
+		return path.resolve(destPath, "pages", pageName, "style.css");
 	}
 	const moduleName = path.basename(filePath).replace(/\.[^/.]+$/, "") + ".css";
-	return path.resolve(stylesDest, moduleName);
+	return path.resolve(stylesDestPath, moduleName);
 }
