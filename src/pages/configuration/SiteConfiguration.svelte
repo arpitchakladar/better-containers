@@ -58,7 +58,7 @@
 	{/if}
 </main>
 
-<style land="scss">
+<style>
 	main {
 		--vertical-check-list-height: calc(600px - 9rem);
 		--tail-spin-loader-height: var(--vertical-check-list-height);

@@ -43,7 +43,7 @@
 	</ul>
 </div>
 
-<style lang="scss">
+<style>
 	.vertical-check-list {
 		width: 100%;
 		max-width: 400px;

@@ -30,7 +30,7 @@
 	<TailSpinLoader />
 </div>
 
-<style lang="scss">
+<style>
 	div {
 		color: var(--color);
 		text-align: center;

@@ -1,25 +1,35 @@
 {
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"@rollup/plugin-alias": "^5.1.1",
+		"@rollup/plugin-commonjs": "^28.0.3",
+		"@rollup/plugin-html": "^2.0.0",
+		"@rollup/plugin-node-resolve": "^16.0.1",
+		"@rollup/plugin-terser": "^0.4.4",
 		"@tsconfig/svelte": "^5.0.4",
 		"@types/firefox-webext-browser": "^120.0.4",
+		"esbuild": "^0.25.1",
 		"hex-to-css-filter": "^6.0.0",
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.7",
+		"rollup": "^4.37.0",
+		"rollup-plugin-copy": "^3.5.0",
+		"rollup-plugin-css-only": "^4.5.2",
+		"rollup-plugin-minify-html": "^1.1.1",
+		"rollup-plugin-svelte": "^7.2.2",
+		"rollup-plugin-typescript2": "^0.36.0",
 		"svelte-check": "^4.1.5",
 		"svelte-preprocess": "^6.0.3",
-		"typescript": "^5.8.2",
-		"vite-plugin-checker": "^0.9.1",
-		"vite-plugin-web-extension": "^4.4.3"
+		"typescript": "^5.8.2"
 	},
 	"name": "better-containers",
 	"version": "0.1.0",
 	"description": "A Firefox extension to better manage containers.",
 	"type": "module",
 	"scripts": {
-		"build": "rm -rf dist && vite build",
-		"dev": "rm -rf dist && vite build --watch --mode development",
-		"format": "prettier --write 'src/**/*.{ts,js,svelte,css}'"
+		"build": "rm -rf dist && NODE_ENV=production rollup -c",
+		"build:dev": "rm -rf dist && rollup -c",
+		"dev": "rollup -c -w",
+		"format": "prettier --write './**/*.{ts,js,svelte,css}'"
 	},
 	"repository": {
 		"type": "git",

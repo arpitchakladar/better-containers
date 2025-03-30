@@ -16,7 +16,7 @@
 	<Button type="submit">Add</Button>
 </form>
 
-<style lang="scss">
+<style>
 	form {
 		margin-top: 1rem;
 		display: flex;

@@ -45,7 +45,7 @@
 	</Button>
 </main>
 
-<style land="scss">
+<style>
 	main {
 		--sites-list-height: calc(600px - 10rem);
 		--tail-spin-loader-height: var(--sites-list-height);

@@ -88,9 +88,8 @@ function startContainerization() {
 let configurationNotLoaded = true;
 
 const loadingConfigurationUrl = browser.runtime.getURL(
-	"src/pages/loading-configuration/index.html",
+	"pages/loading-configuration/index.html",
 );
-// const loadingConfigurationUrl = "https://www.example.com";
 
 (async () => {
 	await loadContainerConfigurations();
@@ -118,7 +117,7 @@ browser.webRequest.onBeforeRequest.addListener(
 async function initializeSomething(): Promise<void> {
 	console.log("Running initialization...");
 	// Simulate some startup process
-	await new Promise((resolve) => setTimeout(resolve, 20000)); // Delay 3s
+	await new Promise((resolve) => setTimeout(resolve, 20000)); // Delay 20s
 }
 
 async function redirectUntilConfigurationLoaded(

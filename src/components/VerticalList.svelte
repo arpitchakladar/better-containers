@@ -43,7 +43,7 @@
 	<SingleInputForm onsubmit={addItem} bind:value={newItem} {placeholder} />
 </div>
 
-<style lang="scss">
+<style>
 	.vertical-list {
 		ul {
 			list-style: none;
