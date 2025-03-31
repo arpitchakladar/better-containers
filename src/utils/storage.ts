@@ -75,7 +75,7 @@ export async function toggleContainerForSite(
 		false,
 	);
 
-	const notExisted = _.includes(oldSites, site);
+	const notExisted = !_.includes(oldSites, site);
 	const updatedSites = notExisted
 		? [...oldSites, site]
 		: _.without(oldSites, site);
