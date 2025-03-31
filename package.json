@@ -7,6 +7,7 @@
 		"@rollup/plugin-terser": "^0.4.4",
 		"@tsconfig/svelte": "^5.0.4",
 		"@types/firefox-webext-browser": "^120.0.4",
+		"@types/lodash": "^4.17.16",
 		"esbuild": "^0.25.1",
 		"hex-to-css-filter": "^6.0.0",
 		"prettier": "^3.3.3",
@@ -40,5 +41,8 @@
 	"bugs": {
 		"url": "https://github.com/arpitchakladar/better-containers/issues"
 	},
-	"homepage": "https://github.com/arpitchakladar/better-containers#readme"
+	"homepage": "https://github.com/arpitchakladar/better-containers#readme",
+	"dependencies": {
+		"lodash": "^4.17.21"
+	}
 }

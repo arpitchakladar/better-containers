@@ -1,4 +1,5 @@
 <script lang="ts">
+	import _ from "lodash";
 	import { onMount } from "svelte";
 	import { navigate } from "@/pages/configuration/pageStore";
 	import { toggleContainerForSite } from "@/utils/storage";
@@ -18,25 +19,15 @@
 	let containers: VerticalCheckListItem[] = $state([]);
 
 	onMount(async () => {
-		const allContainers = await browser.contextualIdentities.query({});
-		for (const {
-			name: containerName,
-			iconUrl,
-			colorCode,
-			cookieStoreId,
-		} of allContainers) {
-			containers.push({
+		containers = _.chain(await browser.contextualIdentities.query({}))
+			.map(({ name: containerName, iconUrl, colorCode, cookieStoreId }) => ({
 				label: containerName,
 				icon: iconUrl,
 				colorCode,
-				checked: !!siteContainers.find(
-					(container) => container.cookieStoreId === cookieStoreId,
-				),
-				toggleCheck() {
-					return toggleContainerForSite(name, cookieStoreId);
-				},
-			});
-		}
+				checked: _.some(siteContainers, { cookieStoreId }),
+				toggleCheck: () => toggleContainerForSite(name, cookieStoreId),
+			}))
+			.value();
 	});
 </script>
 

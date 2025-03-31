@@ -1,6 +1,9 @@
+import path from "path";
 import html from "@rollup/plugin-html";
 import { svelteEmitCssDependencies } from "../helpers.js";
 import {
+	destPath,
+	stylesDestPath,
 	pageInputs,
 	getEntryFileFromName,
 	getCssFilePath,
@@ -14,12 +17,15 @@ export function generateHtmlPlugin() {
 			fileName: `pages/${page}/index.html`,
 			template() {
 				const mainStyle = getCssFilePath(pageInputs[page]);
-				const linkCssTags = [mainStyle]
-					.concat(svelteEmitCssDependencies.dependencies[mainStyle] || [])
+				const pagePath = path.resolve(destPath, `pages/${page}`);
+				const linkCssTags = (
+					svelteEmitCssDependencies.dependencies[mainStyle] || []
+				)
+					.concat([mainStyle])
 					.map(
 						(cssPath) =>
 							cssPath in svelteEmitCssDependencies.dependencies &&
-							`<link rel="stylesheet" href="/${getRelativeDestPath(cssPath)}" type="text/css"/>`,
+							`<link rel="stylesheet" href="${path.relative(pagePath, cssPath)}" type="text/css"/>`,
 					)
 					.filter(Boolean)
 					.join("\n\t\t");
@@ -28,12 +34,12 @@ export function generateHtmlPlugin() {
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="/${getRelativeDestPath("global.css")}" type="text/css" />
+		<link rel="stylesheet" href="${path.relative(pagePath, path.resolve(stylesDestPath, "global.css"))}" type="text/css" />
 		${linkCssTags}
 	</head>
 	<body>
 		<div id="better-containers"></div>
-		<script src="/${getEntryFileFromName(page)}" type="module"></script>
+		<script src="./index.js" type="module"></script>
 	</body>
 </html>`;
 			},

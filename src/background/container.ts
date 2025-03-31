@@ -1,82 +1,110 @@
+import _ from "lodash";
 import {
 	defaultContainer,
 	openTabInContainer,
 	openContainerSelector,
 } from "@/utils/containers";
-import {
-	containerConfigurations,
-	loadContainerConfigurations,
-} from "@/utils/container-configuration";
+import type { ContainerConfiguration } from "@/utils/storage";
+
+interface ContainerMessage {
+	type: string;
+	cookieStoreId?: string;
+	success?: boolean;
+}
+
+let containerConfigurations: Record<string, ContainerConfiguration> = {};
+
+async function loadContainerConfigurations(): Promise<void> {
+	containerConfigurations = await browser.storage.local.get();
+}
+
+function handleContainerMessage(
+	message: ContainerMessage,
+	_sender: any,
+	sendResponse: (response?: any) => void,
+) {
+	if (message.type === "load-container-configurations") {
+		loadContainerConfigurations().then(() => sendResponse({ success: true }));
+	}
+	return true;
+}
+
+browser.runtime.onMessage.addListener(handleContainerMessage);
+
+function shouldProcessRequest(
+	requestDetails: browser.webRequest._OnBeforeRequestDetails,
+): boolean {
+	return (
+		requestDetails.frameId === 0 &&
+		requestDetails.tabId !== -1 &&
+		!!requestDetails.url
+	);
+}
+
+async function getMatchingContainers(
+	url: string,
+	currentContainerId: string,
+): Promise<string[]> {
+	return _.chain(containerConfigurations)
+		.toPairs()
+		.filter(
+			([containerId, config]) =>
+				_.some(config.sites, (site) => url.includes(site)) &&
+				currentContainerId !== containerId,
+		)
+		.map(([containerId]) => containerId)
+		.value();
+}
+
+async function handleContainerRedirect(
+	requestDetails: browser.webRequest._OnBeforeRequestDetails,
+): Promise<browser.webRequest.BlockingResponse> {
+	if (!shouldProcessRequest(requestDetails)) return {};
+
+	const tab = await browser.tabs.get(requestDetails.tabId);
+	if (!tab.cookieStoreId) return {};
+	const matchingContainers = await getMatchingContainers(
+		requestDetails.url,
+		tab.cookieStoreId,
+	);
+
+	if (_.isEmpty(matchingContainers)) {
+		if (tab.cookieStoreId === defaultContainer) return {};
+		await openTabInContainer(requestDetails.url, tab, defaultContainer);
+		return { cancel: true };
+	}
+
+	if (matchingContainers.length > 1) {
+		const selectTabCode = _.replace(crypto.randomUUID(), /-/g, "");
+		const selectTab = await openContainerSelector(
+			requestDetails.url,
+			selectTabCode,
+			tab,
+			matchingContainers,
+		);
+
+		browser.runtime.onMessage.addListener(async (message: ContainerMessage) => {
+			if (
+				message.type === `select-container-${selectTabCode}` &&
+				message.cookieStoreId
+			) {
+				await openTabInContainer(
+					requestDetails.url,
+					selectTab,
+					message.cookieStoreId,
+				);
+			}
+		});
+		return { cancel: true };
+	}
+
+	await openTabInContainer(requestDetails.url, tab, matchingContainers[0]);
+	return { cancel: true };
+}
 
 function startContainerization() {
 	browser.webRequest.onBeforeRequest.addListener(
-		(requestDetails) => {
-			if (requestDetails.frameId !== 0 || requestDetails.tabId === -1)
-				return {};
-
-			return (async () => {
-				const tab = await browser.tabs.get(requestDetails.tabId);
-				if (requestDetails.url) {
-					// If no containers are specified we default to using the default container
-					let containerCookieStoreIds = [];
-					const containerConfigurationEntries = Object.entries(
-						containerConfigurations,
-					);
-					outer: for (const [
-						containerId,
-						configuration,
-					] of containerConfigurationEntries) {
-						for (const site of configuration.sites) {
-							if (requestDetails.url.includes(site)) {
-								containerCookieStoreIds.push(containerId);
-								if (tab.cookieStoreId === containerId) return {};
-							}
-						}
-					}
-
-					if (
-						containerCookieStoreIds.length === 0 &&
-						tab.cookieStoreId === defaultContainer
-					) {
-						return {};
-					}
-
-					// Open the URL in a new tab in the specified container
-					if (containerCookieStoreIds.length > 1) {
-						const selectTabCode = crypto.randomUUID().replace(/-/g, "");
-
-						const selectTab = await openContainerSelector(
-							requestDetails.url,
-							selectTabCode,
-							tab,
-							containerCookieStoreIds,
-						);
-						browser.runtime.onMessage.addListener(
-							async (message, sender, sendResponse) => {
-								if (message.type === `select-container-${selectTabCode}`) {
-									await openTabInContainer(
-										requestDetails.url,
-										selectTab,
-										message.cookieStoreId,
-									);
-									sendResponse({ success: true });
-								}
-							},
-						);
-					} else {
-						await openTabInContainer(
-							requestDetails.url,
-							tab,
-							containerCookieStoreIds.length === 0
-								? defaultContainer
-								: containerCookieStoreIds[0],
-						);
-					}
-
-					return { cancel: true };
-				}
-			})();
-		},
+		handleContainerRedirect,
 		{
 			urls: ["<all_urls>"],
 			types: ["main_frame"],
@@ -86,25 +114,36 @@ function startContainerization() {
 }
 
 let configurationNotLoaded = true;
-
 const loadingConfigurationUrl = browser.runtime.getURL(
 	"pages/loading-configuration/index.html",
 );
 
-(async () => {
+async function initializeApp(): Promise<void> {
 	await loadContainerConfigurations();
 	await initializeSomething();
 	configurationNotLoaded = false;
 	browser.webRequest.onBeforeRequest.removeListener(
 		redirectUntilConfigurationLoaded,
 	);
-	await browser.runtime.sendMessage({
-		type: "configurations-loaded",
-	});
-	console.log("Removed blocking.");
+	await browser.runtime.sendMessage({ type: "configurations-loaded" });
 	startContainerization();
-})();
+}
 
+function redirectUntilConfigurationLoaded(
+	req: browser.webRequest._OnBeforeRequestDetails,
+): Promise<browser.webRequest.BlockingResponse> {
+	if (
+		configurationNotLoaded &&
+		!_.startsWith(req.url, loadingConfigurationUrl)
+	) {
+		const redirectUrl = `${loadingConfigurationUrl}?origin=${encodeURIComponent(req.url)}`;
+		browser.tabs.update(req.tabId, { url: redirectUrl });
+		return Promise.resolve({ cancel: true });
+	}
+	return Promise.resolve({});
+}
+
+// Initialize listeners
 browser.webRequest.onBeforeRequest.addListener(
 	redirectUntilConfigurationLoaded,
 	{
@@ -114,23 +153,11 @@ browser.webRequest.onBeforeRequest.addListener(
 	["blocking"],
 );
 
+// Debugging function
 async function initializeSomething(): Promise<void> {
 	console.log("Running initialization...");
-	// Simulate some startup process
-	await new Promise((resolve) => setTimeout(resolve, 20000)); // Delay 20s
+	_.delay(() => {}, 20000);
 }
 
-async function redirectUntilConfigurationLoaded(
-	req: browser.webRequest._OnBeforeRequestDetails,
-): Promise<browser.webRequest.BlockingResponse> {
-	if (configurationNotLoaded && !req.url.startsWith(loadingConfigurationUrl)) {
-		console.log(`Redirecting ${req.url}.`);
-		const tab = await browser.tabs.get(req.tabId);
-		const encodedUrl = encodeURIComponent(req.url);
-		const redirectUrl = `${loadingConfigurationUrl}?origin=${encodedUrl}`;
-		browser.tabs.update(req.tabId, { url: redirectUrl });
-		return { cancel: true };
-	}
-
-	return {};
-}
+// Start the application
+initializeApp().catch(console.error);

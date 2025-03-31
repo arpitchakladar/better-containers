@@ -1,4 +1,5 @@
 <script lang="ts">
+	import _ from "lodash";
 	import LoadingContainersList from "@/components/LoadingContainersList.svelte";
 
 	const params = new URLSearchParams(window.location.search);
@@ -21,14 +22,10 @@
 	> {
 		const allContainers = await browser.contextualIdentities.query({});
 
-		return containerIds
-			.map(
-				(cookieStoreId) =>
-					allContainers.find(
-						(container) => container.cookieStoreId === cookieStoreId,
-					) || null,
-			)
-			.filter(Boolean) as browser.contextualIdentities.ContextualIdentity[];
+		return _(containerIds)
+			.map((cookieStoreId) => _.find(allContainers, { cookieStoreId }))
+			.compact()
+			.value();
 	}
 </script>
 

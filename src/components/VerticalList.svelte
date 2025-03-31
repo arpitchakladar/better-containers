@@ -1,4 +1,5 @@
 <script lang="ts">
+	import _ from "lodash";
 	import Button from "@/components/Button.svelte";
 	import SingleInputForm from "@/components/SingleInputForm.svelte";
 
@@ -13,19 +14,18 @@
 
 	let newItem = $state("");
 
-	// Function to add a new item
 	function addItem(event: SubmitEvent): void {
 		event.preventDefault();
-		const newItemTrimmed = newItem.trim();
-		if (newItemTrimmed) {
-			items = [...items, newItemTrimmed];
-			newItem = ""; // Clear input after adding
+		const newItemTrimmed = _.trim(newItem);
+		if (!_.isEmpty(newItemTrimmed)) {
+			items = _.concat(items, newItemTrimmed);
+			newItem = "";
 		}
 	}
 
 	// Function to remove an item
 	function removeItem(index: number): void {
-		items = items.filter((_, i) => i !== index);
+		items = _.filter(items, (_, i) => i !== index);
 	}
 </script>
 

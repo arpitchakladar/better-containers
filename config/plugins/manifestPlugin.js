@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { production } from "../env.js";
-import { __dirname, srcPath, getRelativeDestPath } from "../paths.js";
+import { __dirname, srcPath, getRelativeDestPath, destPath } from "../paths.js";
 
 export function manifestPlugin(options = {}) {
-	const { outputPath = "dist/manifest.json" } = options;
+	const { outputPath = path.resolve(destPath, "manifest.json") } = options;
 	const baseManifest = JSON.parse(
 		fs.readFileSync(path.resolve(srcPath, "manifest.json")),
 	);
