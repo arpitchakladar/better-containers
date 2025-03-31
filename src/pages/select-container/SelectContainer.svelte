@@ -1,5 +1,5 @@
 <script lang="ts">
-	import _ from "lodash";
+	import { chain, find } from "lodash-es";
 	import LoadingContainersList from "@/components/LoadingContainersList.svelte";
 
 	const params = new URLSearchParams(window.location.search);
@@ -22,8 +22,8 @@
 	> {
 		const allContainers = await browser.contextualIdentities.query({});
 
-		return _(containerIds)
-			.map((cookieStoreId) => _.find(allContainers, { cookieStoreId }))
+		return chain(containerIds)
+			.map((cookieStoreId) => find(allContainers, { cookieStoreId }))
 			.compact()
 			.value();
 	}

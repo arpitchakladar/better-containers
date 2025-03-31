@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { chain, map, some, includes, defaultTo } from "lodash-es";
 import { defaultContainer } from "@/utils/containers";
 import { removeCookie } from "@/utils/cookies";
 
@@ -12,29 +12,29 @@ browser.windows.onRemoved.addListener(async () => {
 		browser.contextualIdentities.query({}),
 	]);
 
-	const cookieStoreIds = _.chain(identities)
+	const cookieStoreIds = chain(identities)
 		.map("cookieStoreId")
 		.concat(defaultContainer)
 		.value();
 
 	await Promise.all(
-		_.map(cookieStoreIds, async (cookieStoreId) => {
+		map(cookieStoreIds, async (cookieStoreId) => {
 			const [configuration, cookies] = await Promise.all([
 				containerConfigurations[cookieStoreId],
 				browser.cookies.getAll({ storeId: cookieStoreId }),
 			]);
 
 			if (configuration?.cookie) {
-				const sites = _.defaultTo(configuration.sites, []);
+				const sites = defaultTo(configuration.sites, []);
 				await Promise.all(
-					_.map(cookies, async (cookie) => {
-						if (!_.some(sites, (site) => _.includes(cookie.domain, site))) {
+					map(cookies, async (cookie) => {
+						if (!some(sites, (site) => includes(cookie.domain, site))) {
 							await removeCookie(cookie);
 						}
 					}),
 				);
 			} else {
-				await Promise.all(_.map(cookies, removeCookie));
+				await Promise.all(map(cookies, removeCookie));
 			}
 		}),
 	);

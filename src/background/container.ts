@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { chain, some, isEmpty, replace, delay, startsWith } from "lodash-es";
 import {
 	defaultContainer,
 	openTabInContainer,
@@ -45,11 +45,11 @@ async function getMatchingContainers(
 	url: string,
 	currentContainerId: string,
 ): Promise<string[]> {
-	return _.chain(containerConfigurations)
+	return chain(containerConfigurations)
 		.toPairs()
 		.filter(
 			([containerId, config]) =>
-				_.some(config.sites, (site) => url.includes(site)) &&
+				some(config.sites, (site) => url.includes(site)) &&
 				currentContainerId !== containerId,
 		)
 		.map(([containerId]) => containerId)
@@ -68,14 +68,14 @@ async function handleContainerRedirect(
 		tab.cookieStoreId,
 	);
 
-	if (_.isEmpty(matchingContainers)) {
+	if (isEmpty(matchingContainers)) {
 		if (tab.cookieStoreId === defaultContainer) return {};
 		await openTabInContainer(requestDetails.url, tab, defaultContainer);
 		return { cancel: true };
 	}
 
 	if (matchingContainers.length > 1) {
-		const selectTabCode = _.replace(crypto.randomUUID(), /-/g, "");
+		const selectTabCode = replace(crypto.randomUUID(), /-/g, "");
 		const selectTab = await openContainerSelector(
 			requestDetails.url,
 			selectTabCode,
@@ -134,7 +134,7 @@ function redirectUntilConfigurationLoaded(
 ): Promise<browser.webRequest.BlockingResponse> {
 	if (
 		configurationNotLoaded &&
-		!_.startsWith(req.url, loadingConfigurationUrl)
+		!startsWith(req.url, loadingConfigurationUrl)
 	) {
 		const redirectUrl = `${loadingConfigurationUrl}?origin=${encodeURIComponent(req.url)}`;
 		browser.tabs.update(req.tabId, { url: redirectUrl });
@@ -156,7 +156,7 @@ browser.webRequest.onBeforeRequest.addListener(
 // Debugging function
 async function initializeSomething(): Promise<void> {
 	console.log("Running initialization...");
-	_.delay(() => {}, 20000);
+	delay(() => {}, 20000);
 }
 
 // Start the application
