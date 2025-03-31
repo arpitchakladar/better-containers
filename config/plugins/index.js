@@ -14,22 +14,21 @@ import { loadCssPlugin, emitCssPlugin } from "./emitCssPlugin.js";
 import { runSvelteCheckPlugin } from "./runSvelteCheckPlugin.js";
 import { generateHtmlPlugin } from "./generateHtmlPlugin.js";
 import { manifestPlugin } from "./manifestPlugin.js";
-import { babelPlugin }  from "./babelPlugin.js";
+import { babelPlugin }	from "./babelPlugin.js";
 
 export default [
-	commonjs(),
-	babelPlugin(),
-	alias({
-		entries: {
-			"@": path.resolve("src"),
-			"@assets": path.resolve("assets"),
-		},
-	}),
 	resolve({
 		browser: true,
 		dedupe: ["svelte"],
 		exportConditions: ["svelte"],
 		extensions: [".svelte"],
+	}),
+	commonjs(),
+	alias({
+		entries: {
+			"@": path.resolve("src"),
+			"@assets": path.resolve("assets"),
+		},
 	}),
 	typescript({
 		check: true,
@@ -60,5 +59,6 @@ export default [
 			minifyURLs: true,
 		},
 	}),
+	babelPlugin(),
 	production && terser(),
 ];

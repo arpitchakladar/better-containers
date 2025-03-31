@@ -11,7 +11,7 @@ export const babelPlugin = () => babel({
 				},
 				bugfixes: true,
 				useBuiltIns: false, // Disable automatic polyfilling
-				corejs: false,      // Don't use core-js
+				corejs: false,      // Don"t use core-js
 				exclude: [
 					"transform-typeof-symbol", // Important for Lodash
 				],
@@ -21,7 +21,5 @@ export const babelPlugin = () => babel({
 	plugins: [
 		["@babel/plugin-transform-runtime", { useESModules: true }],
 		"lodash",
-		["@babel/plugin-transform-for-of", { assumeArray: true }],
-		"@babel/plugin-transform-arrow-functions",
 	],
 });

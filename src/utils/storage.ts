@@ -1,4 +1,4 @@
-import { get, includes, chain, isEmpty, without } from "lodash-es";
+import _ from "lodash";
 
 export interface ContainerConfiguration {
 	sites: string[];
@@ -24,7 +24,7 @@ export async function getContainerConfiguration(
 	cookieStoreId: string,
 ): Promise<ContainerConfiguration | null> {
 	const containerConfiguration = await browser.storage.local.get(cookieStoreId);
-	return get(Object.values(containerConfiguration || {}), "[0]", null);
+	return _.get(Object.values(containerConfiguration || {}), "[0]", null);
 }
 
 export async function getSiteContainers(): Promise<
@@ -35,10 +35,10 @@ export async function getSiteContainers(): Promise<
 	const siteConfigurations: Record<
 		string,
 		browser.contextualIdentities.ContextualIdentity[]
-	> = chain(
+	> = _.chain(
 		await Promise.all(
 			containers.map(async (container) => {
-				if (isEmpty(container)) return null;
+				if (_.isEmpty(container)) return null;
 
 				const containerInfo = await getContainerConfiguration(
 					container.cookieStoreId,
@@ -64,21 +64,21 @@ export async function toggleContainerForSite(
 	cookieStoreId: string,
 ): Promise<boolean> {
 	const containerConfiguration = await getContainerConfiguration(cookieStoreId);
-	const oldSites = get<ContainerConfiguration, "sites", string[]>(
+	const oldSites = _.get<ContainerConfiguration, "sites", string[]>(
 		containerConfiguration,
 		"sites",
 		[],
 	);
-	const cookie = get<ContainerConfiguration, "cookie", boolean>(
+	const cookie = _.get<ContainerConfiguration, "cookie", boolean>(
 		containerConfiguration,
 		"cookie",
 		false,
 	);
 
-	const notExisted = includes(oldSites, site);
+	const notExisted = _.includes(oldSites, site);
 	const updatedSites = notExisted
 		? [...oldSites, site]
-		: without(oldSites, site);
+		: _.without(oldSites, site);
 
 	await setContainerConfiguration(cookieStoreId, updatedSites, cookie);
 	return notExisted;

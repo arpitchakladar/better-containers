@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { get } from "lodash-es";
+	import _ from "lodash";
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/pages/configuration/pageStore";
@@ -22,8 +22,8 @@
 
 	onMount(async () => {
 		const config = await getContainerConfiguration(cookieStoreId);
-		cookie = get(config, "cookie", false);
-		sites = get(config, "sites", []);
+		cookie = _.get(config, "cookie", false);
+		sites = _.get(config, "sites", []);
 	});
 
 	$effect(() => {

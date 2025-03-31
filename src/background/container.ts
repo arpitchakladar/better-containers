@@ -1,4 +1,4 @@
-import { chain, some, isEmpty, replace, delay, startsWith } from "lodash-es";
+import _ from "lodash";
 import {
 	defaultContainer,
 	openTabInContainer,
@@ -45,11 +45,11 @@ async function getMatchingContainers(
 	url: string,
 	currentContainerId: string,
 ): Promise<string[]> {
-	return chain(containerConfigurations)
+	return _.chain(containerConfigurations)
 		.toPairs()
 		.filter(
 			([containerId, config]) =>
-				some(config.sites, (site) => url.includes(site)) &&
+				_.some(config.sites, (site) => url.includes(site)) &&
 				currentContainerId !== containerId,
 		)
 		.map(([containerId]) => containerId)
@@ -68,14 +68,14 @@ async function handleContainerRedirect(
 		tab.cookieStoreId,
 	);
 
-	if (isEmpty(matchingContainers)) {
+	if (_.isEmpty(matchingContainers)) {
 		if (tab.cookieStoreId === defaultContainer) return {};
 		await openTabInContainer(requestDetails.url, tab, defaultContainer);
 		return { cancel: true };
 	}
 
 	if (matchingContainers.length > 1) {
-		const selectTabCode = replace(crypto.randomUUID(), /-/g, "");
+		const selectTabCode = _.replace(crypto.randomUUID(), /-/g, "");
 		const selectTab = await openContainerSelector(
 			requestDetails.url,
 			selectTabCode,
@@ -125,7 +125,9 @@ async function initializeApp(): Promise<void> {
 	browser.webRequest.onBeforeRequest.removeListener(
 		redirectUntilConfigurationLoaded,
 	);
-	await browser.runtime.sendMessage({ type: "configurations-loaded" });
+	try {
+		await browser.runtime.sendMessage({ type: "configurations-loaded" });
+	} catch {}
 	startContainerization();
 }
 
@@ -134,7 +136,7 @@ function redirectUntilConfigurationLoaded(
 ): Promise<browser.webRequest.BlockingResponse> {
 	if (
 		configurationNotLoaded &&
-		!startsWith(req.url, loadingConfigurationUrl)
+		!_.startsWith(req.url, loadingConfigurationUrl)
 	) {
 		const redirectUrl = `${loadingConfigurationUrl}?origin=${encodeURIComponent(req.url)}`;
 		browser.tabs.update(req.tabId, { url: redirectUrl });
@@ -156,7 +158,7 @@ browser.webRequest.onBeforeRequest.addListener(
 // Debugging function
 async function initializeSomething(): Promise<void> {
 	console.log("Running initialization...");
-	delay(() => {}, 20000);
+	_.delay(() => {}, 20000);
 }
 
 // Start the application

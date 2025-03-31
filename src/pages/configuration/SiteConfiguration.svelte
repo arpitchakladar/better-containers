@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { chain, some } from "lodash-es";
+	import _ from "lodash";
 	import { onMount } from "svelte";
 	import { navigate } from "@/pages/configuration/pageStore";
 	import { toggleContainerForSite } from "@/utils/storage";
@@ -19,12 +19,12 @@
 	let containers: VerticalCheckListItem[] = $state([]);
 
 	onMount(async () => {
-		containers = chain(await browser.contextualIdentities.query({}))
+		containers = _.chain(await browser.contextualIdentities.query({}))
 			.map(({ name: containerName, iconUrl, colorCode, cookieStoreId }) => ({
 				label: containerName,
 				icon: iconUrl,
 				colorCode,
-				checked: some(siteContainers, { cookieStoreId }),
+				checked: _.some(siteContainers, { cookieStoreId }),
 				toggleCheck: () => toggleContainerForSite(name, cookieStoreId),
 			}))
 			.value();
