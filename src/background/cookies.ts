@@ -1,39 +1,41 @@
-import {
-	loadContainerConfigurations,
-	containerConfigurations,
-} from "@/utils/container-configuration";
+import _ from "lodash";
 import { defaultContainer } from "@/utils/containers";
 import { removeCookie } from "@/utils/cookies";
 
 browser.windows.onRemoved.addListener(async () => {
 	const openWindows = (await browser.windows.getAll({})).length;
 
-	// Check if all windows are closed
-	if (openWindows === 0) {
-		await loadContainerConfigurations();
-		const cookieStoreIds = Object.values(
-			await browser.contextualIdentities.query({}),
-		).map(({ cookieStoreId }) => cookieStoreId);
-		cookieStoreIds.push(defaultContainer);
-		for (const cookieStoreId of cookieStoreIds) {
-			const configuration = containerConfigurations[cookieStoreId];
-			const cookies = await browser.cookies.getAll({
-				storeId: cookieStoreId,
-			});
+	if (openWindows !== 0) return;
+
+	const [containerConfigurations, identities] = await Promise.all([
+		browser.storage.local.get(),
+		browser.contextualIdentities.query({}),
+	]);
+
+	const cookieStoreIds = _.chain(identities)
+		.map("cookieStoreId")
+		.concat(defaultContainer)
+		.value();
+
+	await Promise.all(
+		_.map(cookieStoreIds, async (cookieStoreId) => {
+			const [configuration, cookies] = await Promise.all([
+				containerConfigurations[cookieStoreId],
+				browser.cookies.getAll({ storeId: cookieStoreId }),
+			]);
 
 			if (configuration?.cookie) {
-				const sites = configuration.sites || [];
-				outer: for (const cookie of cookies) {
-					for (const site of sites) {
-						if (cookie.domain.includes(site)) {
-							continue outer;
+				const sites = _.defaultTo(configuration.sites, []);
+				await Promise.all(
+					_.map(cookies, async (cookie) => {
+						if (!_.some(sites, (site) => _.includes(cookie.domain, site))) {
+							await removeCookie(cookie);
 						}
-					}
-					removeCookie(cookie);
-				}
+					}),
+				);
 			} else {
-				cookies.forEach(removeCookie);
+				await Promise.all(_.map(cookies, removeCookie));
 			}
-		}
-	}
+		}),
+	);
 });

@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
-		"moduleResolution": "Node",
+		"moduleResolution": "node",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
@@ -15,10 +15,11 @@
 			"@/*": ["src/*"]
 		},
 		"types": [
-			"firefox-webext-browser"
+			"firefox-webext-browser",
+			"lodash"
 		],
 		"noEmit": true,
 	},
 	"include": ["src/**/*.ts", "src/**/*.svelte"],
-	"exclude": ["node_modules", "dist"],
+	"exclude": ["dist"],
 }

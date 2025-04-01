@@ -1,10 +1,11 @@
 <script lang="ts">
+	import _ from "lodash";
 	import LoadingContainersList from "@/components/LoadingContainersList.svelte";
 
 	const params = new URLSearchParams(window.location.search);
-	const site = params.get("site");
-	const containerIds = params.getAll("container");
-	const selectTabCode = params.get("selectTabCode");
+	const site: string = _.defaultTo(params.get("site"), "404 NOT FOUND");
+	const containerIds: string[] = _.defaultTo(params.getAll("container"), []);
+	const selectTabCode: string = _.defaultTo(params.get("selectTabCode"), "NOTSPECIFIED");
 
 	async function selectContainer(
 		container: browser.contextualIdentities.ContextualIdentity,
@@ -21,14 +22,10 @@
 	> {
 		const allContainers = await browser.contextualIdentities.query({});
 
-		return containerIds
-			.map(
-				(cookieStoreId) =>
-					allContainers.find(
-						(container) => container.cookieStoreId === cookieStoreId,
-					) || null,
-			)
-			.filter(Boolean) as browser.contextualIdentities.ContextualIdentity[];
+		return _.chain(containerIds)
+			.map((cookieStoreId) => _.find(allContainers, { cookieStoreId }))
+			.compact()
+			.value();
 	}
 </script>
 
