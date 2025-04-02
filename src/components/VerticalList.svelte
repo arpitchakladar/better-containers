@@ -1,5 +1,5 @@
 <script lang="ts">
-	import _ from "lodash";
+	import * as _ from "lodash-es";
 	import Button from "@/components/Button.svelte";
 	import SingleInputForm from "@/components/SingleInputForm.svelte";
 

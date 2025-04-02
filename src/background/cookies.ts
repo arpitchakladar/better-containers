@@ -1,4 +1,4 @@
-import _ from "lodash";
+import * as _ from "lodash-es";
 import { DEFAULT_CONTAINER } from "@/utils/containers";
 import { removeCookie } from "@/utils/cookies";
 import { type ContainerConfiguration } from "@/utils/storage";
