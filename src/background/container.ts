@@ -1,10 +1,10 @@
-import _ from "lodash";
+import { pipe, startswith } from "lodash-es";
 import {
 	defaultContainer,
 	openTabInContainer,
 	openContainerSelector,
 } from "@/utils/containers";
-import type { ContainerConfiguration } from "@/utils/storage";
+import { type ContainerConfiguration } from "@/utils/storage";
 
 interface ContainerMessage {
 	type: string;
@@ -41,14 +41,11 @@ function shouldProcessRequest(
 	);
 }
 
-async function getMatchingContainers(
-	url: string,
-): Promise<string[]> {
-	return _.chain(containerConfigurations)
+async function getMatchingContainers(url: string): Promise<string[]> {
+	return chain(containerConfigurations)
 		.toPairs()
-		.filter(
-			([_cookieStoreId, config]) =>
-				_.some(config.sites, (site) => url.includes(site)),
+		.filter(([_cookieStoreId, config]) =>
+			some(config.sites, (site) => url.includes(site)),
 		)
 		.map(([cookieStoreId]) => cookieStoreId)
 		.value();
@@ -61,13 +58,11 @@ async function handleContainerRedirect(
 
 	const tab = await browser.tabs.get(requestDetails.tabId);
 	if (!tab.cookieStoreId) return {};
-	const matchingContainers = await getMatchingContainers(
-		requestDetails.url
-	);
+	const matchingContainers = await getMatchingContainers(requestDetails.url);
 
-	if (_.includes(matchingContainers, tab.cookieStoreId)) return {};
+	if (includes(matchingContainers, tab.cookieStoreId)) return {};
 
-	if (_.isEmpty(matchingContainers)) {
+	if (isEmpty(matchingContainers)) {
 		if (tab.cookieStoreId === defaultContainer) return {};
 		await openTabInContainer(requestDetails.url, tab, defaultContainer);
 		return { cancel: true };
@@ -78,7 +73,7 @@ async function handleContainerRedirect(
 		return { cancel: true };
 	}
 
-	const selectTabCode = _.replace(crypto.randomUUID(), /-/g, "");
+	const selectTabCode = replace(crypto.randomUUID(), /-/g, "");
 	const selectTab = await openContainerSelector(
 		requestDetails.url,
 		selectTabCode,
@@ -127,7 +122,7 @@ function redirectUntilConfigurationLoaded(
 ): Promise<browser.webRequest.BlockingResponse> {
 	if (
 		configurationNotLoaded &&
-		!_.startsWith(req.url, loadingConfigurationUrl)
+		!startsWith(req.url, loadingConfigurationUrl)
 	) {
 		const redirectUrl = `${loadingConfigurationUrl}?origin=${encodeURIComponent(req.url)}`;
 		browser.tabs.update(req.tabId, { url: redirectUrl });

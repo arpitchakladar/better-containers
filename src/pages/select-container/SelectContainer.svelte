@@ -5,7 +5,10 @@
 	const params = new URLSearchParams(window.location.search);
 	const site: string = _.defaultTo(params.get("site"), "404 NOT FOUND");
 	const containerIds: string[] = _.defaultTo(params.getAll("container"), []);
-	const selectTabCode: string = _.defaultTo(params.get("selectTabCode"), "NOTSPECIFIED");
+	const selectTabCode: string = _.defaultTo(
+		params.get("selectTabCode"),
+		"NOTSPECIFIED",
+	);
 
 	async function selectContainer(
 		container: browser.contextualIdentities.ContextualIdentity,

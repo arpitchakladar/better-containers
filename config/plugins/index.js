@@ -14,7 +14,7 @@ import { loadCssPlugin, emitCssPlugin } from "./emitCssPlugin.js";
 import { runSvelteCheckPlugin } from "./runSvelteCheckPlugin.js";
 import { generateHtmlPlugin } from "./generateHtmlPlugin.js";
 import { manifestPlugin } from "./manifestPlugin.js";
-import { babelPlugin }	from "./babelPlugin.js";
+import { babelPlugin } from "./babelPlugin.js";
 
 export default [
 	resolve({
