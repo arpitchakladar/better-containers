@@ -46,7 +46,9 @@ async function getMatchingContainers(url: string): Promise<string[]> {
 		_.toPairs,
 		_.curryRight<
 			[string, ContainerConfiguration][],
-			(x: [string, ContainerConfiguration]) => string | null,
+			([cookieStoreId, config]: [string, ContainerConfiguration]) =>
+				| string
+				| null,
 			(string | null)[]
 		>(_.map)(([cookieStoreId, config]) =>
 			_.some(config.sites, (site) => _.includes(url, site))
@@ -63,47 +65,45 @@ async function handleContainerRedirect(
 	if (!shouldProcessRequest(requestDetails)) return {};
 
 	const tab = await browser.tabs.get(requestDetails.tabId);
-	if (!tab.cookieStoreId) return {};
+	const tabCookieStoreId = _.get(tab, "cookieStoreId");
+	if (!tabCookieStoreId) return {};
 	const matchingContainers = await getMatchingContainers(requestDetails.url);
 
-	if (_.includes(matchingContainers, tab.cookieStoreId)) return {};
+	if (_.includes(matchingContainers, tabCookieStoreId)) return {};
 
 	if (_.isEmpty(matchingContainers)) {
-		if (tab.cookieStoreId === DEFAULT_CONTAINER) return {};
-		await openTabInContainer(requestDetails.url, tab, DEFAULT_CONTAINER);
-		return { cancel: true };
+		if (tabCookieStoreId === DEFAULT_CONTAINER) return {};
+		openTabInContainer(requestDetails.url, tab, DEFAULT_CONTAINER);
+	} else if (matchingContainers.length === 1) {
+		openTabInContainer(requestDetails.url, tab, matchingContainers[0]);
+	} else {
+		const selectTabCode = _.replace(crypto.randomUUID(), /-/g, "");
+		const selectTab = await openContainerSelector(
+			requestDetails.url,
+			selectTabCode,
+			tab,
+			matchingContainers,
+		);
+
+		const messageHandler = async (message: ContainerMessage) => {
+			if (
+				message.type === `select-container-${selectTabCode}` &&
+				message.cookieStoreId
+			) {
+				// Remove the listener first
+				browser.runtime.onMessage.removeListener(messageHandler);
+
+				await openTabInContainer(
+					requestDetails.url,
+					selectTab,
+					message.cookieStoreId,
+				);
+			}
+		};
+
+		browser.runtime.onMessage.addListener(messageHandler);
 	}
 
-	if (matchingContainers.length === 1) {
-		await openTabInContainer(requestDetails.url, tab, matchingContainers[0]);
-		return { cancel: true };
-	}
-
-	const selectTabCode = _.replace(crypto.randomUUID(), /-/g, "");
-	const selectTab = await openContainerSelector(
-		requestDetails.url,
-		selectTabCode,
-		tab,
-		matchingContainers,
-	);
-
-	const messageHandler = async (message: ContainerMessage) => {
-		if (
-			message.type === `select-container-${selectTabCode}` &&
-			message.cookieStoreId
-		) {
-			// Remove the listener first
-			browser.runtime.onMessage.removeListener(messageHandler);
-
-			await openTabInContainer(
-				requestDetails.url,
-				selectTab,
-				message.cookieStoreId,
-			);
-		}
-	};
-
-	browser.runtime.onMessage.addListener(messageHandler);
 	return { cancel: true };
 }
 
@@ -125,16 +125,16 @@ const LOADING_CONFIGURATION_URL = browser.runtime.getURL(
 
 function redirectWhileInitialization(
 	req: browser.webRequest._OnBeforeRequestDetails,
-): Promise<browser.webRequest.BlockingResponse> {
+): browser.webRequest.BlockingResponse {
 	if (
 		configurationNotLoaded &&
 		!_.startsWith(req.url, LOADING_CONFIGURATION_URL)
 	) {
 		const redirectUrl = `${LOADING_CONFIGURATION_URL}?origin=${encodeURIComponent(req.url)}`;
 		browser.tabs.update(req.tabId, { url: redirectUrl });
-		return Promise.resolve({ cancel: true });
+		return { cancel: true };
 	}
-	return Promise.resolve({});
+	return {};
 }
 
 // Initialize listeners
@@ -161,9 +161,9 @@ async function initializeApp(): Promise<void> {
 	console.log("Running initialization...");
 	configurationNotLoaded = false;
 	stopRedirectingOnInitialization();
-	try {
-		await browser.runtime.sendMessage({ type: "configurations-loaded" });
-	} catch {}
+	browser.runtime
+		.sendMessage({ type: "configurations-loaded" })
+		.catch(console.error);
 	startContainerization();
 }
 

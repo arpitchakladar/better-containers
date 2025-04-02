@@ -30,8 +30,6 @@ export async function getContainerConfiguration(
 export async function getSiteContainers(): Promise<
 	Record<string, browser.contextualIdentities.ContextualIdentity[]>
 > {
-	const containers = await browser.contextualIdentities.query({});
-
 	return _.flow(
 		_.flatten,
 		_.compact,
@@ -49,13 +47,13 @@ export async function getSiteContainers(): Promise<
 				[string, browser.contextualIdentities.ContextualIdentity][]
 			>,
 			(
-				x: [string, browser.contextualIdentities.ContextualIdentity][],
+				entries: [string, browser.contextualIdentities.ContextualIdentity][],
 			) => browser.contextualIdentities.ContextualIdentity[],
 			Record<string, browser.contextualIdentities.ContextualIdentity[]>
 		>(_.mapValues)((entries) => _.map(entries, ([, container]) => container)),
 	)(
 		await Promise.all(
-			_.map(containers, async (container) => {
+			_.map(await browser.contextualIdentities.query({}), async (container) => {
 				return _.map(
 					_.get(
 						await getContainerConfiguration(container.cookieStoreId),

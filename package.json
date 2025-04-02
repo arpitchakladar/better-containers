@@ -20,6 +20,7 @@
 		"rollup": "^4.37.0",
 		"rollup-plugin-copy": "^3.5.0",
 		"rollup-plugin-css-only": "^4.5.2",
+		"rollup-plugin-delete": "^3.0.1",
 		"rollup-plugin-minify-html": "^1.1.1",
 		"rollup-plugin-svelte": "^7.2.2",
 		"rollup-plugin-typescript2": "^0.36.0",
@@ -31,8 +32,8 @@
 	"description": "A Firefox extension to better manage containers.",
 	"type": "module",
 	"scripts": {
-		"build": "rm -rf dist && NODE_ENV=production rollup -c",
-		"build:dev": "rm -rf dist && rollup -c",
+		"build": "NODE_ENV=production rollup -c",
+		"build:dev": "rollup -c",
 		"dev": "rollup -c -w",
 		"format": "prettier --write './**/*.{ts,js,svelte,css}'"
 	},

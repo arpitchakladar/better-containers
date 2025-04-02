@@ -33,7 +33,7 @@ browser.windows.onRemoved.addListener(async () => {
 			>(containerConfigurations, "cookieStoreId", { sites: [], cookie: false });
 			const cookies = await browser.cookies.getAll({ storeId: cookieStoreId });
 
-			if (configuration?.cookie) {
+			if (_.get(configuration, "cookie")) {
 				const sites = _.defaultTo(configuration.sites, []);
 				await Promise.all(
 					_.map(

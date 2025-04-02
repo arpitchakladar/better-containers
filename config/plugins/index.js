@@ -6,8 +6,9 @@ import copy from "rollup-plugin-copy";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
+import del from "rollup-plugin-delete";
 import { minifyHTML } from "rollup-plugin-minify-html";
-import { stylesDestPath } from "../paths.js";
+import { destPath, stylesDestPath } from "../paths.js";
 import { production } from "../env.js";
 import { collectSvelteDependenciesPlugin } from "./collectSvelteDependenciesPlugin.js";
 import { loadCssPlugin, emitCssPlugin } from "./emitCssPlugin.js";
@@ -17,6 +18,10 @@ import { manifestPlugin } from "./manifestPlugin.js";
 import { babelPlugin } from "./babelPlugin.js";
 
 export default [
+	del({
+		targets: destPath,
+		force: true,
+	}),
 	resolve({
 		browser: true,
 		dedupe: ["svelte"],
