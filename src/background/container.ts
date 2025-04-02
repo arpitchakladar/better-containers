@@ -1,6 +1,6 @@
-import { pipe, startswith } from "lodash-es";
+import _ from "lodash";
 import {
-	defaultContainer,
+	DEFAULT_CONTAINER,
 	openTabInContainer,
 	openContainerSelector,
 } from "@/utils/containers";
@@ -42,10 +42,10 @@ function shouldProcessRequest(
 }
 
 async function getMatchingContainers(url: string): Promise<string[]> {
-	return chain(containerConfigurations)
+	return _.chain(containerConfigurations)
 		.toPairs()
 		.filter(([_cookieStoreId, config]) =>
-			some(config.sites, (site) => url.includes(site)),
+			_.some(config.sites, (site) => _.includes(url, site)),
 		)
 		.map(([cookieStoreId]) => cookieStoreId)
 		.value();
@@ -60,11 +60,11 @@ async function handleContainerRedirect(
 	if (!tab.cookieStoreId) return {};
 	const matchingContainers = await getMatchingContainers(requestDetails.url);
 
-	if (includes(matchingContainers, tab.cookieStoreId)) return {};
+	if (_.includes(matchingContainers, tab.cookieStoreId)) return {};
 
-	if (isEmpty(matchingContainers)) {
-		if (tab.cookieStoreId === defaultContainer) return {};
-		await openTabInContainer(requestDetails.url, tab, defaultContainer);
+	if (_.isEmpty(matchingContainers)) {
+		if (tab.cookieStoreId === DEFAULT_CONTAINER) return {};
+		await openTabInContainer(requestDetails.url, tab, DEFAULT_CONTAINER);
 		return { cancel: true };
 	}
 
@@ -73,7 +73,7 @@ async function handleContainerRedirect(
 		return { cancel: true };
 	}
 
-	const selectTabCode = replace(crypto.randomUUID(), /-/g, "");
+	const selectTabCode = _.replace(crypto.randomUUID(), /-/g, "");
 	const selectTab = await openContainerSelector(
 		requestDetails.url,
 		selectTabCode,
@@ -113,18 +113,18 @@ function startContainerization() {
 }
 
 let configurationNotLoaded = true;
-const loadingConfigurationUrl = browser.runtime.getURL(
+const LOADING_CONFIGURATION_URL = browser.runtime.getURL(
 	"pages/loading-configuration/index.html",
 );
 
-function redirectUntilConfigurationLoaded(
+function redirectWhileInitialization(
 	req: browser.webRequest._OnBeforeRequestDetails,
 ): Promise<browser.webRequest.BlockingResponse> {
 	if (
 		configurationNotLoaded &&
-		!startsWith(req.url, loadingConfigurationUrl)
+		!_.startsWith(req.url, LOADING_CONFIGURATION_URL)
 	) {
-		const redirectUrl = `${loadingConfigurationUrl}?origin=${encodeURIComponent(req.url)}`;
+		const redirectUrl = `${LOADING_CONFIGURATION_URL}?origin=${encodeURIComponent(req.url)}`;
 		browser.tabs.update(req.tabId, { url: redirectUrl });
 		return Promise.resolve({ cancel: true });
 	}
@@ -132,22 +132,29 @@ function redirectUntilConfigurationLoaded(
 }
 
 // Initialize listeners
-browser.webRequest.onBeforeRequest.addListener(
-	redirectUntilConfigurationLoaded,
-	{
-		urls: ["<all_urls>"],
-		types: ["main_frame"],
-	},
-	["blocking"],
-);
+function startRedirectingWhileInitialization() {
+	browser.webRequest.onBeforeRequest.addListener(
+		redirectWhileInitialization,
+		{
+			urls: ["<all_urls>"],
+			types: ["main_frame"],
+		},
+		["blocking"],
+	);
+}
+
+function stopRedirectingOnInitialization() {
+	browser.webRequest.onBeforeRequest.removeListener(
+		redirectWhileInitialization,
+	);
+}
 
 async function initializeApp(): Promise<void> {
+	startRedirectingWhileInitialization();
 	await loadContainerConfigurations();
 	console.log("Running initialization...");
 	configurationNotLoaded = false;
-	browser.webRequest.onBeforeRequest.removeListener(
-		redirectUntilConfigurationLoaded,
-	);
+	stopRedirectingOnInitialization();
 	try {
 		await browser.runtime.sendMessage({ type: "configurations-loaded" });
 	} catch {}

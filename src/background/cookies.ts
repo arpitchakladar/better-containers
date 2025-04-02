@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { defaultContainer } from "@/utils/containers";
+import { DEFAULT_CONTAINER } from "@/utils/containers";
 import { removeCookie } from "@/utils/cookies";
 import { type ContainerConfiguration } from "@/utils/storage";
 
@@ -17,7 +17,7 @@ browser.windows.onRemoved.addListener(async () => {
 
 	const cookieStoreIds = _.chain(identities)
 		.map("cookieStoreId")
-		.concat(defaultContainer)
+		.concat(DEFAULT_CONTAINER)
 		.value();
 
 	await Promise.all(

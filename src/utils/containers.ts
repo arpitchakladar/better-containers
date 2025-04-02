@@ -1,5 +1,5 @@
-export const defaultContainer = "firefox-default";
-const selectContainerUrl = browser.runtime.getURL(
+export const DEFAULT_CONTAINER = "firefox-default";
+const SELECT_CONTAINER_URL = browser.runtime.getURL(
 	"pages/select-container/index.html",
 );
 
@@ -27,11 +27,11 @@ export async function openContainerSelector(
 	tab: browser.tabs.Tab,
 	containerCookieStoreIds: string[],
 ): Promise<browser.tabs.Tab> {
-	const selectContainerUrlFull = `${selectContainerUrl}?selectTabCode=${selectTabCode}&site=${url}&${containerCookieStoreIds.map((cookieStoreId) => "container=" + cookieStoreId).join("&")}`;
+	const selectContainerUrl = `${SELECT_CONTAINER_URL}?selectTabCode=${selectTabCode}&site=${url}&${containerCookieStoreIds.map((cookieStoreId) => "container=" + cookieStoreId).join("&")}`;
 
 	return await openTabInContainer(
-		selectContainerUrlFull,
+		selectContainerUrl,
 		tab,
-		tab.cookieStoreId || defaultContainer,
+		tab.cookieStoreId || DEFAULT_CONTAINER,
 	);
 }
