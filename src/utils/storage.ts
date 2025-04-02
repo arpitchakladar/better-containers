@@ -24,7 +24,7 @@ export async function getContainerConfiguration(
 	cookieStoreId: string,
 ): Promise<ContainerConfiguration | null> {
 	const containerConfiguration = await browser.storage.local.get(cookieStoreId);
-	return _.get(Object.values(containerConfiguration || {}), "[0]", null);
+	return _.get(_.values(containerConfiguration), "[0]", null);
 }
 
 export async function getSiteContainers(): Promise<
@@ -32,31 +32,40 @@ export async function getSiteContainers(): Promise<
 > {
 	const containers = await browser.contextualIdentities.query({});
 
-	const siteConfigurations: Record<
-		string,
-		browser.contextualIdentities.ContextualIdentity[]
-	> = _.chain(
+	return _.flow(
+		_.flatten,
+		_.compact,
+		_.curryRight<
+			[string, browser.contextualIdentities.ContextualIdentity][],
+			string,
+			Record<
+				string,
+				[string, browser.contextualIdentities.ContextualIdentity][]
+			>
+		>(_.groupBy)("site"),
+		_.curryRight<
+			Record<
+				string,
+				[string, browser.contextualIdentities.ContextualIdentity][]
+			>,
+			(
+				x: [string, browser.contextualIdentities.ContextualIdentity][],
+			) => browser.contextualIdentities.ContextualIdentity[],
+			Record<string, browser.contextualIdentities.ContextualIdentity[]>
+		>(_.mapValues)((entries) => _.map(entries, ([, container]) => container)),
+	)(
 		await Promise.all(
-			containers.map(async (container) => {
-				if (_.isEmpty(container)) return null;
-
-				const containerInfo = await getContainerConfiguration(
-					container.cookieStoreId,
+			_.map(containers, async (container) => {
+				return _.map(
+					_.get(
+						await getContainerConfiguration(container.cookieStoreId),
+						"sites",
+					),
+					(site) => [site, container],
 				);
-				return containerInfo?.sites?.map((site) => ({
-					site,
-					container,
-				}));
 			}),
 		),
-	)
-		.flatten()
-		.compact()
-		.groupBy("site")
-		.mapValues((entries: any) => entries.map((entry: any) => entry.container))
-		.value() as any;
-
-	return siteConfigurations;
+	);
 }
 
 export async function toggleContainerForSite(

@@ -19,15 +19,16 @@
 	let containers: VerticalCheckListItem[] = $state([]);
 
 	onMount(async () => {
-		containers = _.chain(await browser.contextualIdentities.query({}))
-			.map(({ name: containerName, iconUrl, colorCode, cookieStoreId }) => ({
+		containers = _.map(
+			await browser.contextualIdentities.query({}),
+			({ name: containerName, iconUrl, colorCode, cookieStoreId }) => ({
 				label: containerName,
 				icon: iconUrl,
 				colorCode,
 				checked: _.some(siteContainers, { cookieStoreId }),
 				toggleCheck: () => toggleContainerForSite(name, cookieStoreId),
-			}))
-			.value();
+			}),
+		);
 	});
 </script>
 

@@ -42,13 +42,19 @@ function shouldProcessRequest(
 }
 
 async function getMatchingContainers(url: string): Promise<string[]> {
-	return _.chain(containerConfigurations)
-		.toPairs()
-		.filter(([_cookieStoreId, config]) =>
-			_.some(config.sites, (site) => _.includes(url, site)),
-		)
-		.map(([cookieStoreId]) => cookieStoreId)
-		.value();
+	return _.flow(
+		_.toPairs,
+		_.curryRight<
+			[string, ContainerConfiguration][],
+			(x: [string, ContainerConfiguration]) => string | null,
+			(string | null)[]
+		>(_.map)(([cookieStoreId, config]) =>
+			_.some(config.sites, (site) => _.includes(url, site))
+				? cookieStoreId
+				: null,
+		),
+		_.compact,
+	)(containerConfigurations);
 }
 
 async function handleContainerRedirect(

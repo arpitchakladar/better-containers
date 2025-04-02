@@ -15,10 +15,14 @@ browser.windows.onRemoved.addListener(async () => {
 		browser.contextualIdentities.query({}),
 	]);
 
-	const cookieStoreIds = _.chain(identities)
-		.map("cookieStoreId")
-		.concat(DEFAULT_CONTAINER)
-		.value();
+	const cookieStoreIds = _.flow(
+		_.curryRight<
+			browser.contextualIdentities.ContextualIdentity[],
+			string,
+			string[]
+		>(_.map)("cookieStoreId"),
+		_.curryRight<string[], string, string[]>(_.concat)(DEFAULT_CONTAINER),
+	)(identities);
 
 	await Promise.all(
 		_.map(cookieStoreIds, async (cookieStoreId) => {

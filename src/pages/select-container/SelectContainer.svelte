@@ -25,10 +25,16 @@
 	> {
 		const allContainers = await browser.contextualIdentities.query({});
 
-		return _.chain(containerIds)
-			.map((cookieStoreId) => _.find(allContainers, { cookieStoreId }))
-			.compact()
-			.value();
+		return _.flow(
+			_.curryRight<
+				string[],
+				(
+					x: string,
+				) => browser.contextualIdentities.ContextualIdentity | undefined,
+				(browser.contextualIdentities.ContextualIdentity | undefined)[]
+			>(_.map)((cookieStoreId) => _.find(allContainers, { cookieStoreId })),
+			_.compact,
+		)(containerIds);
 	}
 </script>
 
