@@ -1,5 +1,5 @@
 <script lang="ts">
-	import _ from "lodash";
+	import * as _ from "lodash-es";
 	import { onMount } from "svelte";
 	import { hexToCSSFilter } from "hex-to-css-filter";
 	import { navigate } from "@/pages/configuration/pageStore";

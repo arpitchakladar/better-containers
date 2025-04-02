@@ -1,5 +1,5 @@
 <script lang="ts">
-	import _ from "lodash";
+	import * as _ from "lodash-es";
 	import { onMount } from "svelte";
 	import { navigate } from "@/pages/configuration/pageStore";
 	import { toggleContainerForSite } from "@/utils/storage";
