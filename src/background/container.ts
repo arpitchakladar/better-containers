@@ -4,7 +4,10 @@ import {
 	openTabInContainer,
 	openContainerSelector,
 } from "@/utils/containers";
-import { type ContainerConfiguration } from "@/utils/storage";
+import {
+	getContainerConfigurations,
+	type ContainerConfiguration,
+} from "@/utils/storage";
 
 interface ContainerMessage {
 	type: string;
@@ -15,7 +18,7 @@ interface ContainerMessage {
 let containerConfigurations: Record<string, ContainerConfiguration> = {};
 
 async function loadContainerConfigurations(): Promise<void> {
-	containerConfigurations = await browser.storage.local.get();
+	containerConfigurations = await getContainerConfigurations();
 }
 
 function handleContainerMessage(
@@ -163,7 +166,7 @@ async function initializeApp(): Promise<void> {
 	stopRedirectingOnInitialization();
 	browser.runtime
 		.sendMessage({ type: "configurations-loaded" })
-		.catch(console.error);
+		.catch((e) => {});
 	startContainerization();
 }
 

@@ -1,5 +1,7 @@
 import * as _ from "lodash-es";
 
+const CONFIGURATIONS_STORAGE_FIELD = "configurations";
+
 export interface ContainerConfiguration {
 	sites: string[];
 	cookie: boolean;
@@ -10,8 +12,15 @@ export async function setContainerConfiguration(
 	sites: string[],
 	cookie: boolean,
 ): Promise<void> {
+	const previousConfiguration = _.get(
+		await browser.storage.local.get(CONFIGURATIONS_STORAGE_FIELD),
+		CONFIGURATIONS_STORAGE_FIELD,
+		{},
+	);
 	await browser.storage.local.set({
-		[cookieStoreId]: { sites, cookie },
+		[CONFIGURATIONS_STORAGE_FIELD]: _.assign(previousConfiguration, {
+			[cookieStoreId]: { sites, cookie },
+		}),
 	});
 
 	// Notify background scripts to update cache
@@ -20,11 +29,25 @@ export async function setContainerConfiguration(
 	});
 }
 
+export async function getContainerConfigurations(): Promise<
+	Record<string, ContainerConfiguration>
+> {
+	return _.get(
+		await browser.storage.local.get(CONFIGURATIONS_STORAGE_FIELD),
+		CONFIGURATIONS_STORAGE_FIELD,
+		{},
+	);
+}
+
 export async function getContainerConfiguration(
 	cookieStoreId: string,
 ): Promise<ContainerConfiguration | null> {
-	const containerConfiguration = await browser.storage.local.get(cookieStoreId);
-	return _.get(_.values(containerConfiguration), "[0]", null);
+	const containerConfiguration = _.get(
+		await browser.storage.local.get(CONFIGURATIONS_STORAGE_FIELD),
+		[CONFIGURATIONS_STORAGE_FIELD, cookieStoreId],
+		null,
+	);
+	return containerConfiguration;
 }
 
 export async function getSiteContainers(): Promise<
@@ -33,14 +56,17 @@ export async function getSiteContainers(): Promise<
 	return _.flow(
 		_.flatten,
 		_.compact,
-		_.curryRight<
-			[string, browser.contextualIdentities.ContextualIdentity][],
-			string,
-			Record<
+		_.curryRight(_.groupBy)(
+			_.curryRight<
+				[string, browser.contextualIdentities.ContextualIdentity][],
 				string,
-				[string, browser.contextualIdentities.ContextualIdentity][]
-			>
-		>(_.groupBy)("site"),
+				null,
+				Record<
+					string,
+					[string, browser.contextualIdentities.ContextualIdentity][]
+				>
+			>(_.get)(null)("0"),
+		),
 		_.curryRight<
 			Record<
 				string,
@@ -50,18 +76,37 @@ export async function getSiteContainers(): Promise<
 				entries: [string, browser.contextualIdentities.ContextualIdentity][],
 			) => browser.contextualIdentities.ContextualIdentity[],
 			Record<string, browser.contextualIdentities.ContextualIdentity[]>
-		>(_.mapValues)((entries) => _.map(entries, ([, container]) => container)),
+		>(_.mapValues)(
+			_.unary(
+				_.curryRight<
+					[string, browser.contextualIdentities.ContextualIdentity][],
+					(
+						entry: [string, browser.contextualIdentities.ContextualIdentity],
+					) => browser.contextualIdentities.ContextualIdentity,
+					browser.contextualIdentities.ContextualIdentity[]
+				>(_.map)(
+					_.unary(
+						_.curryRight<
+							[string, browser.contextualIdentities.ContextualIdentity],
+							string,
+							null,
+							browser.contextualIdentities.ContextualIdentity
+						>(_.get)(null)("1"),
+					),
+				),
+			),
+		),
 	)(
 		await Promise.all(
-			_.map(await browser.contextualIdentities.query({}), async (container) => {
-				return _.map(
+			_.map(await browser.contextualIdentities.query({}), async (container) =>
+				_.map(
 					_.get(
 						await getContainerConfiguration(container.cookieStoreId),
 						"sites",
 					),
 					(site) => [site, container],
-				);
-			}),
+				),
+			),
 		),
 	);
 }
