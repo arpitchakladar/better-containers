@@ -1,7 +1,7 @@
 import * as _ from "lodash-es";
 import { DEFAULT_CONTAINER } from "@/utils/containers";
 import { removeCookie } from "@/utils/cookies";
-import { type ContainerConfiguration } from "@/utils/storage";
+import { getContainerConfigurations, type ContainerConfiguration } from "@/utils/storage";
 
 browser.windows.onRemoved.addListener(async () => {
 	const openWindows = (await browser.windows.getAll({})).length;
@@ -9,9 +9,7 @@ browser.windows.onRemoved.addListener(async () => {
 	if (openWindows !== 0) return;
 
 	const [containerConfigurations, identities] = await Promise.all([
-		browser.storage.local.get() as Promise<
-			Record<string, ContainerConfiguration>
-		>,
+		getContainerConfigurations(),
 		browser.contextualIdentities.query({}),
 	]);
 
