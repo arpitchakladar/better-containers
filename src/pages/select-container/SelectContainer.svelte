@@ -29,7 +29,7 @@
 					R.piped(R.prop("cookieStoreId"), R.isShallowEqual(cookieStoreId)),
 				),
 			),
-			R.filter(R.isTruthy),
+			R.filter(R.isNonNullish),
 		);
 	}
 </script>

@@ -52,12 +52,11 @@ export async function getSiteContainers(): Promise<
 	return R.pipe(
 		R.flat(
 			await Promise.all(
-				R.map(await browser.contextualIdentities.query({}), async (container) =>
-					R.map(
+				(await browser.contextualIdentities.query({})).map(async (container) =>
+					(
 						(await getContainerConfiguration(container.cookieStoreId))?.sites ??
-							[],
-						(site) => ({ site, container }),
-					),
+						[]
+					).map((site) => ({ site, container })),
 				),
 			),
 		),
