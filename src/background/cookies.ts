@@ -1,7 +1,7 @@
-import * as _ from "lodash-es";
+import * as R from "remeda";
 import { DEFAULT_CONTAINER } from "@/utils/containers";
 import { removeCookie } from "@/utils/cookies";
-import { getContainerConfigurations, type ContainerConfiguration } from "@/utils/storage";
+import { getContainerConfigurations } from "@/utils/storage";
 
 browser.windows.onRemoved.addListener(async () => {
 	const openWindows = (await browser.windows.getAll({})).length;
@@ -13,37 +13,30 @@ browser.windows.onRemoved.addListener(async () => {
 		browser.contextualIdentities.query({}),
 	]);
 
-	const cookieStoreIds = _.flow(
-		_.curryRight<
-			browser.contextualIdentities.ContextualIdentity[],
-			string,
-			string[]
-		>(_.map)("cookieStoreId"),
-		_.curryRight<string[], string, string[]>(_.concat)(DEFAULT_CONTAINER),
-	)(identities);
+	const cookieStoreIds = R.pipe(
+		identities,
+		R.map(R.prop("cookieStoreId")),
+		R.concat([DEFAULT_CONTAINER]),
+	);
 
 	await Promise.all(
-		_.map(cookieStoreIds, async (cookieStoreId) => {
-			const configuration = _.get<
-				Record<string, ContainerConfiguration>,
-				"cookieStoreId",
-				ContainerConfiguration
-			>(containerConfigurations, "cookieStoreId", { sites: [], cookie: false });
+		R.map(cookieStoreIds, async (cookieStoreId) => {
+			const configuration = containerConfigurations[cookieStoreId] ?? {
+				sites: [],
+				cookie: false,
+			};
 			const cookies = await browser.cookies.getAll({ storeId: cookieStoreId });
 
-			if (_.get(configuration, "cookie")) {
-				const sites = _.defaultTo(configuration.sites, []);
-				await Promise.all(
-					_.map(
-						cookies,
-						async (cookie) =>
-							_.some(sites, (site) => _.includes(cookie.domain, site)) ||
-							(await removeCookie(cookie)),
-					),
-				);
-			} else {
-				await Promise.all(_.map(cookies));
-			}
+			await Promise.all(
+				cookies.map(
+					configuration.cookie
+						? async (cookie) =>
+								configuration.sites.some((site) =>
+									cookie.domain.includes(site),
+								) || (await removeCookie(cookie))
+						: removeCookie,
+				),
+			);
 		}),
 	);
 });

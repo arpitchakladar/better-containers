@@ -6,7 +6,7 @@
 
 	onMount(() => {
 		const params = new URLSearchParams(window.location.search);
-		originUrl = params.get("origin") || "";
+		originUrl = params.get("origin") ?? "";
 
 		if (originUrl) {
 			browser.runtime.onMessage.addListener(
