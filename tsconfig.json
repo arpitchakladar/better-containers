@@ -15,8 +15,7 @@
 			"@/*": ["src/*"]
 		},
 		"types": [
-			"firefox-webext-browser",
-			"lodash"
+			"firefox-webext-browser"
 		],
 		"noEmit": true,
 	},

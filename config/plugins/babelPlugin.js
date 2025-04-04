@@ -21,6 +21,6 @@ export const babelPlugin = () =>
 		],
 		plugins: [
 			["@babel/plugin-transform-runtime", { useESModules: true }],
-			"lodash",
+			// "lodash",
 		],
 	});

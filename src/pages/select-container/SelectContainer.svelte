@@ -1,14 +1,11 @@
 <script lang="ts">
-	import * as _ from "lodash-es";
+	import * as R from "remeda";
 	import LoadingContainersList from "@/components/LoadingContainersList.svelte";
 
 	const params = new URLSearchParams(window.location.search);
-	const site: string = _.defaultTo(params.get("site"), "404 NOT FOUND");
-	const containerIds: string[] = _.defaultTo(params.getAll("container"), []);
-	const selectTabCode: string = _.defaultTo(
-		params.get("selectTabCode"),
-		"NOTSPECIFIED",
-	);
+	const site: string = params.get("site") ?? "404 NOT FOUND";
+	const containerIds: string[] = params.getAll("container") ?? [];
+	const selectTabCode: string = params.get("selectTabCode") ?? "NOTSPECIFIED";
 
 	async function selectContainer(
 		container: browser.contextualIdentities.ContextualIdentity,
@@ -25,16 +22,15 @@
 	> {
 		const allContainers = await browser.contextualIdentities.query({});
 
-		return _.flow(
-			_.curryRight<
-				string[],
-				(
-					x: string,
-				) => browser.contextualIdentities.ContextualIdentity | undefined,
-				(browser.contextualIdentities.ContextualIdentity | undefined)[]
-			>(_.map)((cookieStoreId) => _.find(allContainers, { cookieStoreId })),
-			_.compact,
-		)(containerIds);
+		return R.pipe(
+			containerIds,
+			R.map((cookieStoreId) =>
+				allContainers.find(
+					R.piped(R.prop("cookieStoreId"), R.isShallowEqual(cookieStoreId)),
+				),
+			),
+			R.filter(R.isTruthy),
+		);
 	}
 </script>
 

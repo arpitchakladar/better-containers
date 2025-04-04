@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as _ from "lodash-es";
+	import * as R from "remeda";
 	import Button from "@/components/Button.svelte";
 	import SingleInputForm from "@/components/SingleInputForm.svelte";
 
@@ -16,16 +16,16 @@
 
 	function addItem(event: SubmitEvent): void {
 		event.preventDefault();
-		const newItemTrimmed = _.trim(newItem);
-		if (!_.isEmpty(newItemTrimmed)) {
-			items = _.concat(items, newItemTrimmed);
+		const newItemTrimmed = newItem.trim();
+		if (!R.isEmpty(newItemTrimmed)) {
+			items.push(newItemTrimmed);
 			newItem = "";
 		}
 	}
 
 	// Function to remove an item
 	function removeItem(index: number): void {
-		items = _.filter(items, (_, i) => i !== index);
+		items = items.filter((_, i) => i !== index);
 	}
 </script>
 

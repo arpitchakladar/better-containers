@@ -1,4 +1,4 @@
-import * as _ from "lodash-es";
+import * as R from "remeda";
 
 const CONFIGURATIONS_STORAGE_FIELD = "configurations";
 
@@ -12,13 +12,10 @@ export async function setContainerConfiguration(
 	sites: string[],
 	cookie: boolean,
 ): Promise<void> {
-	const previousConfiguration = _.get(
-		await browser.storage.local.get(CONFIGURATIONS_STORAGE_FIELD),
-		CONFIGURATIONS_STORAGE_FIELD,
-		{},
-	);
+	const previousConfiguration: Record<string, ContainerConfiguration> =
+		await getContainerConfigurations();
 	await browser.storage.local.set({
-		[CONFIGURATIONS_STORAGE_FIELD]: _.assign(previousConfiguration, {
+		[CONFIGURATIONS_STORAGE_FIELD]: R.merge(previousConfiguration, {
 			[cookieStoreId]: { sites, cookie },
 		}),
 	});
@@ -32,82 +29,40 @@ export async function setContainerConfiguration(
 export async function getContainerConfigurations(): Promise<
 	Record<string, ContainerConfiguration>
 > {
-	return _.get(
-		await browser.storage.local.get(CONFIGURATIONS_STORAGE_FIELD),
-		CONFIGURATIONS_STORAGE_FIELD,
-		{},
+	return (
+		(await browser.storage.local.get(CONFIGURATIONS_STORAGE_FIELD))[
+			CONFIGURATIONS_STORAGE_FIELD
+		] ?? {}
 	);
 }
 
 export async function getContainerConfiguration(
 	cookieStoreId: string,
 ): Promise<ContainerConfiguration | null> {
-	const containerConfiguration = _.get(
+	return R.pathOr(
 		await browser.storage.local.get(CONFIGURATIONS_STORAGE_FIELD),
 		[CONFIGURATIONS_STORAGE_FIELD, cookieStoreId],
 		null,
 	);
-	return containerConfiguration;
 }
 
 export async function getSiteContainers(): Promise<
 	Record<string, browser.contextualIdentities.ContextualIdentity[]>
 > {
-	return _.flow(
-		_.flatten,
-		_.compact,
-		_.curryRight(_.groupBy)(
-			_.curryRight<
-				[string, browser.contextualIdentities.ContextualIdentity][],
-				string,
-				null,
-				Record<
-					string,
-					[string, browser.contextualIdentities.ContextualIdentity][]
-				>
-			>(_.get)(null)("0"),
-		),
-		_.curryRight<
-			Record<
-				string,
-				[string, browser.contextualIdentities.ContextualIdentity][]
-			>,
-			(
-				entries: [string, browser.contextualIdentities.ContextualIdentity][],
-			) => browser.contextualIdentities.ContextualIdentity[],
-			Record<string, browser.contextualIdentities.ContextualIdentity[]>
-		>(_.mapValues)(
-			_.unary(
-				_.curryRight<
-					[string, browser.contextualIdentities.ContextualIdentity][],
-					(
-						entry: [string, browser.contextualIdentities.ContextualIdentity],
-					) => browser.contextualIdentities.ContextualIdentity,
-					browser.contextualIdentities.ContextualIdentity[]
-				>(_.map)(
-					_.unary(
-						_.curryRight<
-							[string, browser.contextualIdentities.ContextualIdentity],
-							string,
-							null,
-							browser.contextualIdentities.ContextualIdentity
-						>(_.get)(null)("1"),
+	return R.pipe(
+		R.flat(
+			await Promise.all(
+				R.map(await browser.contextualIdentities.query({}), async (container) =>
+					R.map(
+						(await getContainerConfiguration(container.cookieStoreId))?.sites ??
+							[],
+						(site) => ({ site, container }),
 					),
 				),
 			),
 		),
-	)(
-		await Promise.all(
-			_.map(await browser.contextualIdentities.query({}), async (container) =>
-				_.map(
-					_.get(
-						await getContainerConfiguration(container.cookieStoreId),
-						"sites",
-					),
-					(site) => [site, container],
-				),
-			),
-		),
+		R.groupBy(R.prop("site")),
+		R.mapValues(R.map(R.prop("container"))),
 	);
 }
 
@@ -116,21 +71,22 @@ export async function toggleContainerForSite(
 	cookieStoreId: string,
 ): Promise<boolean> {
 	const containerConfiguration = await getContainerConfiguration(cookieStoreId);
-	const oldSites = _.get<ContainerConfiguration, "sites", string[]>(
-		containerConfiguration,
-		"sites",
-		[],
-	);
-	const cookie = _.get<ContainerConfiguration, "cookie", boolean>(
-		containerConfiguration,
-		"cookie",
-		false,
-	);
+	const { sites: oldSites, cookie } = containerConfiguration ?? {
+		cookie: false,
+		sites: [],
+	};
 
-	const notExisted = !_.includes(oldSites, site);
-	const updatedSites = notExisted
-		? [...oldSites, site]
-		: _.without(oldSites, site);
+	const { notExisted, updatedSites } = oldSites.reduce(
+		(acc, currentSite) => {
+			if (notExisted && currentSite === site) {
+				return { notExisted: false, updatedSites: acc.updatedSites };
+			} else {
+				acc.updatedSites.push(currentSite);
+				return acc;
+			}
+		},
+		{ notExisted: true, updatedSites: [] as string[] },
+	);
 
 	await setContainerConfiguration(cookieStoreId, updatedSites, cookie);
 	return notExisted;
