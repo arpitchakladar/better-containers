@@ -1,5 +1,3 @@
-import path from "path";
-import fs from "fs";
 import { pageScriptPaths, getCssFilePath } from "./paths.js";
 
 export const svelteDependencies = {

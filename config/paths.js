@@ -27,17 +27,20 @@ function getBackgroundScripts() {
 	const backgroundScriptsDir = path.join(__dirname, "../src/background");
 	return fs
 		.readdirSync(backgroundScriptsDir)
-		.filter(
-			(backgroundScriptFile) =>
-				backgroundScriptFile.endsWith(".ts") ||
-				backgroundScriptFile.endsWith(".js"),
-		)
 		.reduce((entries, backgroundScriptFile) => {
-			const backgroundScript = backgroundScriptFile.replace(/\.(ts|js)$/, "");
-			entries[backgroundScript] = path.join(
-				backgroundScriptsDir,
-				backgroundScriptFile,
-			);
+			let backgroundScript = null;
+			if (backgroundScriptFile.endsWith(".ts") || backgroundScriptFile.endsWith(".js")) {
+				backgroundScript = backgroundScriptFile.replace(/\.(ts|js)$/, "")
+			} else if (fs.existsSync(path.join(backgroundScriptsDir, backgroundScriptFile, "index.ts"))) {
+				backgroundScript = backgroundScriptFile;
+				backgroundScriptFile = path.join(backgroundScriptFile, "index.ts");
+			}
+			if (backgroundScript) {
+				entries[backgroundScript] = path.join(
+					backgroundScriptsDir,
+					backgroundScriptFile,
+				);
+			}
 			return entries;
 		}, {});
 }
