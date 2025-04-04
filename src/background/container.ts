@@ -9,11 +9,14 @@ import {
 	type ContainerConfiguration,
 } from "@/utils/storage";
 
-interface ContainerMessage {
+interface LoadContainerConfigurationMessage {
 	type: string;
-	cookieStoreId?: string;
-	success?: boolean;
 }
+
+interface SelectContainerMessage {
+	type: string;
+	cookieStoreId: string;
+};
 
 let containerConfigurations: Record<string, ContainerConfiguration> = {};
 
@@ -21,8 +24,8 @@ async function loadContainerConfigurations(): Promise<void> {
 	containerConfigurations = await getContainerConfigurations();
 }
 
-function handleContainerMessage(
-	message: ContainerMessage,
+function handleLoadContainerConfigurationMessage(
+	message: LoadContainerConfigurationMessage,
 	_sender: any,
 	sendResponse: (response?: any) => void,
 ) {
@@ -32,7 +35,7 @@ function handleContainerMessage(
 	return true;
 }
 
-browser.runtime.onMessage.addListener(handleContainerMessage);
+browser.runtime.onMessage.addListener(handleLoadContainerConfigurationMessage);
 
 function shouldProcessRequest(
 	requestDetails: browser.webRequest._OnBeforeRequestDetails,
@@ -81,7 +84,7 @@ async function handleContainerRedirect(
 			matchingContainers,
 		);
 
-		const messageHandler = async (message: ContainerMessage) => {
+		const messageHandler = async (message: SelectContainerMessage) => {
 			if (
 				message.type === `select-container-${selectTabCode}` &&
 				message.cookieStoreId
@@ -151,22 +154,24 @@ function stopRedirectingOnInitialization() {
 	);
 }
 
+async function loadAllPendingTabs() {
+	await browser.runtime.sendMessage({ type: "configurations-loaded" }).catch((error) => {
+		if (
+			error?.message !==
+			"Could not establish connection. Receiving end does not exist."
+		) {
+			console.error(error);
+		}
+	});
+}
+
 async function initializeApp(): Promise<void> {
 	startRedirectingWhileInitialization();
 	await loadContainerConfigurations();
-	console.log("Running initialization...");
 	configurationNotLoaded = false;
 	stopRedirectingOnInitialization();
-	browser.runtime.sendMessage({ type: "configurations-loaded" }).catch((e) => {
-		if (
-			e?.message !==
-			"Could not establish connection. Receiving end does not exist."
-		) {
-			console.error(e);
-		}
-	});
-
 	startContainerization();
+	await loadAllPendingTabs();
 }
 
 // Start the application

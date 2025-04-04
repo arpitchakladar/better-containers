@@ -12,15 +12,9 @@ export const babelPlugin = () =>
 					},
 					bugfixes: true,
 					useBuiltIns: false, // Disable automatic polyfilling
-					corejs: false, // Don"t use core-js
-					exclude: [
-						"transform-typeof-symbol", // Important for Lodash
-					],
+					corejs: false, // Don't use core-js
 				},
 			],
 		],
-		plugins: [
-			["@babel/plugin-transform-runtime", { useESModules: true }],
-			// "lodash",
-		],
+		plugins: [["@babel/plugin-transform-runtime", { useESModules: true }]],
 	});

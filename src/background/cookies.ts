@@ -27,19 +27,16 @@ browser.windows.onRemoved.addListener(async () => {
 			};
 			const cookies = await browser.cookies.getAll({ storeId: cookieStoreId });
 
-			if (configuration.cookie) {
-				const sites = configuration.sites;
-				await Promise.all(
-					R.map(
-						cookies,
-						async (cookie) =>
-							sites.some((site) => cookie.domain.includes(site)) ||
-							(await removeCookie(cookie)),
-					),
-				);
-			} else {
-				await Promise.all(R.map(cookies, removeCookie));
-			}
+			await Promise.all(
+				cookies.map(
+					configuration.cookie
+						? async (cookie) =>
+								configuration.sites.some((site) =>
+									cookie.domain.includes(site),
+								) || (await removeCookie(cookie))
+						: removeCookie,
+				),
+			);
 		}),
 	);
 });
