@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import path from "path";
 import html from "@rollup/plugin-html";
 import { svelteEmitCssDependencies } from "../helpers.js";
@@ -16,17 +17,17 @@ export function generateHtmlPlugin() {
 			template() {
 				const mainStyle = getCssFilePath(pageInputs[page]);
 				const pagePath = path.resolve(destPath, `pages/${page}`);
-				const linkCssTags = (
-					svelteEmitCssDependencies.dependencies[mainStyle] || []
-				)
-					.concat([mainStyle])
-					.map(
+				const linkCssTags = R.pipe(
+					svelteEmitCssDependencies.dependencies[mainStyle] ?? [],
+					R.concat([mainStyle]),
+					R.map(
 						(cssPath) =>
 							cssPath in svelteEmitCssDependencies.dependencies &&
 							`<link rel="stylesheet" href="${path.relative(pagePath, cssPath)}" type="text/css"/>`,
-					)
-					.filter(Boolean)
-					.join("\n\t\t");
+					),
+					R.filter(R.isTruthy),
+					R.join("\n\t\t"),
+				);
 
 				return `\
 <!DOCTYPE html>

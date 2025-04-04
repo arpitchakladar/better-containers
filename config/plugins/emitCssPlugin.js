@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import css from "rollup-plugin-css-only";
 import { transformSync } from "esbuild";
 import { getCssFilePath, getRelativeDestPath } from "../paths.js";
@@ -39,8 +40,10 @@ export function loadCssPlugin() {
 				svelteEmitCssDependencies.dependencies,
 			);
 
-			outputTargetsData = Object.entries(styleNodes).reduce(
-				(outputTargetsData, [cssFile, cssData]) => {
+			outputTargetsData = R.pipe(
+				styleNodes,
+				R.entries(),
+				R.map(([cssFile, cssCode]) => {
 					const moduleOutputCssFile = getCssFilePath(cssFile);
 					const targetOutputCssFile = cssDependencyKeys.includes(
 						moduleOutputCssFile,
@@ -50,13 +53,11 @@ export function loadCssPlugin() {
 								return cssDependencies.includes(moduleOutputCssFile);
 							}) || [null])[0];
 
-					if (targetOutputCssFile) {
-						outputTargetsData[targetOutputCssFile] =
-							(outputTargetsData[targetOutputCssFile] || "") + cssData;
-					}
-					return outputTargetsData;
-				},
-				{},
+					return targetOutputCssFile && [targetOutputCssFile, cssCode];
+				}),
+				R.filter(R.isTruthy),
+				R.groupBy(R.prop("0")),
+				R.mapValues(R.piped(R.map(R.prop("1")), R.join("\n"))),
 			);
 		},
 	});
