@@ -20,7 +20,7 @@ browser.windows.onRemoved.addListener(async () => {
 	);
 
 	await Promise.all(
-		R.map(cookieStoreIds, async (cookieStoreId) => {
+		cookieStoreIds.map(async (cookieStoreId) => {
 			const configuration = containerConfigurations[cookieStoreId] ?? {
 				sites: [],
 				cookie: false,

@@ -64,9 +64,7 @@ export const pageScriptNames = Object.keys(pageInputs);
 export const backgroundScriptNames = Object.keys(backgroundScriptInputs);
 export const pageScriptPaths = Object.values(pageInputs);
 
-export function getRelativeDestPath(fullPath) {
-	return path.relative(destPath, fullPath);
-}
+export const getRelativeDestPath = R.partialBind(path.relative, destPath);
 
 export const getEntryFileFromName = R.conditional(
 	[R.isIncludedIn(pageScriptNames), (name) => `pages/${name}/index.js`],

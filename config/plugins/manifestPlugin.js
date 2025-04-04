@@ -58,16 +58,13 @@ export function manifestPlugin(options = {}) {
 				fs.readFileSync(path.join(__dirname, "../package.json"), "utf8"),
 			);
 
-			const manifest = R.mergeDeep(
-				baseManifest,
-				{
-					version: packageJson.version,
-					background: {
-						scripts: backgroundScripts
-					},
-					web_accessible_resources: webAccessibleResources,
+			const manifest = R.mergeDeep(baseManifest, {
+				version: packageJson.version,
+				background: {
+					scripts: backgroundScripts,
 				},
-			);
+				web_accessible_resources: webAccessibleResources,
+			});
 
 			const manifestPath = path.resolve(outputPath);
 			const manifestData = JSON.stringify(manifest, null, production ? 0 : 2);

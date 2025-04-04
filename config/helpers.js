@@ -1,12 +1,19 @@
+import * as R from "remeda";
 import { pageScriptPaths, getCssFilePath } from "./paths.js";
 
 export const svelteDependencies = {
 	dependencies: {},
 	resolve() {
 		function isDependencyUnique(dependency, importer, dependencies) {
-			return !Object.entries(dependencies).find(
-				([otherImporter, deps]) =>
-					otherImporter !== importer && deps.includes(dependency),
+			return !R.pipe(
+				dependencies,
+				R.entries(),
+				R.find(
+					R.allPass([
+						R.piped(R.prop("0"), R.isNot(R.isShallowEqual(importer))),
+						R.piped(R.prop("1"), R.partialBind(R.isIncludedIn, dependency)),
+					]),
+				),
 			);
 		}
 
@@ -34,11 +41,10 @@ export const svelteDependencies = {
 		while (true) {
 			const newResolved = pageScriptPaths.reduce((newResolved, path) => {
 				newResolved[path] = resolve(path, resolved, newResolved);
-
 				return newResolved;
 			}, {});
 
-			if (JSON.stringify(newResolved) === JSON.stringify(resolved)) break;
+			if (R.isDeepEqual(newResolved, resolved)) break;
 			resolved = newResolved;
 		}
 
@@ -49,14 +55,14 @@ export const svelteDependencies = {
 export const svelteEmitCssDependencies = {
 	dependencies: {},
 	resolve() {
-		const transformed = {};
-
-		Object.entries(svelteDependencies.dependencies).forEach(([key, value]) => {
-			let newKey = getCssFilePath(key);
-			let newValue = value.map((dep) => getCssFilePath(dep));
-			transformed[newKey] = newValue;
-		});
-
-		this.dependencies = transformed;
+		this.dependencies = R.pipe(
+			svelteDependencies.dependencies,
+			R.entries(),
+			R.map(([key, value]) => [
+				getCssFilePath(key),
+				value.map((dep) => getCssFilePath(dep)),
+			]),
+			R.fromEntries(),
+		);
 	},
 };
