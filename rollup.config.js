@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import {
 	destPath,
 	pageInputs,
@@ -16,7 +17,7 @@ export default {
 		dir: destPath,
 		format: "esm",
 		sourcemap: !production,
-		entryFileNames: ({ name }) => getEntryFileFromName(name),
+		entryFileNames: R.piped(R.prop("name"), getEntryFileFromName),
 		chunkFileNames: production ? "modules/[hash].js" : "modules/[name].js",
 	},
 	plugins,

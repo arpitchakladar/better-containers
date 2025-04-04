@@ -5,9 +5,7 @@ import {
 	destPath,
 	stylesDestPath,
 	pageInputs,
-	getEntryFileFromName,
 	getCssFilePath,
-	getRelativeDestPath,
 } from "../paths.js";
 
 export function generateHtmlPlugin() {

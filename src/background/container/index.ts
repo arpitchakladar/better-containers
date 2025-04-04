@@ -16,7 +16,7 @@ interface LoadContainerConfigurationMessage {
 interface SelectContainerMessage {
 	type: string;
 	cookieStoreId: string;
-};
+}
 
 let containerConfigurations: Record<string, ContainerConfiguration> = {};
 
@@ -155,14 +155,16 @@ function stopRedirectingOnInitialization() {
 }
 
 async function loadAllPendingTabs() {
-	await browser.runtime.sendMessage({ type: "configurations-loaded" }).catch((error) => {
-		if (
-			error?.message !==
-			"Could not establish connection. Receiving end does not exist."
-		) {
-			console.error(error);
-		}
-	});
+	await browser.runtime
+		.sendMessage({ type: "configurations-loaded" })
+		.catch((error) => {
+			if (
+				error?.message !==
+				"Could not establish connection. Receiving end does not exist."
+			) {
+				console.error(error);
+			}
+		});
 }
 
 async function initializeApp(): Promise<void> {

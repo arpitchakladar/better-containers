@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -14,35 +15,46 @@ export const stylesDestPath = path.resolve(destPath, "styles");
 // Helper to get all pages
 function getPages() {
 	const pagesDir = path.join(__dirname, "../src/pages");
-	return fs
-		.readdirSync(pagesDir)
-		.filter((page) => fs.existsSync(path.join(pagesDir, page, "index.ts")))
-		.reduce((entries, page) => {
-			entries[page] = path.join(pagesDir, page, "index.ts");
-			return entries;
-		}, {});
+
+	return R.pipe(
+		fs.readdirSync(pagesDir),
+		R.filter((page) => fs.existsSync(path.join(pagesDir, page, "index.ts"))),
+		R.map((page) => [page, path.join(pagesDir, page, "index.ts")]),
+		R.fromEntries(),
+	);
 }
 
 function getBackgroundScripts() {
 	const backgroundScriptsDir = path.join(__dirname, "../src/background");
-	return fs
-		.readdirSync(backgroundScriptsDir)
-		.reduce((entries, backgroundScriptFile) => {
-			let backgroundScript = null;
-			if (backgroundScriptFile.endsWith(".ts") || backgroundScriptFile.endsWith(".js")) {
-				backgroundScript = backgroundScriptFile.replace(/\.(ts|js)$/, "")
-			} else if (fs.existsSync(path.join(backgroundScriptsDir, backgroundScriptFile, "index.ts"))) {
-				backgroundScript = backgroundScriptFile;
-				backgroundScriptFile = path.join(backgroundScriptFile, "index.ts");
-			}
-			if (backgroundScript) {
-				entries[backgroundScript] = path.join(
-					backgroundScriptsDir,
-					backgroundScriptFile,
-				);
-			}
-			return entries;
-		}, {});
+
+	return R.pipe(
+		fs.readdirSync(backgroundScriptsDir),
+		R.map((backgroundScript) => {
+			const nestedScriptPath = path.join(
+				backgroundScriptsDir,
+				backgroundScript,
+				"index.ts",
+			);
+			return R.conditional(
+				backgroundScript,
+				[
+					(fileOrFolder) =>
+						fileOrFolder.endsWith(".ts") || fileOrFolder.endsWith(".js"),
+					(file) => [
+						file.replace(/\.(ts|js)$/, ""),
+						path.join(backgroundScriptsDir, file),
+					],
+				],
+				[
+					(_fileOrFolder) => fs.existsSync(nestedScriptPath),
+					(file) => [file, nestedScriptPath],
+				],
+				R.conditional.defaultCase((_fileOrFolder) => null),
+			);
+		}),
+		R.filter(R.isNonNullish),
+		R.fromEntries(),
+	);
 }
 
 export const pageInputs = getPages();
@@ -56,18 +68,22 @@ export function getRelativeDestPath(fullPath) {
 	return path.relative(destPath, fullPath);
 }
 
-export function getEntryFileFromName(name) {
-	if (pageScriptNames.includes(name)) return `pages/${name}/index.js`;
-	if (backgroundScriptNames.includes(name)) return `background/${name}.js`;
-	return `modules/${name}.js`;
-}
+export const getEntryFileFromName = R.conditional(
+	[R.isIncludedIn(pageScriptNames), (name) => `pages/${name}/index.js`],
+	[R.isIncludedIn(backgroundScriptNames), (name) => `background/${name}.js`],
+	R.conditional.defaultCase((name) => `modules/${name}.js`),
+);
 
 export function getCssFilePath(filePath) {
-	if (filePath.match(/\/pages\/([^/]+)\/index\.ts$/)) {
-		// Convert pages/<page-name>/index.ts → path.resolve(destPath, "pages", "<page-name>/style.css")
-		const pageName = filePath.match(/\/pages\/([^/]+)\/index\.ts$/)[1];
-		return path.resolve(destPath, "pages", pageName, "style.css");
-	}
-	const moduleName = path.basename(filePath).replace(/\.[^/.]+$/, "") + ".css";
-	return path.resolve(stylesDestPath, moduleName);
+	const pageName = R.pathOr(
+		filePath.match(/\/pages\/([^/]+)\/index\.ts$/),
+		"1",
+		null,
+	);
+	return pageName
+		? path.resolve(destPath, "pages", pageName, "style.css")
+		: path.resolve(
+				stylesDestPath,
+				path.basename(filePath).replace(/\.[^/.]+$/, "") + ".css",
+			);
 }
